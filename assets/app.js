@@ -1,13 +1,13 @@
 
 const PRODUCTS = [
- {slug:'capcut',logo:'https://drive.google.com/uc?export=view&id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'Premium video editing access for creators.',plans:[
+ {slug:'capcut',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'Premium video editing access for creators.',plans:[
   {name:'7 Days',price:'Rs. 180',details:'Short-term access'},
   {name:'1 Month',price:'Rs. 649',details:'Premium editing access'}
  ],features:['Premium transitions','Cloud storage','Advanced filters & effects','Pro templates'],stock:'Available'},
- {slug:'gemini',logo:'https://drive.google.com/uc?export=view&id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'Premium AI access for smarter work and creativity.',plans:[
+ {slug:'gemini',logo:'https://drive.google.com/thumbnail?id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X&sz=w1000',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'Premium AI access for smarter work and creativity.',plans:[
   {name:'18 Months',price:'Rs. 999',details:'Active on your mail'}
  ],features:['AI assistance','Long-term access','Productivity support'],stock:'In Stock (5)'},
- {slug:'canva',logo:'https://drive.google.com/uc?export=view&id=1yH-jlpzpY-kZ5VYAniI6M8g5ZwvhBP6i',name:'Canva Edu',category:'Design & Creative',icon:'fa-palette',price:'Rs. 149',description:'Premium design access for creative projects.',plans:[
+ {slug:'canva',logo:'https://drive.google.com/thumbnail?id=1yH-jlpzpY-kZ5VYAniI6M8g5ZwvhBP6i&sz=w1000',name:'Canva Edu',category:'Design & Creative',icon:'fa-palette',price:'Rs. 149',description:'Premium design access for creative projects.',plans:[
   {name:'1 Month',price:'Rs. 149',details:'Premium design access'},
   {name:'3 Months',price:'Rs. 199',details:'Extended access'}
  ],features:['Premium design tools','Multiple accounts','Creative templates'],stock:'Available'},
