@@ -37,6 +37,13 @@ const PRODUCTS = [
  ],features:['Premium viewing','3 months access','Enhanced experience'],stock:'In Stock (2)'}
 ];
 
+const LOGO_FIT={
+ capcut:{size:'48px'},gemini:{size:'46px'},canva:{size:'48px'},surfshark:{size:'48px'},
+ netflix:{size:'48px'},office365:{size:'46px'},'adobe-express':{size:'48px'},ilovepdf:{size:'48px'},
+ quillbot:{size:'46px'},duolingo:{size:'48px'},'youtube-premium':{size:'48px'}
+};
+function logoStyle(p){const fit=LOGO_FIT[p.slug]||{size:'48px'};return `--logo-size:${fit.size}`;}
+
 const WA_NUMBER='923351925662';
 
 function productBySlug(slug){return PRODUCTS.find(p=>p.slug===slug)}
@@ -44,7 +51,7 @@ function money(p){return p.price}
 function productCard(p){
  return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
    <div class="glass-card product-card d-flex flex-column">
-    <div class="product-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div>
+    <div class="product-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div>
     <div class="small-label">${p.category}</div>
     <h3 class="fw-bold mt-2">${p.name}</h3>
     <p class="text-silver">${p.description}</p>
@@ -110,7 +117,7 @@ function renderProductPage(){
  root.innerHTML=`
  <section class="page-hero">
   <div class="container">
-   <div class="product-icon product-detail-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div>
+   <div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div>
    <div class="small-label">${p.category}</div>
    <h1 class="mt-2">${p.name}</h1>
    <p class="lead text-silver mx-auto" style="max-width:720px">${p.description}</p>
