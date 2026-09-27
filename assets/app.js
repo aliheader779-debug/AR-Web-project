@@ -44,7 +44,7 @@ function money(p){return p.price}
 function productCard(p){
  return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
    <div class="glass-card product-card d-flex flex-column">
-    <div class="product-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'"><i class="fa-solid ${p.icon}" style="display:none"></i></div>
+    <div class="product-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div>
     <div class="small-label">${p.category}</div>
     <h3 class="fw-bold mt-2">${p.name}</h3>
     <p class="text-silver">${p.description}</p>
@@ -110,7 +110,7 @@ function renderProductPage(){
  root.innerHTML=`
  <section class="page-hero">
   <div class="container">
-   <div class="product-icon product-detail-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'"><i class="fa-solid ${p.icon}" style="display:none"></i></div>
+   <div class="product-icon product-detail-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div>
    <div class="small-label">${p.category}</div>
    <h1 class="mt-2">${p.name}</h1>
    <p class="lead text-silver mx-auto" style="max-width:720px">${p.description}</p>
