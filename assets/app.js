@@ -1,38 +1,38 @@
 
 const PRODUCTS = [
- {slug:'capcut',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'Premium video editing access for creators.',plans:[
+ {slug:'capcut',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/capcut.png',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'Premium video editing access for creators.',plans:[
   {name:'7 Days',price:'Rs. 180',details:'Short-term access'},
   {name:'1 Month',price:'Rs. 649',details:'Premium editing access'}
  ],features:['Premium transitions','Cloud storage','Advanced filters & effects','Pro templates'],stock:'Available'},
- {slug:'gemini',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'Premium AI access for smarter work and creativity.',plans:[
+ {slug:'gemini',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/googlegemini.png',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'Premium AI access for smarter work and creativity.',plans:[
   {name:'18 Months',price:'Rs. 999',details:'Active on your mail'}
  ],features:['AI assistance','Long-term access','Productivity support'],stock:'In Stock (5)'},
- {slug:'canva',name:'Canva Edu',category:'Design & Creative',icon:'fa-palette',price:'Rs. 149',description:'Premium design access for creative projects.',plans:[
+ {slug:'canva',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/canva.png',name:'Canva Edu',category:'Design & Creative',icon:'fa-palette',price:'Rs. 149',description:'Premium design access for creative projects.',plans:[
   {name:'1 Month',price:'Rs. 149',details:'Premium design access'},
   {name:'3 Months',price:'Rs. 199',details:'Extended access'}
  ],features:['Premium design tools','Multiple accounts','Creative templates'],stock:'Available'},
- {slug:'surfshark',name:'Surfshark VPN',category:'VPN & Security',icon:'fa-shield-halved',price:'Rs. 299',description:'VPN subscription for private browsing and online security.',plans:[
+ {slug:'surfshark',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/surfshark.png',name:'Surfshark VPN',category:'VPN & Security',icon:'fa-shield-halved',price:'Rs. 299',description:'VPN subscription for private browsing and online security.',plans:[
   {name:'Monthly',price:'Rs. 299',details:'Monthly access'}
  ],features:['VPN access','Privacy tools','Multi-device support'],stock:'In Stock (4)'},
- {slug:'netflix',name:'Netflix',category:'Entertainment',icon:'fa-film',price:'Rs. 349',description:'Entertainment subscription with 4K plan availability.',plans:[
+ {slug:'netflix',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/netflix.png',name:'Netflix',category:'Entertainment',icon:'fa-film',price:'Rs. 349',description:'Entertainment subscription with 4K plan availability.',plans:[
   {name:'1 Month 4K',price:'Rs. 349',details:'4K resolution'}
  ],features:['4K resolution','Entertainment library','1 month access'],stock:'In Stock (2)'},
- {slug:'office365',name:'MS Office 365 Plus',category:'Productivity',icon:'fa-file-word',price:'Rs. 999',description:'Productivity suite for documents, spreadsheets and more.',plans:[
+ {slug:'office365',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/microsoft365.png',name:'MS Office 365 Plus',category:'Productivity',icon:'fa-file-word',price:'Rs. 999',description:'Productivity suite for documents, spreadsheets and more.',plans:[
   {name:'12 Months',price:'Rs. 999',details:'Annual access'}
  ],features:['Office productivity tools','12 months access','Cloud productivity'],stock:'In Stock (20)'},
- {slug:'adobe-express',name:'Adobe Express Premium',category:'Design & Creative',icon:'fa-wand-magic-sparkles',price:'Rs. 799',description:'Premium creative tools for fast content creation.',plans:[
+ {slug:'adobe-express',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/adobeexpress.png',name:'Adobe Express Premium',category:'Design & Creative',icon:'fa-wand-magic-sparkles',price:'Rs. 799',description:'Premium creative tools for fast content creation.',plans:[
   {name:'12 Months',price:'Rs. 799',details:'Annual access'}
  ],features:['Premium creative tools','Templates','12 months access'],stock:'In Stock (7)'},
- {slug:'ilovepdf',name:'iLovePDF Premium',category:'Productivity',icon:'fa-file-pdf',price:'Rs. 499',description:'Premium PDF tools for everyday document workflows.',plans:[
+ {slug:'ilovepdf',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/ilovepdf.png',name:'iLovePDF Premium',category:'Productivity',icon:'fa-file-pdf',price:'Rs. 499',description:'Premium PDF tools for everyday document workflows.',plans:[
   {name:'12 Months',price:'Rs. 499',details:'Annual access'}
  ],features:['PDF tools','Document workflow','12 months access'],stock:'In Stock (10)'},
- {slug:'quillbot',name:'QuillBot',category:'Education',icon:'fa-pen-nib',price:'Rs. 699',description:'Writing and productivity assistance for students and creators.',plans:[
+ {slug:'quillbot',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/quillbot.png',name:'QuillBot',category:'Education',icon:'fa-pen-nib',price:'Rs. 699',description:'Writing and productivity assistance for students and creators.',plans:[
   {name:'1 Month',price:'Rs. 699',details:'Monthly access'}
  ],features:['Writing assistance','Productivity tools','1 month access'],stock:'In Stock (1)'},
- {slug:'duolingo',name:'Super Duolingo',category:'Education',icon:'fa-language',price:'Rs. 949',description:'Premium language-learning access.',plans:[
+ {slug:'duolingo',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/duolingo.png',name:'Super Duolingo',category:'Education',icon:'fa-language',price:'Rs. 949',description:'Premium language-learning access.',plans:[
   {name:'12 Months',price:'Rs. 949',details:'Annual access'}
  ],features:['Language learning','Premium access','12 months access'],stock:'In Stock (4)'},
- {slug:'youtube-premium',name:'YouTube Premium',category:'Entertainment',icon:'fa-youtube',price:'Rs. 1199',description:'Premium YouTube experience for entertainment and learning.',plans:[
+ {slug:'youtube-premium',logo:'https://cdn.jsdelivr.net/npm/simple-icons-png@1.0.0/icons/youtube.png',name:'YouTube Premium',category:'Entertainment',icon:'fa-youtube',price:'Rs. 1199',description:'Premium YouTube experience for entertainment and learning.',plans:[
   {name:'3 Months',price:'Rs. 1199',details:'Three-month access'}
  ],features:['Premium viewing','3 months access','Enhanced experience'],stock:'In Stock (2)'}
 ];
@@ -44,7 +44,7 @@ function money(p){return p.price}
 function productCard(p){
  return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
    <div class="glass-card product-card d-flex flex-column">
-    <div class="product-icon"><i class="fa-solid ${p.icon}"></i></div>
+    <div class="product-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'"><i class="fa-solid ${p.icon}" style="display:none"></i></div>
     <div class="small-label">${p.category}</div>
     <h3 class="fw-bold mt-2">${p.name}</h3>
     <p class="text-silver">${p.description}</p>
@@ -110,7 +110,7 @@ function renderProductPage(){
  root.innerHTML=`
  <section class="page-hero">
   <div class="container">
-   <div class="product-icon product-detail-icon"><i class="fa-solid ${p.icon}"></i></div>
+   <div class="product-icon product-detail-icon"><img src="${p.logo}" alt="${p.name} logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'"><i class="fa-solid ${p.icon}" style="display:none"></i></div>
    <div class="small-label">${p.category}</div>
    <h1 class="mt-2">${p.name}</h1>
    <p class="lead text-silver mx-auto" style="max-width:720px">${p.description}</p>
