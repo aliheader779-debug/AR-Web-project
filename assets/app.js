@@ -14,22 +14,22 @@ const PRODUCTS = [
  {slug:'surfshark',logo:'https://nhatphuc.com/wp-content/uploads/2022/02/surfshark-logo-960x960.webp',name:'Surfshark VPN',category:'VPN & Security',icon:'fa-shield-halved',price:'Rs. 299',description:'VPN subscription for private browsing and online security.',plans:[
   {name:'Monthly',price:'Rs. 299',details:'Monthly access'}
  ],features:['VPN access','Privacy tools','Multi-device support'],stock:'In Stock (4)'},
- {slug:'netflix',logo:'https://flyclipart.com/thumb2/netflix-logo-png-transparent-image-png-arts-82874.png',name:'Netflix',category:'Entertainment',icon:'fa-film',price:'Rs. 349',description:'Entertainment subscription with 4K plan availability.',plans:[
+ {slug:'netflix',logo:'https://drive.google.com/thumbnail?id=1R17XYrlzWDF91kORrA4Iw1clUfGgTsVV&sz=w1000',name:'Netflix',category:'Entertainment',icon:'fa-film',price:'Rs. 349',description:'Entertainment subscription with 4K plan availability.',plans:[
   {name:'1 Month 4K',price:'Rs. 349',details:'4K resolution'}
  ],features:['4K resolution','Entertainment library','1 month access'],stock:'In Stock (2)'},
- {slug:'office365',logo:'https://i.pinimg.com/originals/f0/66/c0/f066c084e6b6ea068ef91db9b0f33c3e.jpg',name:'MS Office 365 Plus',category:'Productivity',icon:'fa-file-word',price:'Rs. 999',description:'Productivity suite for documents, spreadsheets and more.',plans:[
+ {slug:'office365',logo:'https://drive.google.com/thumbnail?id=1seMGx02uJScl3dq7RzIhNSTNi9BTPvjh&sz=w1000',name:'MS Office 365 Plus',category:'Productivity',icon:'fa-file-word',price:'Rs. 999',description:'Productivity suite for documents, spreadsheets and more.',plans:[
   {name:'12 Months',price:'Rs. 999',details:'Annual access'}
  ],features:['Office productivity tools','12 months access','Cloud productivity'],stock:'In Stock (20)'},
- {slug:'adobe-express',logo:'https://service-file.orend.jp/public/company/01jqbcby9h7q2g5qr55vb601f4/service/01jqbd42ep9kmkkr0m1f1kqf8t/logo-image/Adobe%20Express%20Logo%20PNG%20%E2%80%93%20PNG%20Downloads_20251009-033957.129961.png',name:'Adobe Express Premium',category:'Design & Creative',icon:'fa-wand-magic-sparkles',price:'Rs. 799',description:'Premium creative tools for fast content creation.',plans:[
+ {slug:'adobe-express',logo:'https://drive.google.com/thumbnail?id=1ucXCM65kcLvTXh6taiVdgPjXSPoiNZBG&sz=w1000',name:'Adobe Express Premium',category:'Design & Creative',icon:'fa-wand-magic-sparkles',price:'Rs. 799',description:'Premium creative tools for fast content creation.',plans:[
   {name:'12 Months',price:'Rs. 799',details:'Annual access'}
  ],features:['Premium creative tools','Templates','12 months access'],stock:'In Stock (7)'},
  {slug:'ilovepdf',logo:'https://congressus-bilboard.s3-eu-west-1.amazonaws.com/files/61a9b343a72b44a4a51937f27e713efb.png',name:'iLovePDF Premium',category:'Productivity',icon:'fa-file-pdf',price:'Rs. 499',description:'Premium PDF tools for everyday document workflows.',plans:[
   {name:'12 Months',price:'Rs. 499',details:'Annual access'}
  ],features:['PDF tools','Document workflow','12 months access'],stock:'In Stock (10)'},
- {slug:'quillbot',logo:'https://www.google.com/s2/favicons?domain=quillbot.com&sz=128',name:'QuillBot',category:'Education',icon:'fa-pen-nib',price:'Rs. 699',description:'Writing and productivity assistance for students and creators.',plans:[
+ {slug:'quillbot',logo:'https://drive.google.com/thumbnail?id=1IB4rTPpONfJujOtUZDA7mUekgs4Pt1L6&sz=w1000',name:'QuillBot',category:'Education',icon:'fa-pen-nib',price:'Rs. 699',description:'Writing and productivity assistance for students and creators.',plans:[
   {name:'1 Month',price:'Rs. 699',details:'Monthly access'}
  ],features:['Writing assistance','Productivity tools','1 month access'],stock:'In Stock (1)'},
- {slug:'duolingo',logo:'https://cdn.imgbin.com/18/19/19/duolingo-logo-duolingo-language-learning-logo-rPE3R37i.jpg',name:'Super Duolingo',category:'Education',icon:'fa-language',price:'Rs. 949',description:'Premium language-learning access.',plans:[
+ {slug:'duolingo',logo:'https://drive.google.com/thumbnail?id=1prhyndVHF3tkB2Qdffyuc8Sg5GtkmSbS&sz=w1000',name:'Super Duolingo',category:'Education',icon:'fa-language',price:'Rs. 949',description:'Premium language-learning access.',plans:[
   {name:'12 Months',price:'Rs. 949',details:'Annual access'}
  ],features:['Language learning','Premium access','12 months access'],stock:'In Stock (4)'},
  {slug:'youtube-premium',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/YouTube_Premium_logo_2024.svg/3840px-YouTube_Premium_logo_2024.svg.png',name:'YouTube Premium',category:'Entertainment',icon:'fa-youtube',price:'Rs. 1199',description:'Premium YouTube experience for entertainment and learning.',plans:[
