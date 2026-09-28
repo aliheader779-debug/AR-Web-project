@@ -73,3 +73,19 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
  .review-slide{width:min(82vw,340px)}
  .review-image-card img{max-height:560px}
 }
+/* Hero upgrades */
+.hero{isolation:isolate}
+.hero-content{overflow:visible}
+.hero .hero-floating-logos{position:absolute;inset:0;pointer-events:none;z-index:-1}
+.hero-tool-logo{position:absolute;width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 24px rgba(138,43,226,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:rgba(255,255,255,.55);font-weight:700;font-size:1rem;letter-spacing:-.03em;opacity:.45;animation:heroLogoFloat 8s ease-in-out infinite alternate}
+.hero-logo-1{top:12%;left:8%;animation-delay:-1s}.hero-logo-2{top:24%;left:20%;animation-delay:-4s}.hero-logo-3{top:15%;right:17%;animation-delay:-2s}.hero-logo-4{bottom:18%;left:12%;animation-delay:-5s}.hero-logo-5{bottom:12%;right:10%;animation-delay:-3s}.hero-logo-6{top:42%;right:6%;animation-delay:-6s}
+@keyframes heroLogoFloat{0%{transform:translate3d(0,0,0) rotate(-2deg)}100%{transform:translate3d(0,16px,0) rotate(3deg)}}
+.hero-trust-strip{display:flex;justify-content:center;align-items:center;gap:0;flex-wrap:wrap;margin:0 auto;max-width:760px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:10px 14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.hero-trust-strip span{padding:0 14px;color:rgba(255,255,255,.78);font-size:.85rem;font-weight:600}
+.hero-trust-strip span+span{border-left:1px solid rgba(255,255,255,.14)}
+@media(max-width:575px){
+ .hero-tool-logo{width:42px;height:42px;border-radius:12px;font-size:.78rem;opacity:.32}
+ .hero-logo-1{top:10%;left:4%}.hero-logo-2{top:22%;left:8%}.hero-logo-3{top:12%;right:5%}.hero-logo-4{bottom:14%;left:5%}.hero-logo-5{bottom:10%;right:4%}.hero-logo-6{top:50%;right:2%}
+ .hero-trust-strip{max-width:92%;padding:8px 10px}
+ .hero-trust-strip span{padding:0 8px;font-size:.72rem}
+}
