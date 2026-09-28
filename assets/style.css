@@ -293,3 +293,27 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
   }
   .hero-v2 + .section-alt:before{top:-30px;height:90px}
 }
+
+/* Mobile review swipe fix */
+.reviews-carousel{
+  overflow:hidden;
+  touch-action:pan-y;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+.reviews-carousel .reviews-track{
+  will-change:transform;
+  cursor:grab;
+}
+.reviews-carousel.is-dragging .reviews-track{cursor:grabbing}
+.reviews-carousel .review-image-card,
+.reviews-carousel .review-image-card img{
+  -webkit-user-drag:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+@media(max-width:575px){
+  .reviews-carousel{touch-action:pan-y}
+  .reviews-carousel .review-slide{flex:0 0 82vw}
+}
