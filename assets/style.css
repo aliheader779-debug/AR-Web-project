@@ -318,3 +318,43 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
   .reviews-carousel .review-slide{flex:0 0 82vw}
 }
 
+
+/* Hero bottom boundary — soft downward fade */
+.hero-v2{
+  position:relative;
+}
+.hero-v2:after{
+  -webkit-mask-image:linear-gradient(to bottom,black 0%,black 45%,rgba(0,0,0,.55) 68%,transparent 100%);
+  mask-image:linear-gradient(to bottom,black 0%,black 45%,rgba(0,0,0,.55) 68%,transparent 100%);
+}
+.hero-v2 + .section-alt{
+  position:relative;
+}
+.hero-v2 + .section-alt:after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  top:-90px;
+  height:110px;
+  background:linear-gradient(to bottom,transparent 0%,rgba(5,5,8,.38) 42%,#050508 100%);
+  pointer-events:none;
+  z-index:0;
+}
+.hero-v2 + .section-alt .container{
+  position:relative;
+  z-index:2;
+}
+@media(max-width:575px){
+  .hero-v2:after{
+    bottom:-12%;
+    height:34%;
+    -webkit-mask-image:linear-gradient(to bottom,black 0%,black 38%,rgba(0,0,0,.45) 65%,transparent 100%);
+    mask-image:linear-gradient(to bottom,black 0%,black 38%,rgba(0,0,0,.45) 65%,transparent 100%);
+  }
+  .hero-v2 + .section-alt:after{
+    top:-70px;
+    height:90px;
+    background:linear-gradient(to bottom,transparent 0%,rgba(5,5,8,.3) 45%,#050508 100%);
+  }
+}
