@@ -233,3 +233,33 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
     padding:2px;
   }
 }
+
+/* Hero tool logos — match Gemini circular treatment */
+.hero-preview-icon.capcut,
+.hero-preview-icon.canva{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  padding:3px;
+  background:linear-gradient(135deg,#fff,#f2efff);
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 0 12px rgba(138,43,226,.14);
+}
+.hero-preview-icon.capcut img,
+.hero-preview-icon.canva img{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fff!important;
+}
+@media(max-width:575px){
+  .hero-preview-icon.capcut,
+  .hero-preview-icon.canva{
+    width:28px;
+    height:28px;
+    padding:2px;
+  }
+}
