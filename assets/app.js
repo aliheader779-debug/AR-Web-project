@@ -113,10 +113,35 @@ function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
- document.title=`AR SERVICES - ${p.name}`;
+ document.title=`${p.name} | AR SERVICES`;
+ const meta=document.querySelector('meta[name="description"]');
+ if(meta)meta.setAttribute('content',`Explore ${p.name} plans, features, pricing and ordering information from AR SERVICES. ${p.description}`);
+ const priceValue=parseFloat(String(p.price).replace(/[^0-9.]/g,''))||0;
+ const existingSchema=document.getElementById('productSchema');
+ if(existingSchema)existingSchema.remove();
+ const schema=document.createElement('script');
+ schema.id='productSchema';
+ schema.type='application/ld+json';
+ schema.textContent=JSON.stringify({
+  "@context":"https://schema.org",
+  "@type":"Product",
+  "name":p.name,
+  "description":p.description,
+  "image":p.logo,
+  "category":p.category,
+  "offers":{
+   "@type":"Offer",
+   "priceCurrency":"PKR",
+   "price":priceValue.toFixed(2),
+   "availability":/in stock|available/i.test(p.stock)?"https://schema.org/InStock":"https://schema.org/LimitedAvailability",
+   "url":`https://arservicesdigital.store/product-${p.slug}.html`
+  }
+ });
+ document.head.appendChild(schema);
  root.innerHTML=`
  <section class="page-hero">
   <div class="container">
+   <nav aria-label="Breadcrumb" class="mb-3"><a href="index.html">Home</a><span class="mx-2 text-silver">/</span><a href="tools.html">Tools</a><span class="mx-2 text-silver">/</span><span class="text-silver">${escapeHtml(p.name)}</span></nav>
    <div class="product-icon-wrap product-detail-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
    <div class="small-label">${p.category}</div>
    <h1 class="mt-2">${p.name}</h1>
@@ -165,6 +190,14 @@ function renderProductPage(){
    <h2 class="section-title">How to <span class="text-gradient">Order</span></h2>
    <div class="row g-4">
     ${[['1','Choose a Plan','Select the plan you want.'],['2','Submit Order','Enter your details in the order form.'],['3','Continue to WhatsApp','Complete the payment conversation.'],['4','Receive Access','Get your subscription/account details through the agreed delivery process.']].map(x=>`<div class="col-12 col-md-6 col-lg-3"><div class="glass-card text-center"><div class="neon-circle-icon fw-bold">${x[0]}</div><h5 class="fw-bold">${x[1]}</h5><p class="text-silver mb-0">${x[2]}</p></div></div>`).join('')}
+   </div>
+  </div>
+ </section>
+ <section class="section-alt">
+  <div class="container">
+   <div class="glass-card mx-auto" style="max-width:900px">
+    <h2 class="h3 fw-bold">About ${escapeHtml(p.name)}</h2>
+    <p class="text-silver mb-0">${escapeHtml(p.description)} Explore the available ${escapeHtml(p.category.toLowerCase())} plan options above and use the WhatsApp ordering flow for current availability and support.</p>
    </div>
   </div>
  </section>
