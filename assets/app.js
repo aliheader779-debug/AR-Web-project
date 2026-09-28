@@ -201,10 +201,45 @@ const CUSTOMER_REVIEWS = [
 ];
 
 function reviewCard(url,i){
- return `<div class="col-12 col-md-6 col-lg-4"><div class="review-image-card glass-card p-2"><img src="${url}" alt="Customer Review ${i+1}" loading="lazy" decoding="async"></div></div>`;
+ return `<div class="review-slide"><div class="review-image-card glass-card p-2"><img src="${url}" alt="Customer Review ${i+1}" loading="lazy" decoding="async"></div></div>`;
 }
 
 function renderCustomerReviews(targetId,limit=6){
  const el=document.getElementById(targetId); if(!el)return;
- el.innerHTML=CUSTOMER_REVIEWS.slice(0,limit).map(reviewCard).join('');
+ const reviews=CUSTOMER_REVIEWS.slice(0,limit);
+ if(!reviews.length){el.innerHTML='';return;}
+ el.classList.add('reviews-carousel');
+ el.innerHTML=`<div class="reviews-track">${reviews.map(reviewCard).join('')}${reviews.map((url,i)=>reviewCard(url,i+reviews.length)).join('')}</div>`;
+ initReviewCarousel(el);
+}
+
+function initReviewCarousel(container){
+ if(container.dataset.carouselReady==='1')return;
+ const track=container.querySelector('.reviews-track');
+ if(!track)return;
+ container.dataset.carouselReady='1';
+ let paused=false, rafId=0, last=performance.now(), offset=0;
+ const speed=0.035;
+
+ function tick(now){
+  const delta=Math.min(50,now-last); last=now;
+  if(!paused){
+   offset+=speed*delta;
+   const half=track.scrollWidth/2;
+   if(offset>=half)offset-=half;
+   track.style.transform=`translate3d(-${offset}px,0,0)`;
+  }
+  rafId=requestAnimationFrame(tick);
+ }
+ function pause(){paused=true}
+ function resume(){paused=false;last=performance.now()}
+
+ container.addEventListener('pointerdown',pause,{passive:true});
+ window.addEventListener('pointerup',resume,{passive:true});
+ window.addEventListener('pointercancel',resume,{passive:true});
+ container.addEventListener('touchcancel',resume,{passive:true});
+ container.addEventListener('mouseleave',()=>{if(!paused)last=performance.now()});
+ track.addEventListener('dragstart',e=>e.preventDefault());
+ 
+ requestAnimationFrame(now=>{last=now;rafId=requestAnimationFrame(tick)});
 }
