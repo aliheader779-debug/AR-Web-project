@@ -57,3 +57,5 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
 .sticky-buy{position:sticky;top:105px}.small-label{font-size:.8rem;letter-spacing:1px;text-transform:uppercase;color:#aaa}
 @media(max-width:991px){.glass-header{border-radius:25px}.navbar-collapse{padding:15px 5px}.nav-link{margin:5px 0}.hero{padding-top:150px}}
 @media(max-width:575px){.glass-header{width:94%;padding:9px 15px}.hero h1{font-size:2.5rem}.floating-wa{width:55px;height:55px;right:18px;bottom:18px}.page-hero{padding-top:145px}}
+
+.review-image-card{padding:10px!important;overflow:hidden;border-radius:22px}.review-image-card img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;border-radius:16px;background:#fff}.review-image-card:hover{transform:translateY(-5px)}
