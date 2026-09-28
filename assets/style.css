@@ -196,3 +196,40 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
 @media(prefers-reduced-motion:reduce){
   .hero .text-gradient{animation:none;background-position:50% 50%}
 }
+
+/* Final headline + Gemini logo polish */
+.hero .text-gradient{
+  background:linear-gradient(100deg,#d9b8ff 0%,#b66cff 28%,#8a2be2 50%,#7b55ff 68%,#00dff5 100%);
+  background-size:200% 100%;
+  background-position:0% 50%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  animation:heroGradientSmooth 8s ease-in-out infinite alternate;
+}
+.hero-preview-icon.gemini{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  padding:3px;
+  background:linear-gradient(135deg,#fff,#f2efff);
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 0 12px rgba(138,43,226,.18);
+}
+.hero-preview-icon.gemini img{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fff!important;
+}
+@media(max-width:575px){
+  .hero-preview-icon.gemini{
+    width:28px;
+    height:28px;
+    padding:2px;
+  }
+}
