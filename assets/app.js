@@ -184,5 +184,27 @@ document.addEventListener('DOMContentLoaded',()=>{
  renderProductPage();
  if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6);
  if(document.getElementById('storeGrid')){renderProductGrid('storeGrid');initStoreFilters()}
+ if(document.getElementById('homeReviews'))renderCustomerReviews('homeReviews',6);
+ if(document.getElementById('reviewsGrid'))renderCustomerReviews('reviewsGrid',CUSTOMER_REVIEWS.length);
  document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',()=>{const n=document.getElementById('navbarNav');if(n?.classList.contains('show'))bootstrap.Collapse.getOrCreateInstance(n).hide()}));
 });
+
+
+const CUSTOMER_REVIEWS = [
+ "https://lh3.googleusercontent.com/d/1horq_9c3FyDohE7WmowEHSv5dbFYW4y9",
+ "https://lh3.googleusercontent.com/d/14iyJdk9aZbVwsZO64Xy_Ax_4q5TPlhIq",
+ "https://lh3.googleusercontent.com/d/1mLa7bIdkC5fXqBPLCijV09wBgMhA9KoX",
+ "https://lh3.googleusercontent.com/d/134vpoZXKyvxKaBSN_rp0KmUPTr0PXE39",
+ "https://lh3.googleusercontent.com/d/12F8_obd3odiTZo81zZVh44x06rvkuYXF",
+ "https://lh3.googleusercontent.com/d/1JA2dwhqgOQ3hs4r7O3ZNua8b2wFNpvhN",
+ "https://lh3.googleusercontent.com/d/1QVFqPhaedPPicVMzELgOB0AQ-sZBM0mq"
+];
+
+function reviewCard(url,i){
+ return `<div class="col-12 col-md-6 col-lg-4"><div class="review-image-card glass-card p-2"><img src="${url}" alt="Customer Review ${i+1}" loading="lazy" decoding="async"></div></div>`;
+}
+
+function renderCustomerReviews(targetId,limit=6){
+ const el=document.getElementById(targetId); if(!el)return;
+ el.innerHTML=CUSTOMER_REVIEWS.slice(0,limit).map(reviewCard).join('');
+}
