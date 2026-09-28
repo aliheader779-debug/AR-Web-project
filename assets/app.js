@@ -218,28 +218,57 @@ function initReviewCarousel(container){
  const track=container.querySelector('.reviews-track');
  if(!track)return;
  container.dataset.carouselReady='1';
- let paused=false, rafId=0, last=performance.now(), offset=0;
+ let paused=false, dragging=false, last=performance.now(), offset=0, dragX=0;
  const speed=0.035;
 
+ function normalize(){
+  const half=track.scrollWidth/2;
+  if(!half)return;
+  while(offset>=half)offset-=half;
+  while(offset<0)offset+=half;
+ }
+ function render(){track.style.transform=`translate3d(-${offset}px,0,0)`}
  function tick(now){
   const delta=Math.min(50,now-last); last=now;
-  if(!paused){
-   offset+=speed*delta;
-   const half=track.scrollWidth/2;
-   if(offset>=half)offset-=half;
-   track.style.transform=`translate3d(-${offset}px,0,0)`;
-  }
-  rafId=requestAnimationFrame(tick);
+  if(!paused && !dragging){offset+=speed*delta;normalize();render()}
+  requestAnimationFrame(tick);
  }
  function pause(){paused=true}
  function resume(){paused=false;last=performance.now()}
+ function onPointerDown(e){
+  dragging=true; paused=true; dragX=e.clientX; last=performance.now();
+  container.classList.add('is-dragging');
+  if(track.setPointerCapture)track.setPointerCapture(e.pointerId);
+ }
+ function onPointerMove(e){
+  if(!dragging)return;
+  const dx=e.clientX-dragX;
+  dragX=e.clientX;
+  offset-=dx;
+  normalize();
+  render();
+ }
+ function onPointerUp(e){
+  if(!dragging)return;
+  dragging=false;
+  container.classList.remove('is-dragging');
+  if(track.releasePointerCapture)try{track.releasePointerCapture(e.pointerId)}catch(_){}
+  resume();
+ }
 
- container.addEventListener('pointerdown',pause,{passive:true});
- window.addEventListener('pointerup',resume,{passive:true});
- window.addEventListener('pointercancel',resume,{passive:true});
- container.addEventListener('touchcancel',resume,{passive:true});
- container.addEventListener('mouseleave',()=>{if(!paused)last=performance.now()});
+ container.addEventListener('pointerdown',onPointerDown);
+ track.addEventListener('pointermove',onPointerMove);
+ track.addEventListener('pointerup',onPointerUp);
+ track.addEventListener('pointercancel',onPointerUp);
+ track.addEventListener('lostpointercapture',()=>{if(dragging){dragging=false;container.classList.remove('is-dragging');resume()}});
  track.addEventListener('dragstart',e=>e.preventDefault());
- 
- requestAnimationFrame(now=>{last=now;rafId=requestAnimationFrame(tick)});
+ container.addEventListener('pointerenter',()=>{if(!dragging)pause()});
+ container.addEventListener('pointerleave',()=>{if(!dragging)resume()});
+ container.addEventListener('wheel',e=>{
+  if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();offset+=e.deltaY*.7}else{offset+=e.deltaX}
+  normalize();render();pause();clearTimeout(container._wheelTimer);
+  container._wheelTimer=setTimeout(resume,500);
+ },{passive:false});
+
+ requestAnimationFrame(now=>{last=now;tick(now)});
 }
