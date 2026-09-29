@@ -190,8 +190,8 @@ function renderProductPage(){
    mobilePrice.textContent=pl.price;
    summary.textContent=pl.name+' • '+pl.price;
    const orderPlan=pl.name+' - '+pl.price;
-   primary.setAttribute('onclick','openOrder(\\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
-   mobileCta.setAttribute('onclick','openOrder(\\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
+   primary.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
+   mobileCta.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
   }
   planBtns.forEach(function(btn){btn.addEventListener('click',function(){selectGenericPlan(Number(btn.dataset.planIndex));});});
   selectGenericPlan(0);
