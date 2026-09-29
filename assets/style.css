@@ -391,3 +391,15 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
 /* All product pages — inline plan selection */
 .product-plan-selection-wrap{margin:0 0 18px}.product-plan-selection-card{padding:22px;border-radius:24px;margin:0}.product-plan-selection-card h2{margin-bottom:16px}.product-plan-selection-card .product-plan-card{padding:20px}.product-plan-selection-card .product-plan-price{font-size:1.75rem}.product-plan-selection-card .btn{padding:11px 14px;font-size:.82rem}.product-plan-selection-wrap .product-content-card{box-shadow:0 18px 45px rgba(0,0,0,.28)}
 @media(max-width:575px){.product-plan-selection-wrap{margin-bottom:16px}.product-plan-selection-card{padding:18px;border-radius:20px}.product-plan-selection-card .product-plan-card{padding:17px}.product-plan-selection-card .product-plan-price{font-size:1.6rem}}
+
+/* Compact plan selector — non-CapCut tools */
+.generic-plan-picker{padding:18px 0 0}
+.generic-plan-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.generic-plan-btn{min-height:52px;padding:10px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.035);color:#d9d9e1;display:flex;align-items:center;justify-content:center;gap:7px;transition:.25s;font-weight:600}
+.generic-plan-btn strong{font-size:.8rem}.generic-plan-btn span{font-size:.72rem;color:#a9aab4}
+.generic-plan-btn.active{background:linear-gradient(135deg,rgba(138,43,226,.34),rgba(0,229,255,.16));border-color:rgba(0,229,255,.45);box-shadow:0 0 18px rgba(0,229,255,.08);color:#fff}
+.generic-plan-btn.active span{color:#fff}
+.generic-plan-btn:hover{border-color:rgba(0,229,255,.32);color:#fff}
+.generic-plan-selected{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,.08)}
+.generic-plan-selected span{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;color:#777985}.generic-plan-selected strong{font-size:.72rem;color:#ddd}
+@media(max-width:575px){.generic-plan-picker{padding-top:14px}.generic-plan-options{gap:8px}.generic-plan-btn{min-height:48px;padding:9px 8px}.generic-plan-btn strong{font-size:.72rem}.generic-plan-btn span{font-size:.66rem}}
