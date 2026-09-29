@@ -162,6 +162,7 @@ function renderProductPage(){
   }
   planBtns.forEach(function(btn){btn.addEventListener('click',function(){selectGenericPlan(Number(btn.dataset.planIndex));});});
  }
+
  if(isCapCut){
   inlinePicker='<div class="capcut-plan-picker" id="capcutPlanPicker"><div class="small-label mb-2">Choose Duration</div><div class="capcut-duration-grid">'+
    ['7 Days','1 Month','2 Months'].map(function(d,i){return '<button type="button" class="capcut-duration-btn '+(i===0?'active':'')+'" data-duration="'+d+'">'+d+'</button>';}).join('')+
