@@ -157,7 +157,9 @@ function renderProductPage(){
  root.innerHTML='<section class="product-page-shell"><div class="container product-container">'+
  '<nav aria-label="Breadcrumb" class="product-breadcrumb"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>'+escapeHtml(p.name)+'</span></nav>'+
  '<div class="product-trust-strip"><div><i class="fa-solid fa-bolt"></i><strong>Instant Delivery</strong><small>Fast processing</small></div><div><i class="fa-solid fa-shield-halved"></i><strong>Trusted Support</strong><small>Help when needed</small></div><div><i class="fa-brands fa-whatsapp"></i><strong>WhatsApp Support</strong><small>Easy ordering</small></div></div>'+
- '<div class="product-main-grid"><div class="product-media-column"><div class="product-media-card"><div class="product-media-glow"></div><div class="product-media-inner"><img src="'+p.logo+'" alt="'+escapeHtml(p.name)+' logo" loading="eager"></div></div>'+(isCapCut?'<div class="capcut-plan-card">'+inlinePicker+'</div>':'')+'</div>'+
+ '<div class="product-main-grid"><div class="product-media-column"><div class="product-media-card"><div class="product-media-glow"></div><div class="product-media-inner"><img src="'+p.logo+'" alt="'+escapeHtml(p.name)+' logo" loading="eager"></div></div></div>'+
+ '<div class="product-info">'+
+ (isCapCut?'<div class="capcut-plan-card">'+inlinePicker+'</div>':'')+
  '<div class="product-info"><div class="small-label product-category">'+escapeHtml(p.category)+'</div><h1>'+escapeHtml(p.name)+'</h1>'+
  '<div class="product-rating-row"><span class="stars">★★★★★</span><strong>4.8 / 5</strong><span class="verified-chip"><i class="fa-solid fa-check"></i> Verified</span><span class="delivery-chip"><i class="fa-solid fa-bolt"></i> Instant Delivery</span></div>'+
  '<p class="product-short-description">'+escapeHtml(p.description)+'</p>'+
