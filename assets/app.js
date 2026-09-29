@@ -1,8 +1,11 @@
 
 const PRODUCTS = [
- {slug:'capcut',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'Premium video editing access for creators.',plans:[
-  {name:'7 Days',price:'Rs. 180',details:'Short-term access'},
-  {name:'1 Month',price:'Rs. 649',details:'Premium editing access'}
+ {slug:'capcut',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 199',description:'Premium video editing access for creators.',plans:[
+  {name:'7 Days',price:'Rs. 199',details:'2 Devices • Full Access',duration:'7d',devices:2},
+  {name:'1 Month',price:'Rs. 399',details:'Single Device Access',duration:'1m',devices:1},
+  {name:'1 Month',price:'Rs. 699',details:'2 Devices Access',duration:'1m',devices:2},
+  {name:'2 Months',price:'Price on request',details:'Single Device Access',duration:'2m',devices:1},
+  {name:'2 Months',price:'Price on request',details:'2 Devices Access',duration:'2m',devices:2}
  ],features:['Premium transitions','Cloud storage','Advanced filters & effects','Pro templates'],stock:'Available'},
  {slug:'gemini',logo:'https://drive.google.com/thumbnail?id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X&sz=w1000',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'Premium AI access for smarter work and creativity.',plans:[
   {name:'18 Months',price:'Rs. 999',details:'Active on your mail'}
@@ -113,10 +116,13 @@ function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
- document.title=`${p.name} | AR SERVICES`;
+ document.title=p.name+' | AR SERVICES';
  const meta=document.querySelector('meta[name="description"]');
- if(meta)meta.setAttribute('content',`Explore ${p.name} plans, features, pricing and ordering information from AR SERVICES. ${p.description}`);
- const priceValue=parseFloat(String(p.price).replace(/[^0-9.]/g,''))||0;
+ if(meta)meta.setAttribute('content','Explore '+p.name+' plans, features, pricing and ordering information from AR SERVICES. '+p.description);
+
+ const isCapCut=p.slug==='capcut';
+ const initial=p.plans[0]||{name:'Standard',price:p.price,details:'Premium access',devices:1};
+
  const existingSchema=document.getElementById('productSchema');
  if(existingSchema)existingSchema.remove();
  const schema=document.createElement('script');
@@ -124,81 +130,85 @@ function renderProductPage(){
  schema.textContent=JSON.stringify({
   "@context":"https://schema.org","@type":"Product","name":p.name,"description":p.description,
   "image":p.logo,"category":p.category,
-  "offers":{"@type":"Offer","priceCurrency":"PKR","price":priceValue.toFixed(2),
+  "offers":{"@type":"Offer","priceCurrency":"PKR","price":parseFloat(String(initial.price).replace(/[^0-9.]/g,''))||0,
    "availability":/in stock|available/i.test(p.stock)?"https://schema.org/InStock":"https://schema.org/LimitedAvailability",
-   "url":`https://arservicesdigital.store/product-${p.slug}.html`}
+   "url":"https://arservicesdigital.store/product-"+p.slug+".html"}
  });
  document.head.appendChild(schema);
 
- const featuredPlan=p.plans[0]||{name:'Standard',price:p.price,details:'Premium access'};
- const planCards=p.plans.map((pl,i)=>`
-   <div class="col-12 col-md-6 col-lg-5">
-    <div class="product-plan-card ${i===0&&p.plans.length>1?'featured':''}">
-     ${i===0&&p.plans.length>1?'<span class="product-plan-badge">Recommended</span>':''}
-     <div class="small-label">${escapeHtml(pl.name)}</div>
-     <div class="product-plan-price">${escapeHtml(pl.price)}</div>
-     <p class="text-silver mb-3">${escapeHtml(pl.details)}</p>
-     <button class="btn btn-gradient w-100" onclick="openOrder('${escapeHtml(p.name)}','${escapeHtml(pl.name)} - ${escapeHtml(pl.price)}')">Select Plan <i class="fa-solid fa-arrow-right ms-1"></i></button>
-    </div>
-   </div>`).join('');
-
- const included=p.features.map(f=>`<li><span class="product-check"><i class="fa-solid fa-check"></i></span><span>${escapeHtml(f)}</span></li>`).join('');
+ const included=p.features.map(f=>'<li><span class="product-check"><i class="fa-solid fa-check"></i></span><span>'+escapeHtml(f)+'</span></li>').join('');
  const related=PRODUCTS.filter(x=>x.slug!==p.slug && x.category===p.category).slice(0,4);
  const fallbackRelated=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,4);
- const relatedProducts=(related.length?related:fallbackRelated).map(x=>`
-   <a class="product-related-card" href="product-${x.slug}.html">
-    <div class="product-related-image"><img src="${x.logo}" alt="${escapeHtml(x.name)} logo" loading="lazy"></div>
-    <div class="small-label">${escapeHtml(x.category)}</div>
-    <strong>${escapeHtml(x.name)}</strong>
-    <span>${escapeHtml(x.price)}</span>
-   </a>`).join('');
+ const relatedProducts=(related.length?related:fallbackRelated).map(x=>'<a class="product-related-card" href="product-'+x.slug+'.html"><div class="product-related-image"><img src="'+x.logo+'" alt="'+escapeHtml(x.name)+' logo" loading="lazy"></div><div class="small-label">'+escapeHtml(x.category)+'</div><strong>'+escapeHtml(x.name)+'</strong><span>'+escapeHtml(x.price)+'</span></a>').join('');
 
- root.innerHTML=`
- <section class="product-page-shell">
-  <div class="container product-container">
-   <nav aria-label="Breadcrumb" class="product-breadcrumb"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></nav>
-   <div class="product-trust-strip">
-    <div><i class="fa-solid fa-bolt"></i><strong>Instant Delivery</strong><small>Fast processing</small></div>
-    <div><i class="fa-solid fa-shield-halved"></i><strong>Trusted Support</strong><small>Help when needed</small></div>
-    <div><i class="fa-brands fa-whatsapp"></i><strong>WhatsApp Support</strong><small>Easy ordering</small></div>
-   </div>
-   <div class="product-main-grid">
-    <div class="product-media-card"><div class="product-media-glow"></div><div class="product-media-inner"><img src="${p.logo}" alt="${escapeHtml(p.name)} logo" loading="eager"></div></div>
-    <div class="product-info">
-      <div class="small-label product-category">${escapeHtml(p.category)}</div>
-      <h1>${escapeHtml(p.name)}</h1>
-      <div class="product-rating-row"><span class="stars">★★★★★</span><strong>4.8 / 5</strong><span class="verified-chip"><i class="fa-solid fa-check"></i> Verified</span><span class="delivery-chip"><i class="fa-solid fa-bolt"></i> Instant Delivery</span></div>
-      <p class="product-short-description">${escapeHtml(p.description)}</p>
-      <div class="product-price-card">
-       <div><span class="small-label">TOTAL AMOUNT</span><div class="product-price">${escapeHtml(p.price)}</div></div>
-       <div class="product-stock"><span class="stock-dot"></span>${escapeHtml(p.stock)}</div>
-       <button class="btn btn-gradient product-primary-cta" onclick="openOrder('${escapeHtml(p.name)}','${escapeHtml(featuredPlan.name)} - ${escapeHtml(featuredPlan.price)}')">Proceed to Payment <i class="fa-solid fa-arrow-right"></i></button>
-       <div class="product-security-note"><i class="fa-solid fa-shield-halved"></i> Secure checkout · Simple activation process</div>
-       <button class="product-whatsapp-cta" onclick="openOrder('${escapeHtml(p.name)}')"><i class="fa-brands fa-whatsapp"></i> Questions before buying? Ask us on WhatsApp</button>
-      </div>
-    </div>
-   </div>
-   <div class="product-content-stack">
-    <section class="product-content-card"><h2>Product Description</h2><p>${escapeHtml(p.description)}</p><p>${escapeHtml(p.name)} is available through AR SERVICES with a simple ordering flow and support for product-related questions. Review the plan options below and choose the one that matches your requirements.</p></section>
-    <section class="product-content-card"><h2>What's Included</h2><ul class="product-included-list">${included}</ul></section>
-    <section class="product-content-card"><h2>Choose Your Plan</h2><div class="row g-4 justify-content-center">${planCards}</div></section>
-    <section class="product-content-card"><h2>How It Works</h2><div class="product-steps">
-      <div><span>1</span><div><strong>Choose your plan</strong><p>Select the option that fits your needs.</p></div></div>
-      <div><span>2</span><div><strong>Place your order</strong><p>Continue with your product and contact details.</p></div></div>
-      <div><span>3</span><div><strong>Payment verification</strong><p>Complete the payment process and verification.</p></div></div>
-      <div><span>4</span><div><strong>Receive access</strong><p>Get the agreed subscription/access details through the delivery process.</p></div></div>
-    </div></section>
-    <section class="product-content-card product-why-card"><h2>Why Choose <span class="text-gradient">AR SERVICES?</span></h2><div class="product-assurance-grid">
-      <div><i class="fa-solid fa-bolt"></i><strong>Simple Ordering</strong><p>Clear product pages and a straightforward ordering flow.</p></div>
-      <div><i class="fa-solid fa-shield-halved"></i><strong>Clear Information</strong><p>Plans, pricing and included details are shown before ordering.</p></div>
-      <div><i class="fa-solid fa-headset"></i><strong>Support</strong><p>WhatsApp support for product and order questions.</p></div>
-    </div></section>
-    <section class="product-content-card"><div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4"><div><h2 class="mb-1">More Premium Tools</h2><p class="text-silver mb-0">Explore more products from AR SERVICES.</p></div><a class="btn btn-outline-glass" href="tools.html">View All Tools</a></div><div class="product-related-grid">${relatedProducts}</div></section>
-   </div>
-  </div>
- </section>
- <div class="product-mobile-buybar"><div><small>${escapeHtml(p.name)}</small><strong>${escapeHtml(p.price)}</strong></div><button class="btn btn-gradient" onclick="openOrder('${escapeHtml(p.name)}','${escapeHtml(featuredPlan.name)} - ${escapeHtml(featuredPlan.price)}')">Buy Now <i class="fa-solid fa-arrow-right ms-1"></i></button></div>
- `;
+ let inlinePicker='';
+ if(isCapCut){
+  inlinePicker='<div class="capcut-plan-picker" id="capcutPlanPicker"><div class="small-label mb-2">Choose Duration</div><div class="capcut-duration-grid">'+
+   ['7 Days','1 Month','2 Months'].map(function(d,i){return '<button type="button" class="capcut-duration-btn '+(i===0?'active':'')+'" data-duration="'+d+'">'+d+'</button>';}).join('')+
+   '</div><div class="small-label mt-4 mb-2">Device Access</div><div class="capcut-device-grid" id="capcutDeviceOptions"></div>'+
+   '<div class="capcut-plan-summary"><div><span class="small-label">Selected Plan</span><strong id="capcutSelectedPlan">'+escapeHtml(initial.name)+' • '+escapeHtml(initial.details)+'</strong></div><div class="capcut-selected-price" id="capcutSelectedPrice">'+escapeHtml(initial.price)+'</div></div></div>';
+ }else{
+  const cards=p.plans.map(function(pl,i){return '<div class="col-12 col-md-6 col-lg-5"><div class="product-plan-card '+(i===0&&p.plans.length>1?'featured':'')+'">'+(i===0&&p.plans.length>1?'<span class="product-plan-badge">Recommended</span>':'')+'<div class="small-label">'+escapeHtml(pl.name)+'</div><div class="product-plan-price">'+escapeHtml(pl.price)+'</div><p class="text-silver mb-3">'+escapeHtml(pl.details)+'</p><button class="btn btn-gradient w-100" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(pl.name)+' - '+escapeHtml(pl.price)+'\')">Select Plan <i class="fa-solid fa-arrow-right ms-1"></i></button></div></div>';}).join('');
+  inlinePicker='<section class="product-content-card"><h2>Choose Your Plan</h2><div class="row g-4 justify-content-center">'+cards+'</div></section>';
+ }
+
+ const initOrder=escapeHtml(initial.name)+' - '+escapeHtml(initial.details)+' - '+escapeHtml(initial.price);
+
+ root.innerHTML='<section class="product-page-shell"><div class="container product-container">'+
+ '<nav aria-label="Breadcrumb" class="product-breadcrumb"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>'+escapeHtml(p.name)+'</span></nav>'+
+ '<div class="product-trust-strip"><div><i class="fa-solid fa-bolt"></i><strong>Instant Delivery</strong><small>Fast processing</small></div><div><i class="fa-solid fa-shield-halved"></i><strong>Trusted Support</strong><small>Help when needed</small></div><div><i class="fa-brands fa-whatsapp"></i><strong>WhatsApp Support</strong><small>Easy ordering</small></div></div>'+
+ '<div class="product-main-grid"><div class="product-media-card"><div class="product-media-glow"></div><div class="product-media-inner"><img src="'+p.logo+'" alt="'+escapeHtml(p.name)+' logo" loading="eager"></div>'+(isCapCut?inlinePicker:'')+'</div>'+
+ '<div class="product-info"><div class="small-label product-category">'+escapeHtml(p.category)+'</div><h1>'+escapeHtml(p.name)+'</h1>'+
+ '<div class="product-rating-row"><span class="stars">★★★★★</span><strong>4.8 / 5</strong><span class="verified-chip"><i class="fa-solid fa-check"></i> Verified</span><span class="delivery-chip"><i class="fa-solid fa-bolt"></i> Instant Delivery</span></div>'+
+ '<p class="product-short-description">'+escapeHtml(p.description)+'</p>'+
+ '<div class="product-price-card"><div><span class="small-label">TOTAL AMOUNT</span><div class="product-price" id="productTotalPrice">'+escapeHtml(initial.price)+'</div></div><div class="product-stock"><span class="stock-dot"></span>'+escapeHtml(p.stock)+'</div>'+
+ '<button class="btn btn-gradient product-primary-cta" id="productPrimaryCta" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+initOrder+'\')">Proceed to Payment <i class="fa-solid fa-arrow-right"></i></button>'+
+ '<div class="product-security-note"><i class="fa-solid fa-shield-halved"></i> Secure checkout · Simple activation process</div>'+
+ '<button class="product-whatsapp-cta" onclick="openOrder(\''+escapeHtml(p.name)+'\')"><i class="fa-brands fa-whatsapp"></i> Questions before buying? Ask us on WhatsApp</button></div></div></div>'+
+ '<div class="product-content-stack"><section class="product-content-card"><h2>Product Description</h2><p>'+escapeHtml(p.description)+'</p><p>'+escapeHtml(p.name)+' is available through AR SERVICES with a simple ordering flow and support for product-related questions. Review the plan options and choose the one that matches your requirements.</p></section>'+
+ '<section class="product-content-card"><h2>What\'s Included</h2><ul class="product-included-list">'+included+'</ul></section>'+
+ (isCapCut?'':' '+inlinePicker)+
+ '<section class="product-content-card"><h2>How It Works</h2><div class="product-steps"><div><span>1</span><div><strong>Choose your plan</strong><p>Select the option that fits your needs.</p></div></div><div><span>2</span><div><strong>Place your order</strong><p>Continue with your product and contact details.</p></div></div><div><span>3</span><div><strong>Payment verification</strong><p>Complete the payment process and verification.</p></div></div><div><span>4</span><div><strong>Receive access</strong><p>Get the agreed subscription/access details through the delivery process.</p></div></div></div></section>'+
+ '<section class="product-content-card product-why-card"><h2>Why Choose <span class="text-gradient">AR SERVICES?</span></h2><div class="product-assurance-grid"><div><i class="fa-solid fa-bolt"></i><strong>Simple Ordering</strong><p>Clear product pages and a straightforward ordering flow.</p></div><div><i class="fa-solid fa-shield-halved"></i><strong>Clear Information</strong><p>Plans, pricing and included details are shown before ordering.</p></div><div><i class="fa-solid fa-headset"></i><strong>Support</strong><p>WhatsApp support for product and order questions.</p></div></div></section>'+
+ '<section class="product-content-card"><div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4"><div><h2 class="mb-1">More Premium Tools</h2><p class="text-silver mb-0">Explore more products from AR SERVICES.</p></div><a class="btn btn-outline-glass" href="tools.html">View All Tools</a></div><div class="product-related-grid">'+relatedProducts+'</div></section></div></div></section>'+
+ '<div class="product-mobile-buybar"><div><small>'+escapeHtml(p.name)+'</small><strong id="mobileProductPrice">'+escapeHtml(initial.price)+'</strong></div><button class="btn btn-gradient" id="mobileBuyCta" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+initOrder+'\')">Buy Now <i class="fa-solid fa-arrow-right ms-1"></i></button></div>';
+
+ if(isCapCut){
+  const picker=document.getElementById('capcutPlanPicker');
+  const durationBtns=[...picker.querySelectorAll('.capcut-duration-btn')];
+  const deviceEl=document.getElementById('capcutDeviceOptions');
+  const totalPrice=document.getElementById('productTotalPrice');
+  const mobilePrice=document.getElementById('mobileProductPrice');
+  const summaryPlan=document.getElementById('capcutSelectedPlan');
+  const summaryPrice=document.getElementById('capcutSelectedPrice');
+  const primary=document.getElementById('productPrimaryCta');
+  const mobileCta=document.getElementById('mobileBuyCta');
+  let activeDuration='7 Days', activePlan=p.plans[0];
+
+  function getPlans(duration){return p.plans.filter(function(pl){return pl.name===duration;});}
+  function renderDevices(){
+   const plans=getPlans(activeDuration);
+   deviceEl.innerHTML=plans.map(function(pl){
+    const idx=p.plans.indexOf(pl);
+    return '<button type="button" class="capcut-device-btn '+(activePlan===pl?'active':'')+'" data-plan-index="'+idx+'"><span class="capcut-device-check"><i class="fa-solid fa-check"></i></span><span><strong>'+escapeHtml(pl.details)+'</strong><small>'+escapeHtml(pl.price)+'</small></span></button>';
+   }).join('');
+   deviceEl.querySelectorAll('.capcut-device-btn').forEach(function(btn){btn.addEventListener('click',function(){activePlan=p.plans[Number(btn.dataset.planIndex)];renderDevices();syncSelection();});});
+  }
+  function syncSelection(){
+   durationBtns.forEach(function(b){b.classList.toggle('active',b.dataset.duration===activeDuration);});
+   const knownPrice=/^Rs\.\\s*\\d/i.test(activePlan.price);
+   totalPrice.textContent=activePlan.price; mobilePrice.textContent=activePlan.price;
+   summaryPlan.textContent=activePlan.name+' • '+activePlan.details; summaryPrice.textContent=activePlan.price;
+   const orderPlan=activePlan.name+' - '+activePlan.details+' - '+activePlan.price;
+   primary.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
+   mobileCta.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
+   primary.disabled=!knownPrice; mobileCta.disabled=!knownPrice;
+   primary.innerHTML=knownPrice?'Proceed to Payment <i class="fa-solid fa-arrow-right"></i>':'Price on Request';
+   primary.title=knownPrice?'':'Contact us on WhatsApp for the 2 Months price.';
+  }
+  durationBtns.forEach(function(btn){btn.addEventListener('click',function(){activeDuration=btn.dataset.duration;activePlan=getPlans(activeDuration)[0];renderDevices();syncSelection();});});
+  renderDevices(); syncSelection();
+ }
 }
 document.addEventListener('DOMContentLoaded',()=>{
  if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'});
