@@ -142,14 +142,35 @@ function renderProductPage(){
  const relatedProducts=(related.length?related:fallbackRelated).map(x=>'<a class="product-related-card" href="product-'+x.slug+'.html"><div class="product-related-image"><img src="'+x.logo+'" alt="'+escapeHtml(x.name)+' logo" loading="lazy"></div><div class="small-label">'+escapeHtml(x.category)+'</div><strong>'+escapeHtml(x.name)+'</strong><span>'+escapeHtml(x.price)+'</span></a>').join('');
 
  let inlinePicker='';
+ if(!isCapCut){
+  const picker=document.getElementById('genericPlanPicker');
+  const planBtns=[...picker.querySelectorAll('.generic-plan-btn')];
+  const totalPrice=document.getElementById('productTotalPrice');
+  const mobilePrice=document.getElementById('mobileProductPrice');
+  const summary=document.getElementById('genericSelectedPlan');
+  const primary=document.getElementById('productPrimaryCta');
+  const mobileCta=document.getElementById('mobileBuyCta');
+  function selectGenericPlan(index){
+   const pl=p.plans[index];
+   planBtns.forEach(function(btn,i){btn.classList.toggle('active',i===index);});
+   totalPrice.textContent=pl.price;
+   mobilePrice.textContent=pl.price;
+   summary.textContent=pl.name+' • '+pl.price;
+   const orderPlan=pl.name+' - '+pl.price;
+   primary.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
+   mobileCta.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
+  }
+  planBtns.forEach(function(btn){btn.addEventListener('click',function(){selectGenericPlan(Number(btn.dataset.planIndex));});});
+ }
  if(isCapCut){
   inlinePicker='<div class="capcut-plan-picker" id="capcutPlanPicker"><div class="small-label mb-2">Choose Duration</div><div class="capcut-duration-grid">'+
    ['7 Days','1 Month','2 Months'].map(function(d,i){return '<button type="button" class="capcut-duration-btn '+(i===0?'active':'')+'" data-duration="'+d+'">'+d+'</button>';}).join('')+
    '</div><div class="small-label mt-4 mb-2">Device Access</div><div class="capcut-device-grid" id="capcutDeviceOptions"></div>'+
    '<div class="capcut-plan-summary"><div><span class="small-label">Selected Plan</span><strong id="capcutSelectedPlan">'+escapeHtml(initial.name)+' • '+escapeHtml(initial.details)+'</strong></div><div class="capcut-selected-price" id="capcutSelectedPrice">'+escapeHtml(initial.price)+'</div></div></div>';
  }else{
-  const cards=p.plans.map(function(pl,i){return '<div class="col-12 col-md-6 col-lg-5"><div class="product-plan-card '+(i===0&&p.plans.length>1?'featured':'')+'">'+(i===0&&p.plans.length>1?'<span class="product-plan-badge">Recommended</span>':'')+'<div class="small-label">'+escapeHtml(pl.name)+'</div><div class="product-plan-price">'+escapeHtml(pl.price)+'</div><p class="text-silver mb-3">'+escapeHtml(pl.details)+'</p><button class="btn btn-gradient w-100" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(pl.name)+' - '+escapeHtml(pl.price)+'\')">Select Plan <i class="fa-solid fa-arrow-right ms-1"></i></button></div></div>';}).join('');
-  inlinePicker='<section class="product-content-card product-plan-selection-card"><h2>Choose Your Plan</h2><div class="row g-3 justify-content-center">'+cards+'</div></section>';
+  inlinePicker='<div class="generic-plan-picker" id="genericPlanPicker"><div class="small-label mb-2">Choose Your Plan</div><div class="generic-plan-options">'+
+   p.plans.map(function(pl,i){return '<button type="button" class="generic-plan-btn '+(i===0?'active':'')+'" data-plan-index="'+i+'"><strong>'+escapeHtml(pl.name)+'</strong><span>'+escapeHtml(pl.price)+'</span></button>';}).join('')+
+   '</div><div class="generic-plan-selected"><span>Selected</span><strong id="genericSelectedPlan">'+escapeHtml(initial.name)+' • '+escapeHtml(initial.price)+'</strong></div></div>';
  }
 
  const initOrder=escapeHtml(initial.name)+' - '+escapeHtml(initial.details)+' - '+escapeHtml(initial.price);
