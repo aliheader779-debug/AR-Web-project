@@ -1,11 +1,8 @@
 
 const PRODUCTS = [
- {slug:'capcut',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 199',description:'Premium video editing access for creators.',plans:[
-  {name:'7 Days',price:'Rs. 199',details:'2 Devices • Full Access',duration:'7d',devices:2},
-  {name:'1 Month',price:'Rs. 399',details:'Single Device Access',duration:'1m',devices:1},
-  {name:'1 Month',price:'Rs. 699',details:'2 Devices Access',duration:'1m',devices:2},
-  {name:'2 Months',price:'Price on request',details:'Single Device Access',duration:'2m',devices:1},
-  {name:'2 Months',price:'Price on request',details:'2 Devices Access',duration:'2m',devices:2}
+ {slug:'capcut',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'Premium video editing access for creators.',plans:[
+  {name:'7 Days',price:'Rs. 180',details:'Short-term access'},
+  {name:'1 Month',price:'Rs. 649',details:'Premium editing access'}
  ],features:['Premium transitions','Cloud storage','Advanced filters & effects','Pro templates'],stock:'Available'},
  {slug:'gemini',logo:'https://drive.google.com/thumbnail?id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X&sz=w1000',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'Premium AI access for smarter work and creativity.',plans:[
   {name:'18 Months',price:'Rs. 999',details:'Active on your mail'}
@@ -116,123 +113,104 @@ function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
- document.title=p.name+' | AR SERVICES';
+ document.title=`${p.name} | AR SERVICES`;
  const meta=document.querySelector('meta[name="description"]');
- if(meta)meta.setAttribute('content','Explore '+p.name+' plans, features, pricing and ordering information from AR SERVICES. '+p.description);
-
- const isCapCut=p.slug==='capcut';
- const initial=p.plans[0]||{name:'Standard',price:p.price,details:'Premium access',devices:1};
-
+ if(meta)meta.setAttribute('content',`Explore ${p.name} plans, features, pricing and ordering information from AR SERVICES. ${p.description}`);
+ const priceValue=parseFloat(String(p.price).replace(/[^0-9.]/g,''))||0;
  const existingSchema=document.getElementById('productSchema');
  if(existingSchema)existingSchema.remove();
  const schema=document.createElement('script');
- schema.id='productSchema'; schema.type='application/ld+json';
+ schema.id='productSchema';
+ schema.type='application/ld+json';
  schema.textContent=JSON.stringify({
-  "@context":"https://schema.org","@type":"Product","name":p.name,"description":p.description,
-  "image":p.logo,"category":p.category,
-  "offers":{"@type":"Offer","priceCurrency":"PKR","price":parseFloat(String(initial.price).replace(/[^0-9.]/g,''))||0,
+  "@context":"https://schema.org",
+  "@type":"Product",
+  "name":p.name,
+  "description":p.description,
+  "image":p.logo,
+  "category":p.category,
+  "offers":{
+   "@type":"Offer",
+   "priceCurrency":"PKR",
+   "price":priceValue.toFixed(2),
    "availability":/in stock|available/i.test(p.stock)?"https://schema.org/InStock":"https://schema.org/LimitedAvailability",
-   "url":"https://arservicesdigital.store/product-"+p.slug+".html"}
+   "url":`https://arservicesdigital.store/product-${p.slug}.html`
+  }
  });
  document.head.appendChild(schema);
-
- const included=p.features.map(f=>'<li><span class="product-check"><i class="fa-solid fa-check"></i></span><span>'+escapeHtml(f)+'</span></li>').join('');
- const related=PRODUCTS.filter(x=>x.slug!==p.slug && x.category===p.category).slice(0,4);
- const fallbackRelated=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,4);
- const relatedProducts=(related.length?related:fallbackRelated).map(x=>'<a class="product-related-card" href="product-'+x.slug+'.html"><div class="product-related-image"><img src="'+x.logo+'" alt="'+escapeHtml(x.name)+' logo" loading="lazy"></div><div class="small-label">'+escapeHtml(x.category)+'</div><strong>'+escapeHtml(x.name)+'</strong><span>'+escapeHtml(x.price)+'</span></a>').join('');
-
- let inlinePicker='';
-
- if(isCapCut){
-  inlinePicker='<div class="capcut-plan-picker" id="capcutPlanPicker"><div class="small-label mb-2">Choose Duration</div><div class="capcut-duration-grid">'+
-   ['7 Days','1 Month','2 Months'].map(function(d,i){return '<button type="button" class="capcut-duration-btn '+(i===0?'active':'')+'" data-duration="'+d+'">'+d+'</button>';}).join('')+
-   '</div><div class="small-label mt-4 mb-2">Device Access</div><div class="capcut-device-grid" id="capcutDeviceOptions"></div>'+
-   '<div class="capcut-plan-summary"><div><span class="small-label">Selected Plan</span><strong id="capcutSelectedPlan">'+escapeHtml(initial.name)+' • '+escapeHtml(initial.details)+'</strong></div><div class="capcut-selected-price" id="capcutSelectedPrice">'+escapeHtml(initial.price)+'</div></div></div>';
- }else{
-  inlinePicker='<div class="generic-plan-picker" id="genericPlanPicker"><div class="small-label mb-2">Choose Your Plan</div><div class="generic-plan-options">'+
-   p.plans.map(function(pl,i){return '<button type="button" class="generic-plan-btn '+(i===0?'active':'')+'" data-plan-index="'+i+'"><strong>'+escapeHtml(pl.name)+'</strong><span>'+escapeHtml(pl.price)+'</span></button>';}).join('')+
-   '</div><div class="generic-plan-selected"><span>Selected</span><strong id="genericSelectedPlan">'+escapeHtml(initial.name)+' • '+escapeHtml(initial.price)+'</strong></div></div>';
- }
-
- const initOrder=escapeHtml(initial.name)+' - '+escapeHtml(initial.details)+' - '+escapeHtml(initial.price);
-
- root.innerHTML='<section class="product-page-shell"><div class="container product-container">'+
- '<nav aria-label="Breadcrumb" class="product-breadcrumb"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>'+escapeHtml(p.name)+'</span></nav>'+
- '<div class="product-trust-strip"><div><i class="fa-solid fa-bolt"></i><strong>Instant Delivery</strong><small>Fast processing</small></div><div><i class="fa-solid fa-shield-halved"></i><strong>Trusted Support</strong><small>Help when needed</small></div><div><i class="fa-brands fa-whatsapp"></i><strong>WhatsApp Support</strong><small>Easy ordering</small></div></div>'+
- '<div class="product-main-grid"><div class="product-media-column"><div class="product-media-card"><div class="product-media-glow"></div><div class="product-media-inner"><img src="'+p.logo+'" alt="'+escapeHtml(p.name)+' logo" loading="eager"></div></div></div>'+
- '<div class="product-info"><div class="small-label product-category">'+escapeHtml(p.category)+'</div><h1>'+escapeHtml(p.name)+'</h1>'+
- '<div class="product-rating-row"><span class="stars">★★★★★</span><strong>4.8 / 5</strong><span class="verified-chip"><i class="fa-solid fa-check"></i> Verified</span><span class="delivery-chip"><i class="fa-solid fa-bolt"></i> Instant Delivery</span></div>'+
- '<p class="product-short-description">'+escapeHtml(p.description)+'</p>'+
- '<div class="product-plan-selection-wrap">'+inlinePicker+'</div>'+
- '<div class="product-price-card"><div><span class="small-label">TOTAL AMOUNT</span><div class="product-price" id="productTotalPrice">'+escapeHtml(initial.price)+'</div></div><div class="product-stock"><span class="stock-dot"></span>'+escapeHtml(p.stock)+'</div>'+
- '<button class="btn btn-gradient product-primary-cta" id="productPrimaryCta" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+initOrder+'\')">Proceed to Payment <i class="fa-solid fa-arrow-right"></i></button>'+
- '<div class="product-security-note"><i class="fa-solid fa-shield-halved"></i> Secure checkout · Simple activation process</div>'+
- '<button class="product-whatsapp-cta" onclick="openOrder(\''+escapeHtml(p.name)+'\')"><i class="fa-brands fa-whatsapp"></i> Questions before buying? Ask us on WhatsApp</button></div></div></div>'+
- '<div class="product-content-stack"><section class="product-content-card"><h2>Product Description</h2><p>'+escapeHtml(p.description)+'</p><p>'+escapeHtml(p.name)+' is available through AR SERVICES with a simple ordering flow and support for product-related questions. Review the plan options and choose the one that matches your requirements.</p></section>'+
- '<section class="product-content-card"><h2>What\'s Included</h2><ul class="product-included-list">'+included+'</ul></section>'+
- '<section class="product-content-card"><h2>How It Works</h2><div class="product-steps"><div><span>1</span><div><strong>Choose your plan</strong><p>Select the option that fits your needs.</p></div></div><div><span>2</span><div><strong>Place your order</strong><p>Continue with your product and contact details.</p></div></div><div><span>3</span><div><strong>Payment verification</strong><p>Complete the payment process and verification.</p></div></div><div><span>4</span><div><strong>Receive access</strong><p>Get the agreed subscription/access details through the delivery process.</p></div></div></div></section>'+
- '<section class="product-content-card product-why-card"><h2>Why Choose <span class="text-gradient">AR SERVICES?</span></h2><div class="product-assurance-grid"><div><i class="fa-solid fa-bolt"></i><strong>Simple Ordering</strong><p>Clear product pages and a straightforward ordering flow.</p></div><div><i class="fa-solid fa-shield-halved"></i><strong>Clear Information</strong><p>Plans, pricing and included details are shown before ordering.</p></div><div><i class="fa-solid fa-headset"></i><strong>Support</strong><p>WhatsApp support for product and order questions.</p></div></div></section>'+
- '<section class="product-content-card"><div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4"><div><h2 class="mb-1">More Premium Tools</h2><p class="text-silver mb-0">Explore more products from AR SERVICES.</p></div><a class="btn btn-outline-glass" href="tools.html">View All Tools</a></div><div class="product-related-grid">'+relatedProducts+'</div></section></div></div></section>'+
- '<div class="product-mobile-buybar"><div><small>'+escapeHtml(p.name)+'</small><strong id="mobileProductPrice">'+escapeHtml(initial.price)+'</strong></div><button class="btn btn-gradient" id="mobileBuyCta" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+initOrder+'\')">Buy Now <i class="fa-solid fa-arrow-right ms-1"></i></button></div>';
-
- if(!isCapCut){
-  const picker=document.getElementById('genericPlanPicker');
-  const planBtns=[...picker.querySelectorAll('.generic-plan-btn')];
-  const totalPrice=document.getElementById('productTotalPrice');
-  const mobilePrice=document.getElementById('mobileProductPrice');
-  const summary=document.getElementById('genericSelectedPlan');
-  const primary=document.getElementById('productPrimaryCta');
-  const mobileCta=document.getElementById('mobileBuyCta');
-  function selectGenericPlan(index){
-   const pl=p.plans[index];
-   planBtns.forEach(function(btn,i){btn.classList.toggle('active',i===index);});
-   totalPrice.textContent=pl.price;
-   mobilePrice.textContent=pl.price;
-   summary.textContent=pl.name+' • '+pl.price;
-   const orderPlan=pl.name+' - '+pl.price;
-   primary.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
-   mobileCta.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
-  }
-  planBtns.forEach(function(btn){btn.addEventListener('click',function(){selectGenericPlan(Number(btn.dataset.planIndex));});});
-  selectGenericPlan(0);
- }
-
- if(isCapCut){
-  const picker=document.getElementById('capcutPlanPicker');
-  const durationBtns=[...picker.querySelectorAll('.capcut-duration-btn')];
-  const deviceEl=document.getElementById('capcutDeviceOptions');
-  const totalPrice=document.getElementById('productTotalPrice');
-  const mobilePrice=document.getElementById('mobileProductPrice');
-  const summaryPlan=document.getElementById('capcutSelectedPlan');
-  const summaryPrice=document.getElementById('capcutSelectedPrice');
-  const primary=document.getElementById('productPrimaryCta');
-  const mobileCta=document.getElementById('mobileBuyCta');
-  let activeDuration='7 Days', activePlan=p.plans[0];
-
-  function getPlans(duration){return p.plans.filter(function(pl){return pl.name===duration;});}
-  function renderDevices(){
-   const plans=getPlans(activeDuration);
-   deviceEl.innerHTML=plans.map(function(pl){
-    const idx=p.plans.indexOf(pl);
-    return '<button type="button" class="capcut-device-btn '+(activePlan===pl?'active':'')+'" data-plan-index="'+idx+'"><span class="capcut-device-check"><i class="fa-solid fa-check"></i></span><span><strong>'+escapeHtml(pl.details)+'</strong><small>'+escapeHtml(pl.price)+'</small></span></button>';
-   }).join('');
-   deviceEl.querySelectorAll('.capcut-device-btn').forEach(function(btn){btn.addEventListener('click',function(){activePlan=p.plans[Number(btn.dataset.planIndex)];renderDevices();syncSelection();});});
-  }
-  function syncSelection(){
-   durationBtns.forEach(function(b){b.classList.toggle('active',b.dataset.duration===activeDuration);});
-   const knownPrice=/^Rs\.\s*\d/i.test(activePlan.price);
-   totalPrice.textContent=activePlan.price; mobilePrice.textContent=activePlan.price;
-   summaryPlan.textContent=activePlan.name+' • '+activePlan.details; summaryPrice.textContent=activePlan.price;
-   const orderPlan=activePlan.name+' - '+activePlan.details+' - '+activePlan.price;
-   primary.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
-   mobileCta.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
-   primary.disabled=!knownPrice; mobileCta.disabled=!knownPrice;
-   primary.innerHTML=knownPrice?'Proceed to Payment <i class="fa-solid fa-arrow-right"></i>':'Price on Request';
-   primary.title=knownPrice?'':'Contact us on WhatsApp for the 2 Months price.';
-  }
-  durationBtns.forEach(function(btn){btn.addEventListener('click',function(){activeDuration=btn.dataset.duration;activePlan=getPlans(activeDuration)[0];renderDevices();syncSelection();});});
-  renderDevices(); syncSelection();
- }
+ root.innerHTML=`
+ <section class="page-hero">
+  <div class="container">
+   <nav aria-label="Breadcrumb" class="mb-3"><a href="index.html">Home</a><span class="mx-2 text-silver">/</span><a href="tools.html">Tools</a><span class="mx-2 text-silver">/</span><span class="text-silver">${escapeHtml(p.name)}</span></nav>
+   <div class="product-icon-wrap product-detail-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
+   <div class="small-label">${p.category}</div>
+   <h1 class="mt-2">${p.name}</h1>
+   <p class="lead text-silver mx-auto" style="max-width:720px">${p.description}</p>
+   <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+    <a href="#plans" class="btn btn-gradient">View Plans</a>
+    <button class="btn btn-outline-glass" onclick="openOrder('${escapeHtml(p.name)}')">Buy via WhatsApp</button>
+   </div>
+  </div>
+ </section>
+ <section class="section-alt">
+  <div class="container">
+   <div class="row g-4">
+    <div class="col-lg-7">
+     <div class="glass-card">
+      <h2 class="fw-bold mb-4">Why Choose <span class="text-gradient">${p.name}</span>?</h2>
+      <ul class="list-unstyled feature-list">${p.features.map(f=>`<li><i class="fa-solid fa-check"></i>${f}</li>`).join('')}</ul>
+      <hr class="border-secondary my-4">
+      <p class="text-silver mb-0">Select the plan that fits your needs and continue through our simple WhatsApp ordering process.</p>
+     </div>
+    </div>
+    <div class="col-lg-5"><div class="glass-card sticky-buy text-center">
+      <div class="small-label">Starting from</div><div class="display-5 fw-bold text-gradient my-2">${p.price}</div>
+      <p class="text-silver">${p.stock}</p>
+      <button class="btn btn-gradient w-100" onclick="openOrder('${escapeHtml(p.name)}')">Get ${escapeHtml(p.name)}</button>
+     </div></div>
+   </div>
+  </div>
+ </section>
+ <section id="plans">
+  <div class="container">
+   <h2 class="section-title">Choose Your <span class="text-gradient">Plan</span></h2>
+   <div class="row justify-content-center g-4">${p.plans.map((pl,i)=>`
+    <div class="col-12 col-md-6 col-lg-5"><div class="${i===0&&p.plans.length>1?'premium-border-wrap':''}">
+     <div class="glass-card text-center ${i===0&&p.plans.length>1?'h-100':''}">
+      ${i===0&&p.plans.length>1?'<span class="badge rounded-pill mb-3" style="background:linear-gradient(90deg,var(--primary),var(--secondary))">Featured Plan</span>':''}
+      <h3 class="fw-bold">${pl.name}</h3><p class="text-silver">${pl.details}</p>
+      <div class="display-5 fw-bold text-gradient my-3">${pl.price}</div>
+      <button class="btn btn-gradient w-100" onclick="openOrder('${escapeHtml(p.name)}','${escapeHtml(pl.name)} - ${escapeHtml(pl.price)}')">Select Plan</button>
+     </div>
+    </div></div>`).join('')}</div>
+  </div>
+ </section>
+ <section class="section-alt">
+  <div class="container">
+   <h2 class="section-title">How to <span class="text-gradient">Order</span></h2>
+   <div class="row g-4">
+    ${[['1','Choose a Plan','Select the plan you want.'],['2','Submit Order','Enter your details in the order form.'],['3','Continue to WhatsApp','Complete the payment conversation.'],['4','Receive Access','Get your subscription/account details through the agreed delivery process.']].map(x=>`<div class="col-12 col-md-6 col-lg-3"><div class="glass-card text-center"><div class="neon-circle-icon fw-bold">${x[0]}</div><h5 class="fw-bold">${x[1]}</h5><p class="text-silver mb-0">${x[2]}</p></div></div>`).join('')}
+   </div>
+  </div>
+ </section>
+ <section class="section-alt">
+  <div class="container">
+   <div class="glass-card mx-auto" style="max-width:900px">
+    <h2 class="h3 fw-bold">About ${escapeHtml(p.name)}</h2>
+    <p class="text-silver mb-0">${escapeHtml(p.description)} Explore the available ${escapeHtml(p.category.toLowerCase())} plan options above and use the WhatsApp ordering flow for current availability and support.</p>
+   </div>
+  </div>
+ </section>
+ <section>
+  <div class="container">
+   <h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2>
+   <div class="accordion mx-auto" style="max-width:850px">
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#pf1">How do I order ${escapeHtml(p.name)}?</button></h2><div id="pf1" class="accordion-collapse collapse show"><div class="accordion-body">Choose a plan and use the WhatsApp order button to continue.</div></div></div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf2">Which plan should I choose?</button></h2><div id="pf2" class="accordion-collapse collapse"><div class="accordion-body">Review the plan duration and details above and choose the option that matches your requirements.</div></div></div>
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf3">How do I get support?</button></h2><div id="pf3" class="accordion-collapse collapse"><div class="accordion-body">Use the WhatsApp support option or the Support page to contact AR SERVICES.</div></div></div>
+   </div>
+  </div>
+ </section>`;
 }
 document.addEventListener('DOMContentLoaded',()=>{
  if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'});
