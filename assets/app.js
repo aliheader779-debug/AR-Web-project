@@ -142,26 +142,6 @@ function renderProductPage(){
  const relatedProducts=(related.length?related:fallbackRelated).map(x=>'<a class="product-related-card" href="product-'+x.slug+'.html"><div class="product-related-image"><img src="'+x.logo+'" alt="'+escapeHtml(x.name)+' logo" loading="lazy"></div><div class="small-label">'+escapeHtml(x.category)+'</div><strong>'+escapeHtml(x.name)+'</strong><span>'+escapeHtml(x.price)+'</span></a>').join('');
 
  let inlinePicker='';
- if(!isCapCut){
-  const picker=document.getElementById('genericPlanPicker');
-  const planBtns=[...picker.querySelectorAll('.generic-plan-btn')];
-  const totalPrice=document.getElementById('productTotalPrice');
-  const mobilePrice=document.getElementById('mobileProductPrice');
-  const summary=document.getElementById('genericSelectedPlan');
-  const primary=document.getElementById('productPrimaryCta');
-  const mobileCta=document.getElementById('mobileBuyCta');
-  function selectGenericPlan(index){
-   const pl=p.plans[index];
-   planBtns.forEach(function(btn,i){btn.classList.toggle('active',i===index);});
-   totalPrice.textContent=pl.price;
-   mobilePrice.textContent=pl.price;
-   summary.textContent=pl.name+' • '+pl.price;
-   const orderPlan=pl.name+' - '+pl.price;
-   primary.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
-   mobileCta.setAttribute('onclick','openOrder(\''+escapeHtml(p.name)+'\',\''+escapeHtml(orderPlan)+'\')');
-  }
-  planBtns.forEach(function(btn){btn.addEventListener('click',function(){selectGenericPlan(Number(btn.dataset.planIndex));});});
- }
 
  if(isCapCut){
   inlinePicker='<div class="capcut-plan-picker" id="capcutPlanPicker"><div class="small-label mb-2">Choose Duration</div><div class="capcut-duration-grid">'+
@@ -194,6 +174,28 @@ function renderProductPage(){
  '<section class="product-content-card product-why-card"><h2>Why Choose <span class="text-gradient">AR SERVICES?</span></h2><div class="product-assurance-grid"><div><i class="fa-solid fa-bolt"></i><strong>Simple Ordering</strong><p>Clear product pages and a straightforward ordering flow.</p></div><div><i class="fa-solid fa-shield-halved"></i><strong>Clear Information</strong><p>Plans, pricing and included details are shown before ordering.</p></div><div><i class="fa-solid fa-headset"></i><strong>Support</strong><p>WhatsApp support for product and order questions.</p></div></div></section>'+
  '<section class="product-content-card"><div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4"><div><h2 class="mb-1">More Premium Tools</h2><p class="text-silver mb-0">Explore more products from AR SERVICES.</p></div><a class="btn btn-outline-glass" href="tools.html">View All Tools</a></div><div class="product-related-grid">'+relatedProducts+'</div></section></div></div></section>'+
  '<div class="product-mobile-buybar"><div><small>'+escapeHtml(p.name)+'</small><strong id="mobileProductPrice">'+escapeHtml(initial.price)+'</strong></div><button class="btn btn-gradient" id="mobileBuyCta" onclick="openOrder(\''+escapeHtml(p.name)+'\',\''+initOrder+'\')">Buy Now <i class="fa-solid fa-arrow-right ms-1"></i></button></div>';
+
+ if(!isCapCut){
+  const picker=document.getElementById('genericPlanPicker');
+  const planBtns=[...picker.querySelectorAll('.generic-plan-btn')];
+  const totalPrice=document.getElementById('productTotalPrice');
+  const mobilePrice=document.getElementById('mobileProductPrice');
+  const summary=document.getElementById('genericSelectedPlan');
+  const primary=document.getElementById('productPrimaryCta');
+  const mobileCta=document.getElementById('mobileBuyCta');
+  function selectGenericPlan(index){
+   const pl=p.plans[index];
+   planBtns.forEach(function(btn,i){btn.classList.toggle('active',i===index);});
+   totalPrice.textContent=pl.price;
+   mobilePrice.textContent=pl.price;
+   summary.textContent=pl.name+' • '+pl.price;
+   const orderPlan=pl.name+' - '+pl.price;
+   primary.setAttribute('onclick','openOrder(\\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
+   mobileCta.setAttribute('onclick','openOrder(\\''+escapeHtml(p.name)+'\\',\\''+escapeHtml(orderPlan)+'\\')');
+  }
+  planBtns.forEach(function(btn){btn.addEventListener('click',function(){selectGenericPlan(Number(btn.dataset.planIndex));});});
+  selectGenericPlan(0);
+ }
 
  if(isCapCut){
   const picker=document.getElementById('capcutPlanPicker');
