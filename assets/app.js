@@ -158,7 +158,7 @@ function renderProductPage(){
   </div>
  </section>
  <section><div class="container"><div class="row g-4">
-  <div class="col-lg-7"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2><p class="text-silver">${escapeHtml(p.detailedDescription||p.description)}</p><h3 class="h5 fw-bold mt-4 mb-3">Benefits</h3><ul class="product-included-list">${p.benefits.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join("")}</ul><h3 class="h5 fw-bold mt-4 mb-3">Key Features</h3><ul class="product-included-list">${p.features.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join("")}</ul><p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p><h3 class="h5 fw-bold mt-4 mb-3">What&#39;s Included</h3><ul id="productIncluded" class="product-included-list"></ul></div></div>
+  <div class="col-lg-7"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2><p id="productDescription" class="text-silver"></p><h3 class="h5 fw-bold mt-4 mb-3">Benefits</h3><ul id="productBenefits" class="product-included-list"></ul><h3 class="h5 fw-bold mt-4 mb-3">Key Features</h3><ul id="productFeatures" class="product-included-list"></ul><p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p><h3 class="h5 fw-bold mt-4 mb-3">What&#39;s Included</h3><ul id="productIncluded" class="product-included-list"></ul></div></div>
   <div class="col-lg-5"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">How It Works</h2><div id="productSteps" class="product-steps"></div></div></div>
  </div></div></section>
  <section class="section-alt"><div class="container"><div class="glass-card product-content-card mx-auto" style="max-width:900px"><h2 class="h3 fw-bold mb-3">Customer Reviews</h2><p class="text-silver mb-4">Real customer feedback shared with AR SERVICES.</p><div id="productReviews" class="product-review-placeholder"></div><a class="btn btn-outline-glass mt-3" href="reviews.html">View All Reviews</a></div></div></section>
@@ -166,9 +166,16 @@ function renderProductPage(){
  <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
  document.title=`${p.name} | AR SERVICES`;
  const sectionData=PRODUCT_SECTIONS[p.slug]||{};
+ const sectionDescription=sectionData.description||p.detailedDescription||p.description;
+ const sectionBenefits=sectionData.benefits||p.benefits||[];
+ const sectionFeatures=sectionData.features||p.features||[];
  const planButtons=[...root.querySelectorAll('.product-plan-option')], total=root.querySelector('#productTotalPrice'), selected=root.querySelector('.product-selected-detail span'), order=root.querySelector('#productOrderBtn');
  const includedEl=root.querySelector('#productIncluded'),stepsEl=root.querySelector('#productSteps'),faqEl=root.querySelector('#productFaq');
  function renderUniqueSections(pl){
+  const descriptionEl=root.querySelector('#productDescription'),benefitsEl=root.querySelector('#productBenefits'),featuresEl=root.querySelector('#productFeatures');
+  if(descriptionEl)descriptionEl.textContent=sectionDescription;
+  if(benefitsEl)benefitsEl.innerHTML=sectionBenefits.map(x=>'<li><i class="fa-solid fa-check"></i><span>'+escapeHtml(x)+'</span></li>').join('');
+  if(featuresEl)featuresEl.innerHTML=sectionFeatures.map(x=>'<li><i class="fa-solid fa-check"></i><span>'+escapeHtml(x)+'</span></li>').join('');
   const included=(sectionData.included||[]).slice();
   if(pl&&pl.name)included.unshift('Selected plan: '+pl.name);
   if(pl&&pl.details)included.push('Plan detail: '+pl.details);
