@@ -509,3 +509,16 @@ footer hr{opacity:.16}
 .device-option:hover{border-color:rgba(6,182,212,.35)}.device-option.active{background:rgba(6,182,212,.07);border-color:rgba(6,182,212,.45);box-shadow:0 6px 16px rgba(6,182,212,.07)}
 .product-device-access{margin-top:12px}
 @media(max-width:575px){.device-option-row{grid-template-columns:1fr}}
+
+
+/* Product About — three inner cards */
+.product-about-master-card{padding:28px}
+.product-about-description{max-width:900px}
+.product-about-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.product-inner-card{background:#f8fafc;border:1px solid rgba(15,23,42,.08);border-radius:18px;padding:20px;min-width:0}
+.product-inner-card h3{font-size:1rem}
+.product-inner-card .product-included-list{gap:10px}
+.product-inner-card .product-included-list li{font-size:.82rem;line-height:1.45}
+@media(max-width:991px){
+ .product-about-grid{grid-template-columns:1fr}
+}
