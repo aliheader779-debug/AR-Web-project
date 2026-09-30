@@ -38,7 +38,7 @@ const PRODUCTS = [
 ];
 
 const LOGO_FIT={
- capcut:{size:'48px'},gemini:{size:'39px'},canva:{size:'48px'},surfshark:{size:'48px'},
+ capcut:{size:'68px'},gemini:{size:'39px'},canva:{size:'48px'},surfshark:{size:'48px'},
  netflix:{size:'48px'},office365:{size:'46px'},'adobe-express':{size:'48px'},ilovepdf:{size:'48px'},
  quillbot:{size:'46px'},duolingo:{size:'48px'},'youtube-premium':{size:'48px'}
 };
