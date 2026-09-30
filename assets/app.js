@@ -153,13 +153,16 @@ function renderProductPage(){
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
 document.addEventListener('DOMContentLoaded',()=>{
- if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'});
- renderProductPage();
- if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6);
- if(document.getElementById('storeGrid')){renderProductGrid('storeGrid');initStoreFilters()}
- if(document.getElementById('homeReviews'))renderCustomerReviews('homeReviews',6);
- if(document.getElementById('reviewsGrid'))renderCustomerReviews('reviewsGrid',CUSTOMER_REVIEWS.length);
- document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',()=>{const n=document.getElementById('navbarNav');if(n?.classList.contains('show'))bootstrap.Collapse.getOrCreateInstance(n).hide()}));
+ const run=(label,fn)=>{
+  try{fn()}catch(error){console.error('[AR SERVICES] '+label+' failed:',error)}
+ };
+ run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
+ run('Product page',renderProductPage);
+ run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6)});
+ run('Store products',()=>{if(document.getElementById('storeGrid')){renderProductGrid('storeGrid');initStoreFilters()}});
+ run('Home reviews',()=>{if(document.getElementById('homeReviews'))renderCustomerReviews('homeReviews',6)});
+ run('Reviews page',()=>{if(document.getElementById('reviewsGrid'))renderCustomerReviews('reviewsGrid',CUSTOMER_REVIEWS.length)});
+ run('Navigation',()=>document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',()=>{const n=document.getElementById('navbarNav');if(n?.classList.contains('show')&&window.bootstrap)bootstrap.Collapse.getOrCreateInstance(n).hide()})));
 });
 
 
