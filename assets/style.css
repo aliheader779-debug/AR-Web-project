@@ -605,3 +605,34 @@ footer hr{opacity:.16}
  .hero-v2:after,.hero:after{width:48%;height:31%;left:-22%;top:28%;filter:blur(8px);opacity:.65}
  .hero-v2 .hero-v2-content:after,.hero .container:after{width:40%;height:29%;right:-22%;top:39%;filter:blur(8px);opacity:.65}
 }
+
+
+/* Product-specific floating WhatsApp */
+.floating-wa[data-label]{position:fixed}
+.floating-wa[data-label]::after{
+ content:attr(data-label);
+ position:absolute;
+ right:calc(100% + 12px);
+ top:50%;
+ transform:translateY(-50%) translateX(4px);
+ white-space:nowrap;
+ padding:8px 12px;
+ border-radius:10px;
+ background:#0f172a;
+ color:#fff;
+ font-size:.72rem;
+ font-weight:600;
+ letter-spacing:.01em;
+ box-shadow:0 8px 22px rgba(15,23,42,.16);
+ opacity:0;
+ pointer-events:none;
+ transition:.2s ease;
+}
+.floating-wa[data-label]:hover::after,
+.floating-wa[data-label]:focus-visible::after{
+ opacity:1;
+ transform:translateY(-50%) translateX(0);
+}
+@media(max-width:575px){
+ .floating-wa[data-label]::after{display:none}
+}
