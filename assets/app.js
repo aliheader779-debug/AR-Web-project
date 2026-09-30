@@ -1,8 +1,8 @@
 
 const PRODUCTS = [
- {slug:'capcut',deviceAccess:'1 device access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
-  {name:'7 Days',price:'Rs. 180',details:'Short-term access'},
-  {name:'1 Month',price:'Rs. 649',details:'Premium editing access'}
+ {slug:'capcut',deviceAccess:'2 devices access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 180',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
+  {name:'7 Days',price:'Rs. 180',details:'2 devices access'},
+  {name:'1 Month',price:'Rs. 399',details:'Choose device access'}
  ],features:['Advanced video editing','Premium effects and filters','Pro transitions','Creative templates','Cloud storage','Text, audio and visual editing'],detailedDescription:'CapCut Pro gives creators access to advanced video editing features for making social media videos, reels, YouTube content, promotional videos, and more. It is designed for beginners and regular content creators who want more editing options without a complicated workflow.',benefits:['Create polished videos faster','Make content for social media and YouTube','Use advanced editing tools and effects','Improve the overall look of your videos'],bestFor:'Content creators, students, social media users, and video editors',stock:'Available'},
  {slug:'gemini',logo:'https://drive.google.com/thumbnail?id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X&sz=w1000',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 999',description:'An AI assistant that helps you write, learn, research, brainstorm, and complete everyday tasks.',plans:[
   {name:'18 Months',price:'Rs. 999',details:'Active on your mail'}
@@ -38,7 +38,7 @@ const PRODUCTS = [
 ];
 
 const LOGO_FIT={
- capcut:{size:'68px'},gemini:{size:'39px'},canva:{size:'48px'},surfshark:{size:'48px'},
+ capcut:{size:'84px'},gemini:{size:'39px'},canva:{size:'48px'},surfshark:{size:'48px'},
  netflix:{size:'48px'},office365:{size:'46px'},'adobe-express':{size:'48px'},ilovepdf:{size:'48px'},
  quillbot:{size:'46px'},duolingo:{size:'48px'},'youtube-premium':{size:'48px'}
 };
@@ -126,7 +126,15 @@ function renderProductPage(){
     <div class="col-lg-7"><div class="product-purchase-card">
       <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
       <div class="product-plan-selector">${p.plans.map((pl,i)=>`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
-      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div><div class="product-device-access"><span class="device-access-label">Device Access</span><strong>${escapeHtml(p.deviceAccess||'Standard access')}</strong></div>
+      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
+      <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
+       <span class="device-access-label">Device Access</span>
+       <div class="device-option-row">
+        <button type="button" class="device-option active" data-devices="1" data-price="Rs. 399"><strong>1 Device</strong><span>Rs. 399</span></button>
+        <button type="button" class="device-option" data-devices="2" data-price="Rs. 699"><strong>2 Devices</strong><span>Rs. 699</span></button>
+       </div>
+      </div>
+      <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
       <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
@@ -147,7 +155,39 @@ function renderProductPage(){
  <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
  document.title=`${p.name} | AR SERVICES`;
  const planButtons=[...root.querySelectorAll('.product-plan-option')], total=root.querySelector('#productTotalPrice'), selected=root.querySelector('.product-selected-detail span'), order=root.querySelector('#productOrderBtn');
- function selectPlan(i){const pl=p.plans[i]||p.plans[0];planButtons.forEach((btn,j)=>btn.classList.toggle('active',j===i));if(total)total.textContent=pl.price;if(selected)selected.textContent=pl.details||'Plan selected';if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${pl.price}`);}
+ const capcutDevices=root.querySelector('#capcutDeviceOptions'), capcutFixed=root.querySelector('#capcutFixedDevice');
+ let selectedDevices=2, selectedCapcutPrice='Rs. 180';
+ function selectPlan(i){
+  const pl=p.plans[i]||p.plans[0];
+  planButtons.forEach((btn,j)=>btn.classList.toggle('active',j===i));
+  if(selected)selected.textContent=pl.details||'Plan selected';
+  if(p.slug==='capcut'){
+   const isMonth=i===1;
+   if(capcutDevices)capcutDevices.style.display=isMonth?'block':'none';
+   if(capcutFixed)capcutFixed.style.display=isMonth?'none':'flex';
+   selectedDevices=isMonth?1:2;
+   selectedCapcutPrice=isMonth?'Rs. 399':'Rs. 180';
+   if(total)total.textContent=selectedCapcutPrice;
+   if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+  }else{
+   if(total)total.textContent=pl.price;
+   if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${pl.price}`);
+  }
+ }
+ if(capcutDevices){
+  capcutDevices.querySelectorAll('.device-option').forEach(btn=>{
+   btn.addEventListener('click',()=>{
+    capcutDevices.querySelectorAll('.device-option').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    selectedDevices=Number(btn.dataset.devices)||1;
+    selectedCapcutPrice=btn.dataset.price||'Rs. 399';
+    if(total)total.textContent=selectedCapcutPrice;
+    const pl=p.plans[1];
+    if(selected)selected.textContent=`${pl.name} • ${selectedDevices} Device${selectedDevices>1?'s':''}`;
+    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+   });
+  });
+ }
  planButtons.forEach((btn,i)=>btn.addEventListener('click',()=>selectPlan(i)));selectPlan(0);
  const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
