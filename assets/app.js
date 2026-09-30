@@ -223,6 +223,18 @@ function renderProductPage(){
  const sectionBenefits=sectionData.benefits||p.benefits||[];
  const sectionFeatures=sectionData.features||p.features||[];
  const planButtons=[...root.querySelectorAll('.product-plan-option')], total=root.querySelector('#productTotalPrice'), selected=root.querySelector('.product-selected-detail span'), order=root.querySelector('#productOrderBtn');
+ const floatingWa=root.querySelector('.floating-wa')||document.querySelector('.floating-wa');
+ function updateFloatingWhatsApp(planText){
+  if(!floatingWa)return;
+  const productText=p.name+(planText?' — '+planText:'');
+  const message='Hello AR SERVICES! I’m interested in '+productText+'. Please share the details.';
+  floatingWa.href='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(message);
+  floatingWa.title='Order '+productText;
+  floatingWa.setAttribute('aria-label','Order '+productText+' on WhatsApp');
+  floatingWa.dataset.product=p.slug;
+  floatingWa.dataset.label='Order '+productText;
+ }
+
  const includedEl=root.querySelector('#productIncluded'),stepsEl=root.querySelector('#productSteps'),faqEl=root.querySelector('#productFaq');
  function renderUniqueSections(pl){
   const descriptionEl=root.querySelector('#productDescription'),benefitsEl=root.querySelector('#productBenefits'),featuresEl=root.querySelector('#productFeatures');
@@ -253,9 +265,11 @@ function renderProductPage(){
    selectedCapcutPrice=isMonth?'Rs. 399':'Rs. 180';
    if(total)total.textContent=selectedCapcutPrice;
    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+   updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
   }else{
    if(total)total.textContent=pl.price;
    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${pl.price}`);
+   updateFloatingWhatsApp(`${pl.name} - ${pl.price}`);
   }
  }
  if(capcutDevices){
@@ -269,6 +283,7 @@ function renderProductPage(){
     const pl=p.plans[1];
     if(selected)selected.textContent=`${pl.name} • ${selectedDevices} Device${selectedDevices>1?'s':''}`;
     if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+    updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
    });
   });
  }
