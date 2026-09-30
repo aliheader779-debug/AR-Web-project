@@ -285,6 +285,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6)});
  run('Store products',()=>{if(document.getElementById('storeGrid')){renderProductGrid('storeGrid');initStoreFilters()}});
  run('Home reviews',()=>{if(document.getElementById('homeReviews'))renderCustomerReviews('homeReviews',6)});
+ run('Homepage FAQ',()=>{const toggle=document.getElementById('homeFaqToggle');if(!toggle)return;const extras=[...document.querySelectorAll('.home-faq-extra')];let expanded=false;toggle.addEventListener('click',()=>{expanded=!expanded;extras.forEach(el=>el.style.display=expanded?'block':'none');toggle.textContent=expanded?'Show Fewer Questions':'View More Questions';if(!expanded){extras.forEach(el=>el.querySelector('.accordion-collapse')?.classList.remove('show'));extras.forEach(el=>el.querySelector('.accordion-button')?.classList.add('collapsed'));}})});
  run('Reviews page',()=>{if(document.getElementById('reviewsGrid'))renderCustomerReviews('reviewsGrid',CUSTOMER_REVIEWS.length)});
  run('Navigation',()=>document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',()=>{const n=document.getElementById('navbarNav');if(n?.classList.contains('show')&&window.bootstrap)bootstrap.Collapse.getOrCreateInstance(n).hide()})));
 });
