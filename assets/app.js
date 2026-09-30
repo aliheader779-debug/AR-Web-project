@@ -183,19 +183,28 @@ function renderProductPage(){
   </div>
  </section>
  <section class="product-about-section"><div class="container">
-  <div class="glass-card product-content-card">
+  <div class="glass-card product-content-card product-about-master-card">
     <div class="product-section-kicker">About the Tool</div>
     <h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2>
-    <p id="productDescription" class="text-silver"></p>
-    <div class="row g-4 mt-1">
-      <div class="col-lg-6"><h3 class="h5 fw-bold mb-3">Benefits</h3><ul id="productBenefits" class="product-included-list"></ul></div>
-      <div class="col-lg-6"><h3 class="h5 fw-bold mb-3">Key Features</h3><ul id="productFeatures" class="product-included-list"></ul></div>
+    <p id="productDescription" class="text-silver product-about-description"></p>
+    <div class="product-about-grid mt-4">
+      <div class="product-inner-card">
+        <h3 class="h5 fw-bold mb-3">Benefits</h3>
+        <ul id="productBenefits" class="product-included-list"></ul>
+      </div>
+      <div class="product-inner-card">
+        <h3 class="h5 fw-bold mb-3">Key Features</h3>
+        <ul id="productFeatures" class="product-included-list"></ul>
+      </div>
+      <div class="product-inner-card">
+        <h3 class="h5 fw-bold mb-3">What's Included</h3>
+        <ul id="productIncluded" class="product-included-list"></ul>
+      </div>
     </div>
     <p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p>
-    <h3 class="h5 fw-bold mt-4 mb-3">What&#39;s Included</h3>
-    <ul id="productIncluded" class="product-included-list"></ul>
   </div>
 </div></section>
+
 <section class="product-how-section"><div class="container">
   <div class="glass-card product-content-card">
     <div class="product-section-kicker">Simple Steps</div>
