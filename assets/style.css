@@ -454,3 +454,39 @@ body{background:
 footer{background:#111827!important;border-top-color:rgba(255,255,255,.08)!important}footer a{color:#cbd5e1}footer a:hover{color:#67e8f9}
 .hero-v2 + .section-alt{background:linear-gradient(to bottom,rgba(247,248,252,0) 0%,rgba(247,248,252,.72) 28%,rgba(247,248,252,.96) 58%,#f7f8fc 78%)!important}.hero-v2 + .section-alt:before{background:radial-gradient(ellipse at 50% 20%,rgba(124,58,237,.07),transparent 58%)!important}.hero-v2 + .section-alt:after{background:linear-gradient(to bottom,transparent 0%,rgba(247,248,252,.45) 42%,#f7f8fc 100%)!important}
 @media(max-width:575px){.hero-v2 + .section-alt{background:linear-gradient(to bottom,rgba(247,248,252,0) 0%,rgba(247,248,252,.82) 30%,#f7f8fc 70%)!important}.hero-v2 + .section-alt:after{background:linear-gradient(to bottom,transparent 0%,rgba(247,248,252,.4) 45%,#f7f8fc 100%)!important}.hero-v2:after{bottom:-12%;height:34%;}}
+
+/* Final light-theme typography + surface consistency audit */
+body{font-family:'Poppins',sans-serif;font-weight:400;line-height:1.65;color:#111827!important}
+h1,h2,h3,h4,h5,h6,.navbar-brand,.btn,.filter-btn,.badge-premium,.small-label,.hero-trust-strip span,.product-plan-option strong,.product-total-box span{font-family:'Poppins',sans-serif}
+h1,h2,h3,h4,h5,h6{color:#0f172a;font-weight:700;line-height:1.2;letter-spacing:-.02em}
+p,li,.lead{font-weight:400}
+.lead{line-height:1.7}
+.section-title{font-weight:700;letter-spacing:-.035em}
+.page-hero h1{font-weight:700;letter-spacing:-.04em}
+.page-hero .lead{max-width:760px;margin-left:auto;margin-right:auto}
+.glass-card h1,.glass-card h2,.glass-card h3,.glass-card h4,.glass-card h5,.glass-card h6{color:#0f172a}
+.glass-card p{color:#64748b}
+.section-alt h1,.section-alt h2,.section-alt h3,.section-alt h4,.section-alt h5,.section-alt h6{color:#0f172a}
+.product-main-visual h1,.product-main-visual h2,.product-main-visual h3,.product-purchase-card h1,.product-purchase-card h2,.product-purchase-card h3{color:#0f172a}
+.product-content-card h2,.product-content-card h3,.product-content-card h4,.product-content-card h5{color:#0f172a}
+.product-related-card h6{color:#0f172a}
+.accordion-button{font-family:'Poppins',sans-serif;font-size:1rem;line-height:1.45}
+.accordion-body{font-size:.94rem;line-height:1.7}
+.form-label{color:#475569!important;font-weight:600}
+.form-control::placeholder{color:#94a3b8;opacity:1}
+footer h3,footer h6{color:#fff!important}
+footer .text-silver{color:#cbd5e1!important}
+footer hr{opacity:.16}
+.navbar-brand{font-size:1rem}
+.btn{font-weight:600;letter-spacing:.01em}
+.btn-gradient{text-shadow:0 1px 1px rgba(0,0,0,.08)}
+.hero-v2 h1{color:#0f172a}
+.hero-v2 .text-gradient{font-weight:700}
+.hero-dashboard h3,.hero-dashboard strong{font-weight:600}
+.hero-dashboard-heading h3{letter-spacing:-.02em}
+@media(max-width:575px){
+ h1{letter-spacing:-.03em}h2{letter-spacing:-.025em}
+ .section-title{font-size:2rem}
+ .page-hero h1{font-size:2.65rem}
+ .lead{line-height:1.65}
+}
