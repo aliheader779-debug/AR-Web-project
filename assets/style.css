@@ -492,13 +492,13 @@ footer hr{opacity:.16}
 }
 
 /* Product purchase refinements */
-.product-detail-icon{width:120px;height:120px;border-radius:30px}
-.product-detail-icon img{max-width:calc(100% - 18px)!important;max-height:calc(100% - 18px)!important}
+.product-detail-icon{width:250px;height:250px;min-width:250px;min-height:250px;flex-basis:250px;border-radius:42px}
+.product-detail-icon img{width:220px!important;height:220px!important;max-width:calc(100% - 24px)!important;max-height:calc(100% - 24px)!important}
 .product-total-box strong{background:none!important;-webkit-background-clip:initial!important;-webkit-text-fill-color:initial!important;color:#06b6d4!important}
 .product-device-access{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:10px;padding:13px 15px;border:1px solid rgba(15,23,42,.08);background:#f8fafc;border-radius:14px}
 .product-device-access .device-access-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;font-weight:600}
 .product-device-access strong{font-size:.85rem;color:#0f172a;font-weight:600}
-@media(max-width:575px){.product-detail-icon{width:112px;height:112px}}
+@media(max-width:575px){.product-detail-icon{width:210px;height:210px;min-width:210px;min-height:210px;flex-basis:210px;border-radius:36px}.product-detail-icon img{width:184px!important;height:184px!important;max-width:calc(100% - 22px)!important;max-height:calc(100% - 22px)!important}}
 
 /* CapCut device selection */
 .product-device-options{margin-top:12px;padding:14px 15px;border:1px solid rgba(15,23,42,.08);background:#f8fafc;border-radius:14px}
