@@ -223,6 +223,23 @@ function renderProductPage(){
  const sectionBenefits=sectionData.benefits||p.benefits||[];
  const sectionFeatures=sectionData.features||p.features||[];
  const planButtons=[...root.querySelectorAll('.product-plan-option')], total=root.querySelector('#productTotalPrice'), selected=root.querySelector('.product-selected-detail span'), order=root.querySelector('#productOrderBtn');
+ const stickyOrder=document.createElement('div');
+ stickyOrder.className='product-sticky-order';
+ stickyOrder.innerHTML='<div class="product-sticky-inner"><div class="product-sticky-info"><span class="product-sticky-name"></span><strong class="product-sticky-price"></strong></div><button type="button" class="product-sticky-btn">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>';
+ document.body.appendChild(stickyOrder);
+ const stickyName=stickyOrder.querySelector('.product-sticky-name'),stickyPrice=stickyOrder.querySelector('.product-sticky-price'),stickyBtn=stickyOrder.querySelector('.product-sticky-btn');
+ function updateStickyOrder(planText,price){
+  if(stickyName)stickyName.textContent=p.name+(planText?' • '+planText:'');
+  if(stickyPrice)stickyPrice.textContent=price||p.price;
+  if(stickyBtn)stickyBtn.onclick=()=>openOrder(p.name,planText||'');
+ }
+ function syncStickyVisibility(){
+  const show=window.scrollY>420;
+  stickyOrder.classList.toggle('is-visible',show);
+ }
+ window.addEventListener('scroll',syncStickyVisibility,{passive:true});
+ syncStickyVisibility();
+
  const floatingWa=root.querySelector('.floating-wa')||document.querySelector('.floating-wa');
  function updateFloatingWhatsApp(planText){
   if(!floatingWa)return;
@@ -266,10 +283,12 @@ function renderProductPage(){
    if(total)total.textContent=selectedCapcutPrice;
    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
    updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+   updateStickyOrder(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''}`,selectedCapcutPrice);
   }else{
    if(total)total.textContent=pl.price;
    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${pl.price}`);
    updateFloatingWhatsApp(`${pl.name} - ${pl.price}`);
+   updateStickyOrder(`${pl.name} - ${pl.price}`,pl.price);
   }
  }
  if(capcutDevices){
@@ -284,6 +303,7 @@ function renderProductPage(){
     if(selected)selected.textContent=`${pl.name} • ${selectedDevices} Device${selectedDevices>1?'s':''}`;
     if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
     updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+    updateStickyOrder(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''}`,selectedCapcutPrice);
    });
   });
  }
