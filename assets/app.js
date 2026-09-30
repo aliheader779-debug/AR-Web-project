@@ -113,104 +113,44 @@ function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
- document.title=`${p.name} | AR SERVICES`;
- const meta=document.querySelector('meta[name="description"]');
- if(meta)meta.setAttribute('content',`Explore ${p.name} plans, features, pricing and ordering information from AR SERVICES. ${p.description}`);
- const priceValue=parseFloat(String(p.price).replace(/[^0-9.]/g,''))||0;
- const existingSchema=document.getElementById('productSchema');
- if(existingSchema)existingSchema.remove();
- const schema=document.createElement('script');
- schema.id='productSchema';
- schema.type='application/ld+json';
- schema.textContent=JSON.stringify({
-  "@context":"https://schema.org",
-  "@type":"Product",
-  "name":p.name,
-  "description":p.description,
-  "image":p.logo,
-  "category":p.category,
-  "offers":{
-   "@type":"Offer",
-   "priceCurrency":"PKR",
-   "price":priceValue.toFixed(2),
-   "availability":/in stock|available/i.test(p.stock)?"https://schema.org/InStock":"https://schema.org/LimitedAvailability",
-   "url":`https://arservicesdigital.store/product-${p.slug}.html`
-  }
- });
- document.head.appendChild(schema);
- root.innerHTML=`
- <section class="page-hero">
+ const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
+ root.innerHTML=\`
+ <section class="product-page">
   <div class="container">
-   <nav aria-label="Breadcrumb" class="mb-3"><a href="index.html">Home</a><span class="mx-2 text-silver">/</span><a href="tools.html">Tools</a><span class="mx-2 text-silver">/</span><span class="text-silver">${escapeHtml(p.name)}</span></nav>
-   <div class="product-icon-wrap product-detail-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
-   <div class="small-label">${p.category}</div>
-   <h1 class="mt-2">${p.name}</h1>
-   <p class="lead text-silver mx-auto" style="max-width:720px">${p.description}</p>
-   <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
-    <a href="#plans" class="btn btn-gradient">View Plans</a>
-    <button class="btn btn-outline-glass" onclick="openOrder('${escapeHtml(p.name)}')">Buy via WhatsApp</button>
+   <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>\${escapeHtml(p.name)}</span></div>
+   <div class="row g-4 g-lg-5 align-items-start">
+    <div class="col-lg-5"><div class="glass-card product-main-visual text-center">
+      <div class="product-icon-wrap"><div class="product-icon product-detail-icon" style="\${logoStyle(p)}"><img src="\${p.logo}" alt="\${p.name} logo" loading="lazy"><i class="fa-solid \${p.icon}" aria-hidden="true"></i></div></div>
+      <div class="small-label mt-3">\${p.category}</div><h1 class="h2 fw-bold mt-2">\${escapeHtml(p.name)}</h1><p class="text-silver mb-0">\${escapeHtml(p.description)}</p>
+    </div></div>
+    <div class="col-lg-7"><div class="product-purchase-card">
+      <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">\${escapeHtml(p.name)}</h2>
+      <div class="product-plan-selector">\${p.plans.map((pl,i)=>\`<button type="button" class="product-plan-option \${i===0?'active':''}" data-plan-index="\${i}"><strong>\${escapeHtml(pl.name)}</strong><span>\${escapeHtml(pl.price)}</span></button>\`).join('')}</div>
+      <div class="product-selected-detail mt-3"><span>\${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
+      <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">\${escapeHtml(featuredPlan.price)}</strong></div>
+      <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
+      <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
+    </div><div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
    </div>
   </div>
  </section>
- <section class="section-alt">
-  <div class="container">
-   <div class="row g-4">
-    <div class="col-lg-7">
-     <div class="glass-card">
-      <h2 class="fw-bold mb-4">Why Choose <span class="text-gradient">${p.name}</span>?</h2>
-      <ul class="list-unstyled feature-list">${p.features.map(f=>`<li><i class="fa-solid fa-check"></i>${f}</li>`).join('')}</ul>
-      <hr class="border-secondary my-4">
-      <p class="text-silver mb-0">Select the plan that fits your needs and continue through our simple WhatsApp ordering process.</p>
-     </div>
-    </div>
-    <div class="col-lg-5"><div class="glass-card sticky-buy text-center">
-      <div class="small-label">Starting from</div><div class="display-5 fw-bold text-gradient my-2">${p.price}</div>
-      <p class="text-silver">${p.stock}</p>
-      <button class="btn btn-gradient w-100" onclick="openOrder('${escapeHtml(p.name)}')">Get ${escapeHtml(p.name)}</button>
-     </div></div>
-   </div>
-  </div>
- </section>
- <section id="plans">
-  <div class="container">
-   <h2 class="section-title">Choose Your <span class="text-gradient">Plan</span></h2>
-   <div class="row justify-content-center g-4">${p.plans.map((pl,i)=>`
-    <div class="col-12 col-md-6 col-lg-5"><div class="${i===0&&p.plans.length>1?'premium-border-wrap':''}">
-     <div class="glass-card text-center ${i===0&&p.plans.length>1?'h-100':''}">
-      ${i===0&&p.plans.length>1?'<span class="badge rounded-pill mb-3" style="background:linear-gradient(90deg,var(--primary),var(--secondary))">Featured Plan</span>':''}
-      <h3 class="fw-bold">${pl.name}</h3><p class="text-silver">${pl.details}</p>
-      <div class="display-5 fw-bold text-gradient my-3">${pl.price}</div>
-      <button class="btn btn-gradient w-100" onclick="openOrder('${escapeHtml(p.name)}','${escapeHtml(pl.name)} - ${escapeHtml(pl.price)}')">Select Plan</button>
-     </div>
-    </div></div>`).join('')}</div>
-  </div>
- </section>
- <section class="section-alt">
-  <div class="container">
-   <h2 class="section-title">How to <span class="text-gradient">Order</span></h2>
-   <div class="row g-4">
-    ${[['1','Choose a Plan','Select the plan you want.'],['2','Submit Order','Enter your details in the order form.'],['3','Continue to WhatsApp','Complete the payment conversation.'],['4','Receive Access','Get your subscription/account details through the agreed delivery process.']].map(x=>`<div class="col-12 col-md-6 col-lg-3"><div class="glass-card text-center"><div class="neon-circle-icon fw-bold">${x[0]}</div><h5 class="fw-bold">${x[1]}</h5><p class="text-silver mb-0">${x[2]}</p></div></div>`).join('')}
-   </div>
-  </div>
- </section>
- <section class="section-alt">
-  <div class="container">
-   <div class="glass-card mx-auto" style="max-width:900px">
-    <h2 class="h3 fw-bold">About ${escapeHtml(p.name)}</h2>
-    <p class="text-silver mb-0">${escapeHtml(p.description)} Explore the available ${escapeHtml(p.category.toLowerCase())} plan options above and use the WhatsApp ordering flow for current availability and support.</p>
-   </div>
-  </div>
- </section>
- <section>
-  <div class="container">
-   <h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2>
-   <div class="accordion mx-auto" style="max-width:850px">
-    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#pf1">How do I order ${escapeHtml(p.name)}?</button></h2><div id="pf1" class="accordion-collapse collapse show"><div class="accordion-body">Choose a plan and use the WhatsApp order button to continue.</div></div></div>
-    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf2">Which plan should I choose?</button></h2><div id="pf2" class="accordion-collapse collapse"><div class="accordion-body">Review the plan duration and details above and choose the option that matches your requirements.</div></div></div>
-    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf3">How do I get support?</button></h2><div id="pf3" class="accordion-collapse collapse"><div class="accordion-body">Use the WhatsApp support option or the Support page to contact AR SERVICES.</div></div></div>
-   </div>
-  </div>
- </section>`;
+ <section><div class="container"><div class="row g-4">
+  <div class="col-lg-7"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">About \${escapeHtml(p.name)}</h2><p class="text-silver">\${escapeHtml(p.description)}</p><h3 class="h5 fw-bold mt-4 mb-3">What's Included</h3><ul class="product-included-list">\${p.features.map(f=>\`<li><i class="fa-solid fa-check"></i><span>\${escapeHtml(f)}</span></li>\`).join('')}</ul></div></div>
+  <div class="col-lg-5"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">How It Works</h2><div class="product-steps">\${[['01','Choose your plan'],['02','Click Order Now'],['03','Continue via WhatsApp'],['04','Receive your access']].map(x=>\`<div class="product-step"><span>\${x[0]}</span><strong>\${x[1]}</strong></div>\`).join('')}</div></div></div>
+ </div></div></section>
+ <section class="section-alt"><div class="container"><div class="glass-card product-content-card mx-auto" style="max-width:900px"><h2 class="h3 fw-bold mb-3">Customer Reviews</h2><p class="text-silver mb-4">Real customer feedback shared with AR SERVICES.</p><div id="productReviews" class="product-review-placeholder"></div><a class="btn btn-outline-glass mt-3" href="reviews.html">View All Reviews</a></div></div></section>
+ <section><div class="container"><h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2><div class="accordion mx-auto" style="max-width:850px">
+  <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#pf1_\${p.slug}">How do I order \${escapeHtml(p.name)}?</button></h2><div id="pf1_\${p.slug}" class="accordion-collapse collapse show"><div class="accordion-body">Choose your plan and use the WhatsApp order button to continue.</div></div></div>
+  <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf2_\${p.slug}">Which plan should I choose?</button></h2><div id="pf2_\${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">Review the duration and details shown for each available plan and select the option that matches your requirements.</div></div></div>
+  <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf3_\${p.slug}">How can I get support?</button></h2><div id="pf3_\${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">Use the WhatsApp support option or the Support page to contact AR SERVICES.</div></div></div>
+ </div></div></section>
+ <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>\`;
+ document.title=\`\${p.name} | AR SERVICES\`;
+ const planButtons=[...root.querySelectorAll('.product-plan-option')], total=root.querySelector('#productTotalPrice'), selected=root.querySelector('.product-selected-detail span'), order=root.querySelector('#productOrderBtn');
+ function selectPlan(i){const pl=p.plans[i]||p.plans[0];planButtons.forEach((btn,j)=>btn.classList.toggle('active',j===i));if(total)total.textContent=pl.price;if(selected)selected.textContent=pl.details||'Plan selected';if(order)order.onclick=()=>openOrder(p.name,\`\${pl.name} - \${pl.price}\`);}
+ planButtons.forEach((btn,i)=>btn.addEventListener('click',()=>selectPlan(i)));selectPlan(0);
+ const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>\`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="\${logoStyle(x)}"><img src="\${x.logo}" alt="\${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">\${escapeHtml(x.name)}</h3><p class="text-silver small">\${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-\${x.slug}.html">View Product</a></div></div>\`).join('');
+ const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
 document.addEventListener('DOMContentLoaded',()=>{
  if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'});
