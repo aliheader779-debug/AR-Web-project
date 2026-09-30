@@ -499,3 +499,13 @@ footer hr{opacity:.16}
 .product-device-access .device-access-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;font-weight:600}
 .product-device-access strong{font-size:.85rem;color:#0f172a;font-weight:600}
 @media(max-width:575px){.product-detail-icon{width:112px;height:112px}}
+
+/* CapCut device selection */
+.product-device-options{margin-top:12px;padding:14px 15px;border:1px solid rgba(15,23,42,.08);background:#f8fafc;border-radius:14px}
+.product-device-options .device-access-label{display:block;margin-bottom:9px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;font-weight:600}
+.device-option-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.device-option{min-height:52px;padding:9px 12px;border:1px solid rgba(15,23,42,.10);border-radius:12px;background:#fff;color:#0f172a;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;transition:.2s}
+.device-option strong{font-size:.82rem;font-weight:600}.device-option span{font-size:.76rem;color:#64748b}
+.device-option:hover{border-color:rgba(6,182,212,.35)}.device-option.active{background:rgba(6,182,212,.07);border-color:rgba(6,182,212,.45);box-shadow:0 6px 16px rgba(6,182,212,.07)}
+.product-device-access{margin-top:12px}
+@media(max-width:575px){.device-option-row{grid-template-columns:1fr}}
