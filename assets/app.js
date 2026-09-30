@@ -31,6 +31,8 @@ const PRODUCTS = [
  ],features:['3-month Premium plan','Own account activation','Trial eligibility required','Payment method required for activation','4-hour link hold time','1-month warranty','Supported-device access'],detailedDescription:'YouTube Premium provides a more convenient YouTube experience for viewing entertainment, educational videos, music, tutorials, and creator content. This offer requires an account that is eligible for the available free-trial offer and is activated on the buyer\'s own account.',benefits:['Enhanced YouTube viewing experience','Ad-free viewing where Premium applies','Use your own eligible account','Suitable for learning, entertainment, music, and creator content'],bestFor:'YouTube viewers, students, learners, music listeners, and regular content viewers',stock:'In Stock (2)'}
 ];
 
+const PRODUCT_SECTIONS={};
+
 const LOGO_FIT={
  capcut:{size:'84px'},gemini:{size:'39px'},canva:{size:'48px'},surfshark:{size:'48px'},
  netflix:{size:'48px'},office365:{size:'46px'},'adobe-express':{size:'48px'},ilovepdf:{size:'48px'},
@@ -139,24 +141,33 @@ function renderProductPage(){
   </div>
  </section>
  <section><div class="container"><div class="row g-4">
-  <div class="col-lg-7"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2><p class="text-silver">${escapeHtml(p.detailedDescription||p.description)}</p><h3 class="h5 fw-bold mt-4 mb-3">Benefits</h3><ul class="product-included-list">${p.benefits.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join("")}</ul><h3 class="h5 fw-bold mt-4 mb-3">Key Features</h3><ul class="product-included-list">${p.features.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join("")}</ul><p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p><h3 class="h5 fw-bold mt-4 mb-3">What's Included</h3><ul class="product-included-list">${p.features.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join('')}</ul></div></div>
-  <div class="col-lg-5"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">How It Works</h2><div class="product-steps">${[['01','Choose your plan'],['02','Click Order Now'],['03','Continue via WhatsApp'],['04','Receive your access']].map(x=>`<div class="product-step"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('')}</div></div></div>
+  <div class="col-lg-7"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2><p class="text-silver">${escapeHtml(p.detailedDescription||p.description)}</p><h3 class="h5 fw-bold mt-4 mb-3">Benefits</h3><ul class="product-included-list">${p.benefits.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join("")}</ul><h3 class="h5 fw-bold mt-4 mb-3">Key Features</h3><ul class="product-included-list">${p.features.map(f=>`<li><i class="fa-solid fa-check"></i><span>${escapeHtml(f)}</span></li>`).join("")}</ul><p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p><h3 class="h5 fw-bold mt-4 mb-3">What&#39;s Included</h3><ul id="productIncluded" class="product-included-list"></ul></div></div>
+  <div class="col-lg-5"><div class="glass-card product-content-card"><h2 class="h3 fw-bold mb-3">How It Works</h2><div id="productSteps" class="product-steps"></div></div></div>
  </div></div></section>
  <section class="section-alt"><div class="container"><div class="glass-card product-content-card mx-auto" style="max-width:900px"><h2 class="h3 fw-bold mb-3">Customer Reviews</h2><p class="text-silver mb-4">Real customer feedback shared with AR SERVICES.</p><div id="productReviews" class="product-review-placeholder"></div><a class="btn btn-outline-glass mt-3" href="reviews.html">View All Reviews</a></div></div></section>
- <section><div class="container"><h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2><div class="accordion mx-auto" style="max-width:850px">
-  <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#pf1_${p.slug}">How do I order ${escapeHtml(p.name)}?</button></h2><div id="pf1_${p.slug}" class="accordion-collapse collapse show"><div class="accordion-body">Choose your plan and use the WhatsApp order button to continue.</div></div></div>
-  <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf2_${p.slug}">Which plan should I choose?</button></h2><div id="pf2_${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">Review the duration and details shown for each available plan and select the option that matches your requirements.</div></div></div>
-  <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#pf3_${p.slug}">How can I get support?</button></h2><div id="pf3_${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">Use the WhatsApp support option or the Support page to contact AR SERVICES.</div></div></div>
- </div></div></section>
+ <section><div class="container"><h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2><div id="productFaq" class="accordion mx-auto" style="max-width:850px"></div></div></section>
  <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
  document.title=`${p.name} | AR SERVICES`;
+ const sectionData=PRODUCT_SECTIONS[p.slug]||{};
  const planButtons=[...root.querySelectorAll('.product-plan-option')], total=root.querySelector('#productTotalPrice'), selected=root.querySelector('.product-selected-detail span'), order=root.querySelector('#productOrderBtn');
+ const includedEl=root.querySelector('#productIncluded'),stepsEl=root.querySelector('#productSteps'),faqEl=root.querySelector('#productFaq');
+ function renderUniqueSections(pl){
+  const included=(sectionData.included||[]).slice();
+  if(pl&&pl.name)included.unshift('Selected plan: '+pl.name);
+  if(pl&&pl.details)included.push('Plan detail: '+pl.details);
+  if(includedEl)includedEl.innerHTML=included.map(x=>'<li><i class="fa-solid fa-check"></i><span>'+escapeHtml(x)+'</span></li>').join('');
+  const steps=sectionData.steps||['Choose your plan','Click Order Now','Continue via WhatsApp','Receive your access'];
+  if(stepsEl)stepsEl.innerHTML=steps.map((x,i)=>'<div class="product-step"><span>'+String(i+1).padStart(2,'0')+'</span><strong>'+escapeHtml(x)+'</strong></div>').join('');
+  const faq=sectionData.faq||[];
+  if(faqEl)faqEl.innerHTML=faq.map((x,i)=>'<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button '+(i?'collapsed':'')+'" data-bs-toggle="collapse" data-bs-target="#pf'+i+'_'+p.slug+'">'+escapeHtml(x[0])+'</button></h2><div id="pf'+i+'_'+p.slug+'" class="accordion-collapse collapse '+(i?'':'show')+'"><div class="accordion-body">'+escapeHtml(x[1])+'</div></div></div>').join('');
+ }
  const capcutDevices=root.querySelector('#capcutDeviceOptions'), capcutFixed=root.querySelector('#capcutFixedDevice');
  let selectedDevices=2, selectedCapcutPrice='Rs. 180';
  function selectPlan(i){
   const pl=p.plans[i]||p.plans[0];
   planButtons.forEach((btn,j)=>btn.classList.toggle('active',j===i));
   if(selected)selected.textContent=pl.details||'Plan selected';
+  renderUniqueSections(pl);
   if(p.slug==='capcut'){
    const isMonth=i===1;
    if(capcutDevices)capcutDevices.style.display=isMonth?'block':'none';
