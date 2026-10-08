@@ -75,6 +75,26 @@ Object.assign(PRODUCT_SECTIONS,{
  surfshark:{included:["Selected 1-month or 2-month duration","Full account credentials","Login verification support","1-device access"],steps:["Choose the duration","Place the order through WhatsApp","Receive the account credentials","Complete login verification on the selected device"],faq:[["Is this a shared screen product?","No. The offer is described as full account access for one device."],["What changes between the plans?","The duration changes: 1 Month or 2 Months, with the 2-month option shown at a discounted price."],["Do I receive login details?","Yes. The supplied access uses account credentials and the required verification step."]]}
 });
 
+
+const PRODUCT_INFO={
+ capcut:{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'},
+ gemini:{delivery:'Invite or access setup on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'},
+ canva:{delivery:'Team invitation sent on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'},
+ surfshark:{delivery:'Account login details sent on WhatsApp after payment confirmation',warranty:'25-day replacement warranty'},
+ netflix:{delivery:'Screen access details sent on WhatsApp after payment confirmation',warranty:'25-day AR SERVICES warranty'},
+ office365:{delivery:'Login credentials sent on WhatsApp after payment confirmation',warranty:'20-day full warranty'},
+ 'adobe-express':{delivery:'Activation on your Adobe account after payment confirmation on WhatsApp',warranty:'Warranty terms confirmed on WhatsApp before payment'},
+ ilovepdf:{delivery:'Premium access details sent on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'},
+ quillbot:{delivery:'Coupon code sent on WhatsApp after payment confirmation (12-hour code hold time)',warranty:'20-day subscription warranty'},
+ duolingo:{delivery:'Redeem link sent on WhatsApp after payment confirmation (2-hour hold time)',warranty:'No warranty after activation'},
+ 'youtube-premium':{delivery:'Activation on your own account after payment confirmation on WhatsApp (4-hour link hold time)',warranty:'1-month AR SERVICES warranty'}
+};
+function productInfoRows(p){
+ const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
+ const row=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
+ return `<div class="product-info-rows">${row('Delivery',info.delivery)}${row('Warranty',info.warranty)}${row('Payment','JazzCash & EasyPaisa — 03179172511 (Ali Haider)')}</div>`;
+}
+
 const LOGO_FIT={
  capcut:{size:'84px'},gemini:{size:'39px'},canva:{size:'48px'},surfshark:{size:'48px'},
  netflix:{size:'48px'},office365:{size:'46px'},'adobe-express':{size:'48px'},ilovepdf:{size:'48px'},
@@ -175,6 +195,7 @@ function renderProductPage(){
       </div>
       <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}
+      ${productInfoRows(p)}
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
       <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
@@ -217,7 +238,7 @@ function renderProductPage(){
 <section class="section-alt"><div class="container"><div class="glass-card product-content-card mx-auto" style="max-width:900px"><h2 class="h3 fw-bold mb-3">Customer Reviews</h2><p class="text-silver mb-4">Real customer feedback shared with AR SERVICES.</p><div id="productReviews" class="product-review-placeholder"></div><a class="btn btn-outline-glass mt-3" href="reviews.html">View All Reviews</a></div></div></section>
  <section><div class="container"><h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2><div id="productFaq" class="accordion mx-auto" style="max-width:850px"></div></div></section>
  <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
- document.title=`${p.name} | AR SERVICES`;
+ document.title=`${p.name} Price in Pakistan \u2013 from ${p.price} | AR SERVICES`;
  const sectionData=PRODUCT_SECTIONS[p.slug]||{};
  const sectionDescription=sectionData.description||p.detailedDescription||p.description;
  const sectionBenefits=sectionData.benefits||p.benefits||[];
