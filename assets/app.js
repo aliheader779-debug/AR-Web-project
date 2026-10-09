@@ -92,7 +92,7 @@ const PRODUCT_INFO={
 function productInfoRows(p){
  const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
  const row=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
- return `<div class="product-info-rows">${row('Delivery',info.delivery)}${row('Warranty',info.warranty)}${row('Payment','JazzCash & EasyPaisa — 03179172511 (Ali Haider)')}</div>`;
+ return `<div class="product-info-rows">${row('Delivery',info.delivery)}${row('Warranty',info.warranty)}${row('Payment','JazzCash & EasyPaisa — 03179172511 (Ali Haider)')}${row('Free Bonus','Muse AI Redeem Code (1 Billion Tokens) — FREE with this order, delivered on WhatsApp after payment confirmation, while stock lasts')}</div>`;
 }
 
 const LOGO_FIT={
