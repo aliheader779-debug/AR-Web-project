@@ -62,6 +62,82 @@
  </div>
 </div>
 </section>
+
+<style>
+.bb-wrap{padding:70px 0 10px}
+.bb-badge{display:inline-block;padding:6px 16px;border-radius:50px;background:rgba(0,210,255,.12);border:1px solid rgba(0,210,255,.35);color:#7ee7ff;font-size:.8rem;letter-spacing:2px;font-weight:600}
+.bb-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:900px;margin:34px auto 0}
+@media(max-width:768px){.bb-cards{grid-template-columns:1fr}}
+.bb-card{cursor:pointer;text-align:left;width:100%;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.12);border-radius:18px;padding:22px;color:#fff;transition:.2s;position:relative;font-family:inherit}
+.bb-card:hover{border-color:rgba(0,210,255,.5)}
+.bb-card.bb-on{border-color:#00d2ff;background:rgba(0,210,255,.08);box-shadow:0 0 24px rgba(0,210,255,.18)}
+.bb-check{position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;color:transparent;font-size:.8rem}
+.bb-card.bb-on .bb-check{background:#00d2ff;border-color:#00d2ff;color:#04222e}
+.bb-card h5{margin:0 0 4px;font-size:1.15rem}
+.bb-card .bb-sub{color:#b8c4d4;font-size:.86rem;margin:0 0 12px}
+.bb-card .bb-price{font-size:1.3rem;font-weight:700}
+.bb-card .bb-price small{font-size:.8rem;color:#b8c4d4;font-weight:400}
+.bb-summary{max-width:900px;margin:26px auto 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px}
+.bb-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 0;color:#dbe6f5}
+.bb-total{font-size:1.5rem;font-weight:800;color:#fff}
+.bb-strike{text-decoration:line-through;color:#8fa3bd}
+.bb-save{color:#2ee6a8;font-weight:700}
+.bb-bonus{color:#ffd166;font-weight:600}
+.bb-note{color:#8fa3bd;font-size:.85rem}
+.bb-terms{max-width:900px;margin:14px auto 0;color:#7186a0;font-size:.78rem;line-height:1.6}
+</style>
+<section class="bb-wrap" id="bundle-offer"><div class="container text-center">
+<span class="bb-badge" data-aos="fade-up">SPECIAL BUNDLE OFFER</span>
+<h2 class="section-title" data-aos="fade-up">Build Your Own <span class="text-gradient">Bundle</span></h2>
+<p class="text-silver mx-auto" style="max-width:720px" data-aos="fade-up">Select any 2 or 3 of our best-selling tools and unlock an exclusive bundle price. Every bundle order also includes a <strong style="color:#ffd166">FREE Muse AI redeem code (1 billion tokens)</strong>, delivered on WhatsApp after payment confirmation.</p>
+<div class="bb-cards" data-aos="fade-up">
+<button type="button" class="bb-card" data-bb="gemini" aria-pressed="false"><span class="bb-check"><i class="fa-solid fa-check"></i></span><h5>Gemini</h5><p class="bb-sub">Google AI Pro &middot; 18 Months</p><div class="bb-price">Rs. 799</div></button>
+<button type="button" class="bb-card" data-bb="capcut" aria-pressed="false"><span class="bb-check"><i class="fa-solid fa-check"></i></span><h5>CapCut Pro</h5><p class="bb-sub">Video Editing &middot; 1 Month &middot; 1 Device</p><div class="bb-price">Rs. 399</div></button>
+<button type="button" class="bb-card" data-bb="canva" aria-pressed="false"><span class="bb-check"><i class="fa-solid fa-check"></i></span><h5>Canva Edu</h5><p class="bb-sub">Design &amp; Creative &middot; 1 Month</p><div class="bb-price">Rs. 149</div></button>
+</div>
+<div class="bb-summary text-start" data-aos="fade-up">
+<div class="bb-row"><span>Your selection</span><strong id="bbNames">No tools selected</strong></div>
+<div class="bb-row"><span>Regular total</span><span id="bbRegular">Rs. 0</span></div>
+<div class="bb-row"><span>Bundle price</span><span class="bb-total" id="bbTotal">—</span></div>
+<div class="bb-row"><span class="bb-bonus"><i class="fa-solid fa-gift me-1"></i> FREE bonus</span><span class="bb-bonus">Muse AI Redeem Code (1 Billion Tokens)</span></div>
+<p class="bb-note mb-3" id="bbHint">Select at least 2 tools to unlock bundle pricing and your free bonus.</p>
+<a id="bbOrder" href="#" class="btn btn-gradient w-100 py-3 disabled" aria-disabled="true" target="_blank" rel="noopener">Order on WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></a>
+</div>
+<p class="bb-terms text-start">Terms: One free Muse AI redeem code is included per bundle order and is delivered on WhatsApp after payment confirmation, while stock lasts. Bundle pricing applies to the combinations shown above; the CapCut Pro single-device plan is always charged at its standard price of Rs. 399. Each tool is provided for the plan duration stated on its card. Standard delivery, warranty and payment terms on this website apply to bundle orders.</p>
+</div></section>
+<script>
+(function(){
+var P={gemini:{n:'Gemini (18 Months)',p:799},capcut:{n:'CapCut Pro (1 Month, 1 Device)',p:399},canva:{n:'Canva Edu (1 Month)',p:149}};
+var COMBO={'capcut+gemini':1099,'canva+gemini':849,'canva+capcut':599,'canva+capcut+gemini':1199};
+var sel={};
+function fmt(x){return 'Rs. '+x.toLocaleString('en-US');}
+function upd(){
+ var keys=Object.keys(sel).sort();
+ var names=keys.map(function(k){return P[k].n;});
+ var reg=keys.reduce(function(s,k){return s+P[k].p;},0);
+ document.getElementById('bbNames').textContent=names.length?names.join(' + '):'No tools selected';
+ document.getElementById('bbRegular').innerHTML=keys.length>1&&COMBO[keys.join('+')]<reg?('<span class="bb-strike">'+fmt(reg)+'</span>'):fmt(reg);
+ var total=document.getElementById('bbTotal'),hint=document.getElementById('bbHint'),btn=document.getElementById('bbOrder');
+ if(keys.length<2){total.textContent='—';hint.innerHTML='Select at least 2 tools to unlock bundle pricing and your free bonus.';btn.classList.add('disabled');btn.setAttribute('aria-disabled','true');btn.removeAttribute('href');return;}
+ var price=COMBO[keys.join('+')];
+ total.textContent=fmt(price);
+ var save=reg-price;
+ hint.innerHTML=save>0?('<span class="bb-save">You save '+fmt(save)+'</span> on this bundle, plus your FREE Muse AI redeem code.'):'This bundle includes your FREE Muse AI redeem code at no extra cost.';
+ var msg='Hello AR SERVICES, I would like to order this bundle: '+names.join(' + ')+'. Bundle Price: '+fmt(price)+' (Regular Total: '+fmt(reg)+'). This includes the FREE Muse AI redeem code. Please share the payment details.';
+ btn.setAttribute('href','https://wa.me/923351925662?text='+encodeURIComponent(msg));
+ btn.classList.remove('disabled');btn.removeAttribute('aria-disabled');
+}
+document.querySelectorAll('[data-bb]').forEach(function(card){
+ card.addEventListener('click',function(){
+  var k=card.getAttribute('data-bb');
+  if(sel[k]){delete sel[k];card.classList.remove('bb-on');card.setAttribute('aria-pressed','false');}
+  else{sel[k]=1;card.classList.add('bb-on');card.setAttribute('aria-pressed','true');}
+  upd();
+ });
+});
+upd();
+})();
+</script>
 <section class="section-alt"><div class="container"><h2 class="section-title" data-aos="fade-up">Popular <span class="text-gradient">Tools</span></h2><div id="homeProducts" class="row g-4"></div><div class="text-center mt-5"><a href="tools.html" class="btn btn-outline-glass px-4 py-3">View All Tools</a></div></div></section>
 <section><div class="container"><h2 class="section-title" data-aos="fade-up">Browse by <span class="text-gradient">Category</span></h2><div class="row g-4">
 <div class="col-6 col-lg-3"><a href="tools.html?category=AI%20Tools" class="glass-card category-card"><div class="neon-circle-icon"><i class="fa-solid fa-robot"></i></div><h5>AI Tools</h5><p class="text-silver mb-0">Smart productivity</p></a></div>
