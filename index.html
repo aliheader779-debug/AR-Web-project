@@ -102,7 +102,7 @@
 <div class="bb-row"><span>Regular total</span><span id="bbRegular">Rs. 0</span></div>
 <div class="bb-row"><span>Bundle price</span><span class="bb-total" id="bbTotal">—</span></div>
 <div class="bb-row"><span class="bb-bonus"><i class="fa-solid fa-gift me-1"></i> FREE bonus</span><span class="bb-bonus">Muse AI Redeem Code (1 Billion Tokens)</span></div>
-<p class="bb-note mb-3" id="bbHint">Select at least 2 tools to unlock bundle pricing. Your FREE Muse AI code is included with every order.</p>
+<p class="bb-note mb-3" id="bbHint">Select 1 tool to order it directly, or 2&ndash;3 tools to unlock bundle pricing. Your FREE Muse AI code is included with every order.</p>
 <a id="bbOrder" href="#" class="btn btn-gradient w-100 py-3 disabled" aria-disabled="true" target="_blank" rel="noopener">Order on WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></a>
 </div>
 <p class="bb-terms text-start">Terms: One free Muse AI redeem code is included with every order (single tools and bundles alike) and is delivered on WhatsApp after payment confirmation, while stock lasts. Bundle pricing applies to the combinations shown above; where CapCut Pro is selected, the bundle includes the CapCut Pro 2 Devices plan (1 Month) at its bundle rate. Each tool is provided for the plan duration stated on its card. Standard delivery, warranty and payment terms on this website apply to bundle orders.</p>
@@ -120,7 +120,8 @@ function upd(){
  document.getElementById('bbNames').textContent=names.length?names.join(' + '):'No tools selected';
  document.getElementById('bbRegular').innerHTML=keys.length>1&&COMBO[keys.join('+')]<reg?('<span class="bb-strike">'+fmt(reg)+'</span>'):fmt(reg);
  var total=document.getElementById('bbTotal'),hint=document.getElementById('bbHint'),btn=document.getElementById('bbOrder');
- if(keys.length<2){total.textContent='—';hint.innerHTML='Select at least 2 tools to unlock bundle pricing. Your FREE Muse AI code is included with every order.';btn.classList.add('disabled');btn.setAttribute('aria-disabled','true');btn.removeAttribute('href');return;}
+ if(keys.length===0){total.textContent='—';hint.innerHTML='Select 1 tool to order it directly, or 2-3 tools to unlock bundle pricing. Your FREE Muse AI code is included with every order.';btn.classList.add('disabled');btn.setAttribute('aria-disabled','true');btn.removeAttribute('href');return;}
+ if(keys.length===1){var p1=P[keys[0]].p;total.textContent=fmt(p1);hint.innerHTML='Single-tool order — standard price, and your FREE Muse AI redeem code is included with this order.';var msg1='Hello AR SERVICES, I would like to order: '+names[0]+'. Price: '+fmt(p1)+'. This includes the FREE Muse AI redeem code. Please share the payment details.';btn.setAttribute('href','https://wa.me/923351925662?text='+encodeURIComponent(msg1));btn.classList.remove('disabled');btn.removeAttribute('aria-disabled');return;}
  var price=COMBO[keys.join('+')];
  total.textContent=fmt(price);
  var save=reg-price;
