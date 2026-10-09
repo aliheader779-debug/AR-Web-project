@@ -84,12 +84,15 @@
 .bb-save{color:#059669;font-weight:700}
 .bb-bonus{color:#b45309;font-weight:700}
 .bb-note{color:#64748b;font-size:.85rem}
+.bb-timer{display:inline-flex;align-items:center;gap:10px;margin-top:20px;background:#fff1f2;border:1px solid #fda4af;color:#9f1239;font-weight:700;padding:10px 22px;border-radius:50px;font-size:1rem;box-shadow:0 6px 16px rgba(159,18,57,.08)}
+.bb-timer .bb-clock{font-variant-numeric:tabular-nums;letter-spacing:1px}
 .bb-terms{max-width:900px;margin:14px auto 0;color:#64748b;font-size:.78rem;line-height:1.6}
 </style>
 <section class="bb-wrap" id="bundle-offer"><div class="container text-center">
 <span class="bb-badge" data-aos="fade-up">SPECIAL BUNDLE OFFER</span>
 <h2 class="section-title" data-aos="fade-up">Build Your Own <span class="text-gradient">Bundle</span></h2>
 <p class="text-silver mx-auto" style="max-width:720px" data-aos="fade-up">Select any 2 or 3 of our best-selling tools and unlock an exclusive bundle price. Every bundle order also includes a <strong style="color:#b45309">FREE Muse AI redeem code (1 billion tokens)</strong>, delivered on WhatsApp after payment confirmation.</p>
+<div data-aos="fade-up"><span class="bb-timer"><i class="fa-solid fa-clock"></i> Offer ends tonight at 12:00 AM &middot; Ends in <span class="bb-clock" id="bbTimer">--:--:--</span></span></div>
 <div class="bb-cards" data-aos="fade-up">
 <button type="button" class="bb-card" data-bb="gemini" aria-pressed="false"><span class="bb-check"><i class="fa-solid fa-check"></i></span><h5>Gemini</h5><p class="bb-sub">Google AI Pro &middot; 18 Months</p><div class="bb-price">Rs. 799</div></button>
 <button type="button" class="bb-card" data-bb="capcut" aria-pressed="false"><span class="bb-check"><i class="fa-solid fa-check"></i></span><h5>CapCut Pro</h5><p class="bb-sub">Video Editing &middot; 1 Month &middot; 2 Devices</p><div class="bb-price">Rs. 699</div></button>
@@ -136,6 +139,21 @@ document.querySelectorAll('[data-bb]').forEach(function(card){
  });
 });
 upd();
+})();
+</script>
+<script>
+(function(){
+var end=new Date('2026-10-10T00:00:00+05:00').getTime();
+var el=document.getElementById('bbTimer');
+function pad(n){return (n<10?'0':'')+n;}
+function tick(){
+ var left=end-Date.now();
+ if(left<=0){el.textContent='Offer ended';return;}
+ var s=Math.floor(left/1000);
+ el.textContent=pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(s%60);
+ setTimeout(tick,1000);
+}
+tick();
 })();
 </script>
 <section class="section-alt"><div class="container"><h2 class="section-title" data-aos="fade-up">Popular <span class="text-gradient">Tools</span></h2><div id="homeProducts" class="row g-4"></div><div class="text-center mt-5"><a href="tools.html" class="btn btn-outline-glass px-4 py-3">View All Tools</a></div></div></section>
