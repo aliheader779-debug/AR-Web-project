@@ -17,10 +17,18 @@ src="https://www.facebook.com/tr?id=1000299606425788&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <script>
+window.__fbqLead = function () { if (window.fbq) fbq('track', 'Lead'); };
 document.addEventListener('click', function (e) {
   var a = e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
-  if (a && window.fbq) fbq('track', 'Lead');
+  if (a) window.__fbqLead();
 });
+(function () {
+  var origOpen = window.open;
+  window.open = function (url) {
+    if (url && String(url).indexOf('wa.me') > -1) window.__fbqLead();
+    return origOpen.apply(window, arguments);
+  };
+})();
 </script>
 </head><body>
 <nav class="navbar navbar-expand-lg glass-header"><div class="container-fluid"><a class="navbar-brand" href="index.html">AR SERVICES</a><button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Open navigation"><i class="fa-solid fa-bars text-white fs-4"></i></button><div class="collapse navbar-collapse" id="navbarNav"><ul class="navbar-nav ms-auto align-items-lg-center"><li class="nav-item"><a class="nav-link" href="index.html">Home</a></li><li class="nav-item"><a class="nav-link active" href="tools.html">Tools</a></li><li class="nav-item"><a class="nav-link" href="categories.html">Categories</a></li><li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li><li class="nav-item"><a class="nav-link" href="reviews.html">Reviews</a></li><li class="nav-item"><a class="nav-link" href="about.html">About</a></li><li class="nav-item"><a class="nav-link" href="support.html">Support</a></li><li class="nav-item ms-lg-2 mt-2 mt-lg-0"><a class="btn btn-outline-glass" href="tools.html"><i class="fa-solid fa-magnifying-glass me-1"></i> Browse Tools</a></li><li class="nav-item ms-lg-2 mt-2 mt-lg-0"><a class="btn btn-gradient" href="https://wa.me/923351925662" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp me-1"></i> WhatsApp</a></li></ul></div></div></nav>
