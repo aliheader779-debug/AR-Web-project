@@ -17,10 +17,18 @@ src="https://www.facebook.com/tr?id=1000299606425788&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <script>
+window.__fbqLead = function () { if (window.fbq) fbq('track', 'Lead'); };
 document.addEventListener('click', function (e) {
   var a = e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
-  if (a && window.fbq) fbq('track', 'Lead');
+  if (a) window.__fbqLead();
 });
+(function () {
+  var origOpen = window.open;
+  window.open = function (url) {
+    if (url && String(url).indexOf('wa.me') > -1) window.__fbqLead();
+    return origOpen.apply(window, arguments);
+  };
+})();
 </script>
 </head><body>
 
