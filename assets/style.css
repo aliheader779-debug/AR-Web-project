@@ -714,3 +714,15 @@ footer hr{opacity:.16}
  .product-sticky-price{display:block;font-size:1rem;margin-top:2px}
  .product-sticky-btn{min-width:116px;padding:10px 14px;font-size:.78rem}
 }
+
+/* === Header fit fix (2026-10-17): Blog link ke baad nav bara ho gaya tha — links/buttons ek line mein rakho === */
+@media (min-width:992px){
+  .glass-header .nav-link{white-space:nowrap;margin:0 4px}
+  .glass-header .navbar-nav .btn{white-space:nowrap;padding:8px 16px;font-size:.86rem}
+  .glass-header .nav-item{flex-shrink:0}
+}
+@media (min-width:992px) and (max-width:1240px){
+  .glass-header{padding:10px 16px}
+  .glass-header .nav-link{font-size:.9rem;margin:0 3px}
+  .glass-header .navbar-brand{font-size:.95rem;letter-spacing:1px}
+}
