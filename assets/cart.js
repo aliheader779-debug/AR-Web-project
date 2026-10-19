@@ -204,6 +204,22 @@
     if (!items.length) { fail('Cart khaali hai.'); return; }
     els.error.hidden = true;
 
+    /* Phase B: send the lead to the sheet endpoint (fire-and-forget).
+       Must NEVER block/delay/break the WhatsApp flow below. */
+    try {
+      var leadPayload = JSON.stringify({ action: 'websitelead', data: {
+        name: name, number: phoneRaw, city: city,
+        items: items.map(function (x) { return x.name + ' Rs ' + x.price; }).join('; '),
+        total: cartTotal()
+      } });
+      var leadUrl = 'https://script.google.com/macros/s/AKfycby-brB_YTJvxp-dwjbVkI21OT1onpe7eck-3JpB-UJaw3BuVp-YaUHvMsRUO_K4om4/exec';
+      try {
+        if (!(navigator.sendBeacon && navigator.sendBeacon(leadUrl, new Blob([leadPayload], { type: 'text/plain' })))) throw 0;
+      } catch (beaconErr) {
+        try { fetch(leadUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: leadPayload, keepalive: true }); } catch (fetchErr) { /* ignore */ }
+      }
+    } catch (leadErr) { /* lead send is best-effort only — ignore */ }
+
     var lines = items.map(function (x) { return '• ' + x.name + ' — Rs ' + x.price; });
     var msg = 'Assalam o Alaikum! Main website se order karna chahta hoon:\n' +
       lines.join('\n') +
