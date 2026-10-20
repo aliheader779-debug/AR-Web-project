@@ -71,7 +71,7 @@
     var wrap = document.createElement('div');
     wrap.id = 'arCartRoot';
     wrap.innerHTML =
-      '<button type="button" id="arCartFab" class="ar-cart-fab" aria-label="Open cart">🛒' +
+      '<button type="button" id="arCartFab" class="ar-cart-fab" aria-label="Open cart"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2.1l2.5 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>' +
         '<span id="arCartBadge" class="ar-cart-badge" hidden>0</span></button>' +
       '<div id="arCartOverlay" class="ar-cart-overlay"></div>' +
       '<aside id="arCartDrawer" class="ar-cart-drawer" aria-hidden="true">' +
