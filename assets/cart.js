@@ -35,6 +35,13 @@
   function fbqTrack(event, params) {
     if (window.fbq) { try { window.fbq('track', event, params || {}); } catch (e) { /* pixel blocked — ignore */ } }
   }
+  /* Flat 2D cart icon — same path/design as the FAB icon. The stroke uses
+     currentColor: it renders white on the gradient add-to-cart buttons and
+     dark in the (light) drawer header, matching each surface. */
+  function cartIcon(size) {
+    var s = size || 18;
+    return '<svg class="ar-ico-cart" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 3h2.1l2.5 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>';
+  }
   /* PRODUCTS is a top-level const in assets/app.js (loaded before this file). */
   function getProducts() {
     try { return (typeof PRODUCTS !== 'undefined' && PRODUCTS) ? PRODUCTS : []; } catch (e) { return []; }
@@ -57,12 +64,36 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       var arr = raw ? JSON.parse(raw) : [];
       if (!Array.isArray(arr)) return [];
-      return arr.filter(function (x) { return x && x.id && x.name && typeof x.price === 'number'; });
+      /* Cleanup: drop items for plans that no longer exist (the removed
+         CapCut 7 Days plan could never be added via the UI, but a stale
+         saved cart must not resurrect it). */
+      return arr.filter(function (x) {
+        return x && x.id && x.name && typeof x.price === 'number' && x.id !== 'capcut-7-days';
+      });
     } catch (e) { return []; }
   }
   var items = load();
   function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch (e) { /* private mode */ } }
-  function cartTotal() { return items.reduce(function (s, x) { return s + (Number(x.price) || 0); }, 0); }
+  function cartSubtotal() { return items.reduce(function (s, x) { return s + (Number(x.price) || 0); }, 0); }
+  /* Bundle discount (Phase C, 2026-10-20): tiered by the number of
+     bundle-flagged items in the cart — 2 items = 10%, 3 = 15%, 4+ = 20%.
+     Margin protection: the CapCut 1 Month (1 Device) plan COUNTS toward
+     the tier but its price is EXCLUDED from the discountable amount.
+     Discount rounds to whole rupees (Math.round). Non-bundle items are
+     never discounted. cartTotal() below is the FINAL payable total. */
+  var NO_DISCOUNT_ITEM_ID = 'capcut-1-month-1device';
+  function pricing() {
+    var subtotal = cartSubtotal();
+    var bundleItems = items.filter(function (x) { return x.bundle; });
+    var count = bundleItems.length;
+    var pct = count >= 4 ? 20 : (count === 3 ? 15 : (count === 2 ? 10 : 0));
+    var discountable = bundleItems.reduce(function (s, x) {
+      return s + (x.id === NO_DISCOUNT_ITEM_ID ? 0 : (Number(x.price) || 0));
+    }, 0);
+    var discount = pct ? Math.round(discountable * pct / 100) : 0;
+    return { subtotal: subtotal, bundleCount: count, pct: pct, discountable: discountable, discount: discount, total: subtotal - discount };
+  }
+  function cartTotal() { return pricing().total; }
 
   /* ---------------- UI skeleton (injected once) ---------------- */
   var els = {};
@@ -75,10 +106,12 @@
         '<span id="arCartBadge" class="ar-cart-badge" hidden>0</span></button>' +
       '<div id="arCartOverlay" class="ar-cart-overlay"></div>' +
       '<aside id="arCartDrawer" class="ar-cart-drawer" aria-hidden="true">' +
-        '<div class="ar-cart-head"><strong>🛒 Your Cart</strong>' +
+        '<div class="ar-cart-head"><strong>' + cartIcon(20) + ' Your Cart</strong>' +
           '<button type="button" class="ar-cart-close" data-ar-close aria-label="Close cart">&times;</button></div>' +
         '<div id="arCartItems" class="ar-cart-items"></div>' +
         '<div class="ar-cart-foot">' +
+          '<div class="ar-cart-subrow" id="arCartSubtotalRow" hidden><span>Subtotal</span><strong id="arCartSubtotal">Rs 0</strong></div>' +
+          '<div class="ar-cart-subrow ar-cart-discount-row" id="arCartDiscountRow" hidden><span id="arCartDiscountLabel">Bundle Discount</span><strong id="arCartDiscountVal">−Rs 0</strong></div>' +
           '<div class="ar-cart-total"><span>Total</span><strong id="arCartTotal">Rs 0</strong></div>' +
           '<button type="button" id="arCartCheckoutBtn" class="ar-btn-gradient ar-w100">Checkout</button>' +
           '<button type="button" class="ar-cart-continue" data-ar-close>Continue shopping</button>' +
@@ -108,6 +141,9 @@
     els.fab = $('#arCartFab'); els.badge = $('#arCartBadge');
     els.overlay = $('#arCartOverlay'); els.drawer = $('#arCartDrawer');
     els.itemsBox = $('#arCartItems'); els.total = $('#arCartTotal');
+    els.subtotalRow = $('#arCartSubtotalRow'); els.subtotal = $('#arCartSubtotal');
+    els.discountRow = $('#arCartDiscountRow'); els.discountLabel = $('#arCartDiscountLabel');
+    els.discountVal = $('#arCartDiscountVal');
     els.checkoutBtn = $('#arCartCheckoutBtn');
     els.modal = $('#arCheckoutModal'); els.summary = $('#arCheckoutSummary');
     els.form = $('#arCheckoutForm'); els.error = $('#arCoError');
@@ -144,7 +180,18 @@
           '<button type="button" class="ar-cart-remove" data-ar-remove="' + escapeHtml(x.id) + '" aria-label="Remove item">&times;</button></div>';
       }).join('');
     }
-    els.total.textContent = fmt(cartTotal());
+    var pr = pricing();
+    els.total.textContent = fmt(pr.total);
+    var hasDiscount = pr.discount > 0;
+    if (els.subtotalRow && els.discountRow) {
+      els.subtotalRow.hidden = !hasDiscount;
+      els.discountRow.hidden = !hasDiscount;
+      if (hasDiscount) {
+        els.subtotal.textContent = fmt(pr.subtotal);
+        els.discountLabel.textContent = 'Bundle Discount (' + pr.pct + '%)';
+        els.discountVal.textContent = '−' + fmt(pr.discount);
+      }
+    }
     els.checkoutBtn.disabled = count === 0;
     els.checkoutBtn.classList.toggle('ar-disabled', count === 0);
   }
@@ -177,9 +224,16 @@
   function openCheckout() {
     if (!items.length) { toast('Cart khaali hai — pehle koi plan add karein'); return; }
     closeDrawer();
-    els.summary.innerHTML = items.map(function (x) {
+    var pr = pricing();
+    var summaryHtml = items.map(function (x) {
       return '<div class="ar-co-line"><span>' + escapeHtml(x.name) + '</span><strong>' + fmt(x.price) + '</strong></div>';
-    }).join('') + '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(cartTotal()) + '</strong></div>';
+    }).join('');
+    if (pr.discount > 0) {
+      summaryHtml += '<div class="ar-co-line"><span>Subtotal</span><strong>' + fmt(pr.subtotal) + '</strong></div>' +
+        '<div class="ar-co-line ar-co-discount"><span>Bundle Discount (' + pr.pct + '%)</span><strong>−' + fmt(pr.discount) + '</strong></div>';
+    }
+    els.summary.innerHTML = summaryHtml +
+      '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(pr.total) + '</strong></div>';
     els.error.hidden = true;
     els.modal.classList.add('open'); els.modal.setAttribute('aria-hidden', 'false');
     /* Pixel: InitiateCheckout on modal open (spec) */
@@ -203,13 +257,16 @@
     if (!/^\+?\d{10,13}$/.test(phone)) { fail('Sahi WhatsApp number likhein (masalan 03XXXXXXXXX).'); return; }
     if (!items.length) { fail('Cart khaali hai.'); return; }
     els.error.hidden = true;
+    var pr = pricing();
 
     /* Phase B: send the lead to the sheet endpoint (fire-and-forget).
        Must NEVER block/delay/break the WhatsApp flow below. */
     try {
+      var leadItems = items.map(function (x) { return x.name + ' Rs ' + x.price; }).join('; ');
+      if (pr.discount > 0) leadItems += '; Bundle Discount (' + pr.pct + '%): -Rs ' + pr.discount;
       var leadPayload = JSON.stringify({ action: 'websitelead', data: {
         name: name, number: phoneRaw, city: city,
-        items: items.map(function (x) { return x.name + ' Rs ' + x.price; }).join('; '),
+        items: leadItems,
         total: cartTotal()
       } });
       var leadUrl = 'https://script.google.com/macros/s/AKfycby-brB_YTJvxp-dwjbVkI21OT1onpe7eck-3JpB-UJaw3BuVp-YaUHvMsRUO_K4om4/exec';
@@ -223,6 +280,7 @@
     var lines = items.map(function (x) { return '• ' + x.name + ' — Rs ' + x.price; });
     var msg = 'Assalam o Alaikum! Main website se order karna chahta hoon:\n' +
       lines.join('\n') +
+      (pr.discount > 0 ? '\nSubtotal: Rs ' + pr.subtotal + '\nBundle Discount (' + pr.pct + '%): -Rs ' + pr.discount : '') +
       '\nTotal: Rs ' + cartTotal() +
       '\nName: ' + name +
       '\nNumber: ' + phoneRaw +
@@ -242,6 +300,7 @@
         if (items[i].id === item.id) { toast('Ye plan pehle se cart mein hai'); pulseBadge(); return false; }
       }
       var entry = { id: String(item.id), name: String(item.name), price: Number(item.price) || 0 };
+      if (item.bundle) entry.bundle = true;
       items.push(entry);
       save(); renderCart(); pulseBadge();
       fbqTrack('AddToCart', {
@@ -250,6 +309,28 @@
       });
       return true;
     },
+    /* Bundle Builder entry point: adds each plan with the bundle flag.
+       A plan that is already in the cart is not duplicated — its existing
+       entry is simply flagged as part of the bundle so the tiered discount
+       (computed in pricing()) applies. Returns the number of NEW items. */
+    addBundle: function (list) {
+      var added = 0;
+      (list || []).forEach(function (item) {
+        if (!item || !item.id || !item.name) return;
+        var existing = null;
+        for (var i = 0; i < items.length; i++) { if (items[i].id === item.id) { existing = items[i]; break; } }
+        if (existing) { if (!existing.bundle) existing.bundle = true; return; }
+        var entry = { id: String(item.id), name: String(item.name), price: Number(item.price) || 0, bundle: true };
+        items.push(entry); added++;
+        fbqTrack('AddToCart', {
+          content_name: entry.name, content_ids: [entry.id], content_type: 'product',
+          value: entry.price, currency: 'PKR'
+        });
+      });
+      if (list && list.length) { save(); renderCart(); pulseBadge(); }
+      return added;
+    },
+    pricing: pricing,
     remove: function (id) {
       items = items.filter(function (x) { return x.id !== id; });
       save(); renderCart();
@@ -301,7 +382,7 @@
     btn.type = 'button';
     btn.id = 'arAddCartProduct';
     btn.className = 'ar-add-cart-btn ar-add-cart-product';
-    btn.innerHTML = '🛒 Add to Cart';
+    btn.innerHTML = cartIcon(18) + ' Add to Cart';
     btn.addEventListener('click', function () {
       var sel = currentProductSelection(root);
       if (!sel) return;
@@ -350,7 +431,7 @@
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ar-add-cart-btn ar-add-cart-card';
-      btn.innerHTML = '🛒 Add to Cart';
+      btn.innerHTML = cartIcon(18) + ' Add to Cart';
       btn.addEventListener('click', function () { ARCart.add(item); });
       link.parentNode.insertBefore(btn, link.nextSibling);
     });
@@ -361,6 +442,13 @@
   function init() {
     buildUI();
     renderCart();
+    /* Homepage Featured Offer button (Phase C) — fixed special-price item. */
+    var foBtn = $('#foAddCart');
+    if (foBtn) {
+      foBtn.addEventListener('click', function () {
+        ARCart.add({ id: 'gemini-18-months-offer', name: 'Gemini — 18 Months (Featured Offer)', price: 749 });
+      });
+    }
     var root = $('#productPage');
     if (root) fireViewContent(root);
     /* app.js renders product page + grids in its own DOMContentLoaded handler

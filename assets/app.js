@@ -1,7 +1,6 @@
 
 const PRODUCTS = [
- {slug:'capcut',deviceAccess:'2 devices access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 200',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
-  {name:'7 Days',price:'Rs. 200',details:'2 devices access',outOfStock:true},
+ {slug:'capcut',deviceAccess:'2 devices access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 399',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
   {name:'1 Month',price:'Rs. 399',details:'Choose device access'}
  ],features:['Advanced video editing','Premium effects and filters','Pro transitions','Creative templates','Cloud storage','Text, audio and visual editing'],detailedDescription:'CapCut Pro gives creators access to advanced video editing features for making social media videos, reels, YouTube content, promotional videos, and more. It is designed for beginners and regular content creators who want more editing options without a complicated workflow.',benefits:['Create polished videos faster','Make content for social media and YouTube','Use advanced editing tools and effects','Improve the overall look of your videos'],bestFor:'Content creators, students, social media users, and video editors',stock:'Available'},
  {slug:'gemini',accessLabel:'Access Method',accessDetails:'Choose your access option',logo:'https://drive.google.com/thumbnail?id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X&sz=w1000',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 799',description:'Google AI Pro access centered on Gemini and a wider set of Google AI, creative, and productivity features.',plans:[{name:'18 Months',price:'Rs. 799',details:'Choose your access option'}],features:['Gemini app with advanced AI access','Gemini in Gmail, Docs, Vids, and more','Google AI Studio','Google Flow','Google Antigravity with higher limits','Google Colab','5 TB or 10 TB Google storage depending on membership plan','AI credits for supported products'],detailedDescription:'Google AI Pro brings expanded access to Google AI products and features, including the Gemini app, Gemini in Gmail and Docs, Google AI Studio, Flow, Antigravity, and Google Colab. Storage and AI usage limits depend on the specific membership plan.',benefits:['Expanded access to Gemini and Google AI features','Use Gemini across supported Google apps','Access creative and development tools such as Flow, AI Studio, Antigravity, and Colab','Receive the storage and AI credits provided by the selected Google AI Pro membership'],bestFor:'Students, researchers, creators, developers, and users who work across Google services',stock:'In Stock (5)'},
@@ -33,7 +32,7 @@ const PRODUCTS = [
 
 const PRODUCT_SECTIONS={};
 Object.assign(PRODUCT_SECTIONS,{
-capcut:{steps:["Select the 7 Days or 1 Month plan","For 1 Month, choose 1 Device or 2 Devices","Confirm your selected plan and device option on WhatsApp","Receive the confirmed CapCut access"]},
+capcut:{steps:["Select the 1 Month plan","Choose 1 Device or 2 Devices","Confirm your selected plan and device option on WhatsApp","Receive the confirmed CapCut access"]},
 gemini:{steps:["Select the 18 Months Google AI Pro plan","Choose Single Gmail Invite or the available Full Access setup","Continue the order through WhatsApp with the required Google account details","Receive the confirmed invite or access setup"]},
 canva:{steps:["Select the Canva Education duration","Provide the account details needed for the team invitation","Continue the order through WhatsApp","Accept the Canva Education team invitation and start using it"]},
 surfshark:{steps:["Choose 1 Month or 2 Months","Continue the order through WhatsApp","Receive the full-account login details","Complete the verification step and sign in on your selected device"]},
@@ -69,7 +68,7 @@ Object.assign(PRODUCT_SECTIONS,{
  ilovepdf:{included:["12-month iLovePDF Premium","Full Premium PDF toolkit","Web, Mobile and Desktop access","2,000 AI credits"],steps:["Choose the 12 Months plan","Confirm the order through WhatsApp","Receive the Premium access details","Start using the Premium PDF tools"],faq:[["What does Premium add?","The current Premium listing includes full tool access, unlimited processing, cross-platform access, digital signatures, workflows, ad-free use, priority support, regional processing and AI credits."],["Can I work across devices?","Yes. Premium is listed for Web, Mobile and Desktop."],["How many AI credits are included?","The current Premium listing shows 2,000 AI credits."]]}
 });
 Object.assign(PRODUCT_SECTIONS,{
- capcut:{included:["Selected CapCut duration","Confirmed device access for the chosen plan","Access details after order confirmation","AR SERVICES support"],steps:["Select the duration","Select device access when the monthly option is chosen","Confirm the order on WhatsApp","Receive the confirmed access"] ,faq:[["Which CapCut plan has device choices?","The 1 Month plan has the 1 Device and 2 Devices choices shown on the page."],["What happens after I order?","Your selected duration and device option are confirmed through WhatsApp before access is delivered."],["Is 2-device access available on the 7 Days offer?","Yes. The current 7 Days offer is listed with 2-device access."]]},
+ capcut:{included:["Selected CapCut 1 Month plan","Confirmed device access for the chosen plan","Access details after order confirmation","AR SERVICES support"],steps:["Select the 1 Month plan","Select 1 Device or 2 Devices access","Confirm the order on WhatsApp","Receive the confirmed access"] ,faq:[["Which CapCut plan has device choices?","The 1 Month plan has the 1 Device and 2 Devices choices shown on the page."],["What happens after I order?","Your selected plan and device option are confirmed through WhatsApp before access is delivered."]]},
  gemini:{included:["18-month Google AI Pro plan","Chosen access method","Google account invite or access setup as confirmed with the order","AR SERVICES support"],steps:["Select the 18 Months plan","Choose the available access method","Send the required order details on WhatsApp","Receive the confirmed Google account access"],faq:[["What access options are available?","The offer can be supplied as a single Gmail invite or a full setup for the stated member capacity, subject to the setup confirmed for the order."],["Are all Google AI Pro benefits shared equally with every member?","Google states that family members receive select AI benefits and some limits are shared, so the exact experience can differ by account setup."],["What is the membership duration?","The current AR SERVICES listing is for 18 months."]]},
  canva:{included:["Selected Canva Education duration","Canva Education team invitation","Access through the AR SERVICES education team","Team-based access rather than a standalone single-member invite"],steps:["Select the duration","Provide the account details needed for the invitation","Confirm the order through WhatsApp","Accept the Canva Education team invitation"],faq:[["Is this a single-user invite?","No. The current offer is a Canva Education team invitation."],["Can I request a standalone single-member invite?","No. The current delivery method is team-based."],["Who is Canva Education designed for?","Canva describes Education for K-12 educators, students, schools, and qualified institutions, subject to its eligibility rules."]]},
  surfshark:{included:["Selected 1-month or 2-month duration","Full account credentials","Login verification support","1-device access"],steps:["Choose the duration","Place the order through WhatsApp","Receive the account credentials","Complete login verification on the selected device"],faq:[["Is this a shared screen product?","No. The offer is described as full account access for one device."],["What changes between the plans?","The duration changes: 1 Month or 2 Months, with the 2-month option shown at a discounted price."],["Do I receive login details?","Yes. The supplied access uses account credentials and the required verification step."]]}
@@ -289,7 +288,7 @@ function renderProductPage(){
   if(faqEl)faqEl.innerHTML=faq.map((x,i)=>'<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button '+(i?'collapsed':'')+'" data-bs-toggle="collapse" data-bs-target="#pf'+i+'_'+p.slug+'">'+escapeHtml(x[0])+'</button></h2><div id="pf'+i+'_'+p.slug+'" class="accordion-collapse collapse '+(i?'':'show')+'"><div class="accordion-body">'+escapeHtml(x[1])+'</div></div></div>').join('');
  }
  const capcutDevices=root.querySelector('#capcutDeviceOptions'), capcutFixed=root.querySelector('#capcutFixedDevice');
- let selectedDevices=2, selectedCapcutPrice='Rs. 200';
+ let selectedDevices=1, selectedCapcutPrice='Rs. 399';
  function selectPlan(i){
   const pl=p.plans[i]||p.plans[0];
   if(pl.outOfStock)return;
@@ -297,11 +296,11 @@ function renderProductPage(){
   if(selected)selected.textContent=pl.details||'Plan selected';
   renderUniqueSections(pl);
   if(p.slug==='capcut'){
-   const isMonth=i===1;
+   const isMonth=pl.name==='1 Month';
    if(capcutDevices)capcutDevices.style.display=isMonth?'block':'none';
    if(capcutFixed)capcutFixed.style.display=isMonth?'none':'flex';
    selectedDevices=isMonth?1:2;
-   selectedCapcutPrice=isMonth?'Rs. 399':'Rs. 200';
+   selectedCapcutPrice=isMonth?'Rs. 399':pl.price;
    if(total)total.textContent=selectedCapcutPrice;
    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
    updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
@@ -321,7 +320,7 @@ function renderProductPage(){
     selectedDevices=Number(btn.dataset.devices)||1;
     selectedCapcutPrice=btn.dataset.price||'Rs. 399';
     if(total)total.textContent=selectedCapcutPrice;
-    const pl=p.plans[1];
+    const pl=p.plans[Math.max(0,planButtons.findIndex(b=>b.classList.contains('active')))]||p.plans[0];
     if(selected)selected.textContent=`${pl.name} • ${selectedDevices} Device${selectedDevices>1?'s':''}`;
     if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
     updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
