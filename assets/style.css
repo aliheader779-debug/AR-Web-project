@@ -849,61 +849,6 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
   .ar-toast{bottom:22px}
 }
 
-/* ---------- Phase C (2026-10-20): cart icon, featured offer, bundle builder ---------- */
+/* ---------- Cart UI icon (2026-10-20): flat SVG cart icon alignment ---------- */
 .ar-ico-cart{display:inline-block;vertical-align:-3px;margin-right:7px;flex:none}
 .ar-add-cart-btn .ar-ico-cart{margin-right:6px}
-.ar-cart-subrow{display:flex;justify-content:space-between;align-items:center;padding:2px 0;font-size:.92rem;color:#475569}
-.ar-cart-discount-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0;font-size:.92rem;color:#059669;font-weight:600}
-.ar-co-discount{color:#059669;font-weight:600}
-.ar-co-discount span:last-child{font-weight:700}
-
-/* Featured Offer (homepage) */
-.fo-section{padding:64px 0 8px}
-.fo-card{background:#fff;border:1px solid #e6e9f2;border-radius:25px;box-shadow:0 18px 44px rgba(15,23,42,.08);padding:38px 40px;display:flex;gap:36px;align-items:center;flex-wrap:wrap}
-.fo-main{flex:1 1 340px;min-width:280px}
-.fo-label{display:inline-block;background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);color:#fff;font-weight:700;font-size:.8rem;letter-spacing:.6px;padding:7px 16px;border-radius:999px;text-transform:uppercase}
-.fo-title{font-weight:700;font-size:2rem;margin:16px 0 6px;color:#111827}
-.fo-title .text-gradient{background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent}
-.fo-sub{color:#64748b;margin:0 0 14px}
-.fo-points{list-style:none;padding:0;margin:0 0 6px;color:#334155}
-.fo-points li{padding:5px 0;font-size:.98rem}
-.fo-points i{color:#059669;margin-right:9px}
-.fo-side{flex:0 1 300px;min-width:250px;background:#f7f8fc;border:1px solid #e6e9f2;border-radius:20px;padding:26px;text-align:center}
-.fo-price-label{color:#64748b;font-size:.85rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
-.fo-price{font-size:2.3rem;font-weight:700;color:#111827;line-height:1.15;margin:4px 0 2px}
-.fo-price-old{color:#94a3b8;text-decoration:line-through;font-size:1.05rem;margin-right:8px;font-weight:500}
-.fo-save{display:inline-block;background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-weight:700;font-size:.82rem;padding:4px 12px;border-radius:999px;margin:6px 0 16px}
-.fo-view{display:inline-block;margin-top:12px;color:#4f46e5;font-weight:600;text-decoration:none}
-.fo-view:hover{text-decoration:underline;color:#4338ca}
-@media(max-width:640px){.fo-card{padding:26px 22px}.fo-title{font-size:1.6rem}.fo-side{flex:1 1 100%}}
-
-/* Bundle Builder (tools + product pages) */
-.bb2-section{padding:56px 0 8px}
-.bb2-card{background:#fff;border:1px solid #e6e9f2;border-radius:25px;box-shadow:0 18px 44px rgba(15,23,42,.07);padding:34px 36px}
-.bb2-head{text-align:center;max-width:720px;margin:0 auto 26px}
-.bb2-badge{display:inline-block;background:#ede9fe;color:#6d28d9;font-weight:700;font-size:.78rem;letter-spacing:.6px;padding:6px 14px;border-radius:999px;text-transform:uppercase}
-.bb2-title{font-weight:700;font-size:1.8rem;margin:12px 0 8px;color:#111827}
-.bb2-title .text-gradient{background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent}
-.bb2-sub{color:#64748b;margin:0}
-.bb2-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.bb2-tool{border:1.5px solid #e6e9f2;border-radius:16px;padding:14px 16px;background:#fbfcfe;transition:border-color .15s, box-shadow .15s}
-.bb2-tool.bb2-on{border-color:#7c3aed;box-shadow:0 8px 22px rgba(124,58,237,.12);background:#fff}
-.bb2-tool-head{display:flex;align-items:center;gap:9px;margin:0 0 10px;cursor:pointer}
-.bb2-check{width:18px;height:18px;accent-color:#7c3aed;cursor:pointer;flex:none}
-.bb2-tool-name{font-weight:600;color:#111827}
-.bb2-plan{width:100%;padding:9px 10px;border:1px solid #dbe1ec;border-radius:10px;background:#fff;color:#111827;font-size:.92rem}
-.bb2-summary{max-width:520px;margin:26px auto 0;border-top:1px dashed #dbe1ec;padding-top:18px}
-.bb2-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;color:#475569}
-.bb2-row strong{color:#111827}
-.bb2-discount{color:#059669;font-weight:600}
-.bb2-discount strong{color:#059669}
-.bb2-grand{font-size:1.15rem;font-weight:700;color:#111827;border-top:1px solid #eef1f7;margin-top:8px;padding-top:12px}
-.bb2-grand strong{font-size:1.3rem}
-.bb2-add{width:100%;margin-top:14px;padding:13px;border:none;border-radius:30px;font-weight:600}
-.bb2-add:disabled{opacity:.5;cursor:not-allowed}
-.bb2-note{text-align:center;color:#94a3b8;font-size:.85rem;margin:10px 0 0}
-@media(max-width:640px){.bb2-card{padding:24px 18px}.bb2-title{font-size:1.45rem}}
-
-/* Phase C fix: the hidden attribute must win over the flex row display,
-   otherwise the subtotal/discount rows show even when there is no discount. */
-.ar-cart-subrow[hidden], .ar-cart-discount-row[hidden], .bb2-row[hidden]{display:none!important}
