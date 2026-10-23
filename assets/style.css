@@ -852,3 +852,81 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 /* ---------- Cart UI icon (2026-10-20): flat SVG cart icon alignment ---------- */
 .ar-ico-cart{display:inline-block;vertical-align:-3px;margin-right:7px;flex:none}
 .ar-add-cart-btn .ar-ico-cart{margin-right:6px}
+
+/* ==========================================================================
+   PRODUCT PAGE V2 (2026-10-23) — stars line, payment accordion, plan
+   selector refresh, trust lines, SAVE10 coupon hint, warranty section,
+   tools-page SAVE10 strip and checkout coupon UI. Light theme only.
+   Rollback: delete this block + the per-page pv2 script.
+   ========================================================================== */
+
+/* Stars + reviews line (no numeric rating — reviews are customer screenshots) */
+.pv2-stars{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px;margin-top:12px}
+.pv2-stars-icons{color:#f59e0b;font-size:1.05rem;letter-spacing:3px;line-height:1}
+.pv2-stars-text{color:#475569;font-size:.85rem;font-weight:600}
+.pv2-stars-link{color:#4f46e5;font-size:.82rem;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.pv2-stars-link:hover{color:#2563eb}
+
+/* Payment Methods accordion */
+.pv2-pay{border:1px solid rgba(15,23,42,.10);border-radius:16px;background:#f8fafc;margin-bottom:20px;overflow:hidden}
+.pv2-pay-toggle{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:14px 16px;cursor:pointer;font:600 .92rem 'Poppins',sans-serif;color:#0f172a;text-align:left}
+.pv2-pay-title i{color:#7c3aed;margin-right:7px}
+.pv2-pay-names{margin-left:auto;color:#64748b;font-size:.78rem;font-weight:600;white-space:nowrap}
+.pv2-pay-chevron{color:#94a3b8;font-size:.8rem;transition:transform .25s ease}
+.pv2-pay.open .pv2-pay-chevron{transform:rotate(180deg)}
+.pv2-pay-body{border-top:1px solid rgba(15,23,42,.07);padding:13px 16px 15px;background:#fff}
+.pv2-pay-row{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px dashed rgba(15,23,42,.08)}
+.pv2-pay-row:last-of-type{border-bottom:0}
+.pv2-pay-row span{color:#64748b;font-size:.82rem;font-weight:600;min-width:74px}
+.pv2-pay-row strong{color:#0f172a;font-size:1rem;letter-spacing:.4px}
+.pv2-pay-row small{color:#94a3b8;font-size:.75rem;margin-left:auto}
+.pv2-pay-note{color:#64748b;font-size:.8rem;line-height:1.6;margin:10px 0 0}
+
+/* Select Plan — refreshed styling (existing selector, V2 look) */
+#productPage.pv2 .product-plan-selector{gap:12px;margin-top:2px}
+#productPage.pv2 .product-plan-option{min-height:64px;padding:13px 16px;border-radius:16px;border:1.5px solid rgba(15,23,42,.10);background:#fff;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+#productPage.pv2 .product-plan-option strong{font-size:.95rem}
+#productPage.pv2 .product-plan-option span{font-size:.9rem;font-weight:700;color:#4f46e5!important;background:rgba(124,58,237,.08);padding:4px 11px;border-radius:999px}
+#productPage.pv2 .product-plan-option:hover{border-color:rgba(6,182,212,.45)}
+#productPage.pv2 .product-plan-option.active{background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(6,182,212,.08));border-color:#7c3aed;box-shadow:0 10px 22px rgba(124,58,237,.13)}
+#productPage.pv2 .product-plan-option.active strong::after{content:" ✓";color:#7c3aed}
+#productPage.pv2 .product-plan-option.active span{background:#fff;color:#4338ca!important}
+#productPage.pv2 .product-plan-option:disabled{opacity:.55}
+#productPage.pv2 .product-total-box{border-radius:16px}
+
+/* Trust lines (moved inside the purchase card, above Total) */
+.pv2-trust{margin-top:16px;border-radius:14px}
+.pv2-trust span{display:inline-flex;align-items:center;gap:6px}
+.pv2-trust span i{color:#16a34a;font-size:.78rem}
+
+/* SAVE10 coupon hint on product pages */
+.pv2-coupon{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 15px;border:1.5px dashed rgba(124,58,237,.45);border-radius:14px;background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(6,182,212,.05));color:#334155;font-size:.85rem;line-height:1.5}
+.pv2-coupon i{color:#7c3aed;font-size:1.05rem}
+.pv2-coupon strong{color:#4338ca;letter-spacing:.6px}
+
+/* Warranty section */
+.pv2-warranty-card{border-left:4px solid #06b6d4!important}
+.pv2-warranty-list{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:10px}
+.pv2-warranty-list li{position:relative;padding-left:28px;color:#475569;font-size:.92rem;line-height:1.65}
+.pv2-warranty-list li::before{content:"\f058";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;left:0;top:1px;color:#16a34a}
+.pv2-warranty-list li strong{color:#0f172a}
+.pv2-warranty-card a{color:#4f46e5;font-weight:600}
+
+/* Tools page — SAVE10 strip */
+.pv2-strip-sec{padding:20px 0 2px}
+.pv2-save-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:linear-gradient(90deg,#f5f3ff,#ecfeff);border:1.5px dashed rgba(124,58,237,.45);border-radius:16px;padding:16px 22px;color:#0f172a;box-shadow:0 6px 18px rgba(15,23,42,.05)}
+.pv2-save-badge{background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);color:#fff;font-weight:700;font-size:.8rem;letter-spacing:.8px;padding:6px 13px;border-radius:999px}
+.pv2-save-text{font-size:.95rem}
+.pv2-save-text strong{color:#4338ca;letter-spacing:.6px}
+.pv2-save-note{margin-left:auto;color:#64748b;font-size:.78rem}
+@media(max-width:575px){.pv2-save-note{margin-left:0}}
+
+/* Checkout coupon UI (cart.js) */
+.ar-coupon-row{display:flex;gap:8px;margin:2px 0 4px}
+.ar-coupon-input{flex:1;min-width:0;text-transform:uppercase}
+.ar-coupon-apply{background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);color:#fff;border:0;border-radius:10px;padding:0 18px;font:600 .85rem 'Poppins',sans-serif;cursor:pointer;white-space:nowrap}
+.ar-coupon-apply:hover{filter:brightness(1.07)}
+.ar-coupon-msg{font-size:.8rem;margin:6px 0 0;line-height:1.5}
+.ar-coupon-msg.ok{color:#16a34a;font-weight:600}
+.ar-coupon-msg.err{color:#dc2626}
+.ar-co-discount span,.ar-co-discount strong{color:#16a34a!important}

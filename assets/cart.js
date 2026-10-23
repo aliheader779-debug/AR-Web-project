@@ -58,6 +58,45 @@
     return null;
   }
 
+  /* ---------------- coupon (SAVE10, 2026-10-23) ----------------
+     One public code: SAVE10 = 10% off. Rules:
+       - CapCut Pro 1 Month — 1 Device (id 'capcut-1-month-1device', Rs 399)
+         is NEVER discountable (margin protection).
+       - Bundle-priced items never get a second discount. (Bundle orders on
+         this site go through the homepage bundle WhatsApp link and never
+         enter the cart; the 'bundle' id check below is a safety net.)
+     The pure logic sits between the COUPON-LOGIC markers so it can be
+     unit-tested in Node without a DOM. */
+  /* COUPON-LOGIC-START */
+  var COUPONS = { 'SAVE10': 10 };
+  function isCouponExcluded(x) {
+    if (!x || !x.id) return true;
+    if (x.id === 'capcut-1-month-1device') return true;
+    if (String(x.id).indexOf('bundle') !== -1) return true;
+    return false;
+  }
+  function couponCalc(list, code) {
+    var r = { applied: false, code: '', percent: 0, base: 0, discount: 0, reason: '' };
+    if (!code || !String(code).trim()) { r.reason = 'empty'; return r; }
+    var c = String(code).trim().toUpperCase();
+    if (!COUPONS[c]) { r.reason = 'invalid'; return r; }
+    r.code = c; r.percent = COUPONS[c];
+    var base = 0;
+    (list || []).forEach(function (x) { if (!isCouponExcluded(x)) base += Number(x.price) || 0; });
+    r.base = base;
+    if (base <= 0) { r.reason = 'not_applicable'; return r; }
+    r.discount = Math.round(base * r.percent / 100);
+    r.applied = r.discount > 0;
+    if (!r.applied) r.reason = 'zero';
+    return r;
+  }
+  /* COUPON-LOGIC-END */
+  var appliedCoupon = '';
+  function finalTotal() {
+    var calc = couponCalc(items, appliedCoupon);
+    return cartTotal() - (calc.applied ? calc.discount : 0);
+  }
+
   /* ---------------- cart state ---------------- */
   function load() {
     try {
@@ -101,6 +140,10 @@
           '<div class="ar-cart-head"><strong>Checkout</strong>' +
             '<button type="button" class="ar-cart-close" data-ar-close-checkout aria-label="Close checkout">&times;</button></div>' +
           '<div id="arCheckoutSummary" class="ar-checkout-summary"></div>' +
+          '<div class="ar-coupon-row">' +
+            '<input id="arCoCoupon" class="ar-co-input ar-coupon-input" type="text" placeholder="Coupon code (SAVE10)" autocomplete="off">' +
+            '<button type="button" id="arCoApply" class="ar-coupon-apply">Apply</button></div>' +
+          '<p id="arCoCouponMsg" class="ar-coupon-msg" hidden></p>' +
           '<form id="arCheckoutForm" novalidate>' +
             '<label class="ar-co-label" for="arCoName">Full Name *</label>' +
             '<input id="arCoName" class="ar-co-input" type="text" placeholder="Enter your name" autocomplete="name">' +
@@ -124,12 +167,15 @@
     els.modal = $('#arCheckoutModal'); els.summary = $('#arCheckoutSummary');
     els.form = $('#arCheckoutForm'); els.error = $('#arCoError');
     els.toast = $('#arToast');
+    els.couponInput = $('#arCoCoupon'); els.couponApply = $('#arCoApply');
+    els.couponMsg = $('#arCoCouponMsg');
 
     els.fab.addEventListener('click', openDrawer);
     els.overlay.addEventListener('click', closeDrawer);
     $all('[data-ar-close]', wrap).forEach(function (b) { b.addEventListener('click', closeDrawer); });
     $all('[data-ar-close-checkout]', wrap).forEach(function (b) { b.addEventListener('click', closeCheckout); });
     els.checkoutBtn.addEventListener('click', openCheckout);
+    els.couponApply.addEventListener('click', applyCouponFromInput);
     els.itemsBox.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('[data-ar-remove]') : null;
       if (btn) ARCart.remove(btn.getAttribute('data-ar-remove'));
@@ -186,17 +232,56 @@
     els.drawer.classList.remove('open'); els.drawer.setAttribute('aria-hidden', 'true');
     els.overlay.classList.remove('open');
   }
+  function couponMsgShow(text, ok) {
+    if (!els.couponMsg) return;
+    els.couponMsg.textContent = text;
+    els.couponMsg.hidden = false;
+    els.couponMsg.className = 'ar-coupon-msg ' + (ok ? 'ok' : 'err');
+  }
+  function renderSummary() {
+    var calc = couponCalc(items, appliedCoupon);
+    var html = items.map(function (x) {
+      return '<div class="ar-co-line"><span>' + escapeHtml(x.name) + '</span><strong>' + fmt(x.price) + '</strong></div>';
+    }).join('');
+    if (calc.applied) {
+      html += '<div class="ar-co-line"><span>Subtotal</span><strong>' + fmt(cartTotal()) + '</strong></div>' +
+        '<div class="ar-co-line ar-co-discount"><span>Coupon: ' + calc.code + ' (−' + calc.percent + '%)</span><strong>−' + fmt(calc.discount) + '</strong></div>';
+    }
+    html += '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(finalTotal()) + '</strong></div>';
+    els.summary.innerHTML = html;
+    return calc;
+  }
+  function applyCouponFromInput() {
+    var code = els.couponInput ? els.couponInput.value : '';
+    if (!code || !String(code).trim()) { couponMsgShow('Enter a coupon code.', false); return; }
+    var calc = couponCalc(items, code);
+    if (calc.reason === 'invalid') {
+      appliedCoupon = ''; renderSummary();
+      couponMsgShow('Invalid coupon code.', false);
+      return;
+    }
+    if (calc.reason === 'not_applicable') {
+      appliedCoupon = ''; renderSummary();
+      couponMsgShow('This code does not apply to this plan.', false);
+      return;
+    }
+    appliedCoupon = calc.code;
+    renderSummary();
+    couponMsgShow('Coupon ' + calc.code + ' applied — you save ' + fmt(calc.discount) + '.', true);
+  }
   function openCheckout() {
     if (!items.length) { toast('Cart khaali hai — pehle koi plan add karein'); return; }
     closeDrawer();
-    els.summary.innerHTML = items.map(function (x) {
-      return '<div class="ar-co-line"><span>' + escapeHtml(x.name) + '</span><strong>' + fmt(x.price) + '</strong></div>';
-    }).join('') + '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(cartTotal()) + '</strong></div>';
+    var calc = renderSummary();
+    if (appliedCoupon) {
+      if (calc.applied) couponMsgShow('Coupon ' + calc.code + ' applied — you save ' + fmt(calc.discount) + '.', true);
+      else if (calc.reason === 'not_applicable') couponMsgShow('This code does not apply to this plan.', false);
+    } else if (els.couponMsg) { els.couponMsg.hidden = true; }
     els.error.hidden = true;
     els.modal.classList.add('open'); els.modal.setAttribute('aria-hidden', 'false');
     /* Pixel: InitiateCheckout on modal open (spec) */
     fbqTrack('InitiateCheckout', {
-      value: cartTotal(), currency: 'PKR', num_items: items.length,
+      value: finalTotal(), currency: 'PKR', num_items: items.length,
       content_ids: items.map(function (x) { return x.id; }), content_type: 'product'
     });
   }
@@ -222,7 +307,8 @@
       var leadPayload = JSON.stringify({ action: 'websitelead', data: {
         name: name, number: phoneRaw, city: city,
         items: items.map(function (x) { return x.name + ' Rs ' + x.price; }).join('; '),
-        total: cartTotal()
+        total: finalTotal(),
+        coupon: couponCalc(items, appliedCoupon).applied ? appliedCoupon : ''
       } });
       var leadUrl = 'https://script.google.com/macros/s/AKfycby-brB_YTJvxp-dwjbVkI21OT1onpe7eck-3JpB-UJaw3BuVp-YaUHvMsRUO_K4om4/exec';
       try {
@@ -233,15 +319,26 @@
     } catch (leadErr) { /* lead send is best-effort only — ignore */ }
 
     var lines = items.map(function (x) { return '• ' + x.name + ' — Rs ' + x.price; });
+    var calc = couponCalc(items, appliedCoupon);
+    var totalsText = '\nTotal: Rs ' + finalTotal();
+    if (calc.applied) {
+      totalsText = '\nSubtotal: Rs ' + cartTotal() +
+        '\nCoupon: ' + calc.code + ' (−' + calc.percent + '%)' +
+        '\nDiscount: −Rs ' + calc.discount +
+        '\nTotal: Rs ' + finalTotal();
+    }
     var msg = 'Assalam o Alaikum! Main website se order karna chahta hoon:\n' +
       lines.join('\n') +
-      '\nTotal: Rs ' + cartTotal() +
+      totalsText +
       '\nName: ' + name +
       '\nNumber: ' + phoneRaw +
       (city ? '\nCity: ' + city : '');
     /* The site-wide wa.me window.open wrapper fires the Lead event once. */
     window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     ARCart.clear();
+    appliedCoupon = '';
+    if (els.couponInput) els.couponInput.value = '';
+    if (els.couponMsg) els.couponMsg.hidden = true;
     closeCheckout();
     toast('Shukriya! Aap ka order WhatsApp par bhej diya gaya hai.');
   }
