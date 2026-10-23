@@ -1,7 +1,7 @@
 
 const PRODUCTS = [
- {slug:'capcut',deviceAccess:'2 devices access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 650',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
-  {name:'1 Month',price:'Rs. 650',details:'Choose device access'}
+ {slug:'capcut',deviceAccess:'2 devices access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 399',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
+  {name:'1 Month',price:'Rs. 399',details:'Choose device access'}
  ],features:['Advanced video editing','Premium effects and filters','Pro transitions','Creative templates','Cloud storage','Text, audio and visual editing'],detailedDescription:'CapCut Pro gives creators access to advanced video editing features for making social media videos, reels, YouTube content, promotional videos, and more. It is designed for beginners and regular content creators who want more editing options without a complicated workflow.',benefits:['Create polished videos faster','Make content for social media and YouTube','Use advanced editing tools and effects','Improve the overall look of your videos'],bestFor:'Content creators, students, social media users, and video editors',stock:'Available'},
  {slug:'gemini',accessLabel:'Access Method',accessDetails:'Choose your access option',logo:'https://drive.google.com/thumbnail?id=1j8URbAKCTgYC0r-qzhXqIK_ZnNSZuG0X&sz=w1000',name:'Gemini',category:'AI Tools',icon:'fa-robot',price:'Rs. 1499',description:'Google AI Pro access centered on Gemini and a wider set of Google AI, creative, and productivity features.',plans:[{name:'18 Months',price:'Rs. 1499',details:'Choose your access option'}],features:['Gemini app with advanced AI access','Gemini in Gmail, Docs, Vids, and more','Google AI Studio','Google Flow','Google Antigravity with higher limits','Google Colab','5 TB or 10 TB Google storage depending on membership plan','AI credits for supported products'],detailedDescription:'Google AI Pro brings expanded access to Google AI products and features, including the Gemini app, Gemini in Gmail and Docs, Google AI Studio, Flow, Antigravity, and Google Colab. Storage and AI usage limits depend on the specific membership plan.',benefits:['Expanded access to Gemini and Google AI features','Use Gemini across supported Google apps','Access creative and development tools such as Flow, AI Studio, Antigravity, and Colab','Receive the storage and AI credits provided by the selected Google AI Pro membership'],bestFor:'Students, researchers, creators, developers, and users who work across Google services',stock:'In Stock (5)'},
  {slug:'canva',accessLabel:'Access Method',accessDetails:'Team Invite',logo:'https://drive.google.com/thumbnail?id=1yH-jlpzpY-kZ5VYAniI6M8g5ZwvhBP6i&sz=w1000',name:'Canva Edu',category:'Design & Creative',icon:'fa-palette',price:'Rs. 149',description:'Canva Education combines Canva\'s visual design tools with education-focused features for teaching, learning, and classroom content.',plans:[{name:'1 Month',price:'Rs. 149',details:'Canva Education team invite'},{name:'3 Months',price:'Rs. 250',details:'Canva Education team invite'}],features:['Most Canva premium features included','Premium photos, graphics, and videos','Background Remover','Magic Write','Magic Resize','Education templates','LMS integrations','Assignments and classwork tools','AI-powered teaching tools'],detailedDescription:'Canva Education provides premium creative features together with tools designed for educators and students, including education templates, LMS integrations, shared work and assignments, and AI-powered teaching tools.',benefits:['Use premium creative features included with Canva Education','Create lessons and learning materials with education templates','Share work and manage assignments in education-focused workflows','Use Canva AI tools for supported teaching and classroom tasks'],bestFor:'K-12 educators, students, schools, and education-focused creators',stock:'Available'},
@@ -242,14 +242,14 @@ function productSR2Template(p,featuredPlan){
       ${p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
        <div class="device-option-row">
-        <button type="button" class="device-option active" data-devices="1" data-price="Rs. 650"><strong>Rs. 650</strong><span>1 Month · 1 Device</span></button>
+        <button type="button" class="device-option active" data-devices="1" data-price="Rs. 399"><strong>Rs. 399</strong><span>1 Month · 1 Device</span></button>
         <button type="button" class="device-option" data-devices="2" data-price="Rs. 699"><strong>Rs. 699</strong><span>1 Month · 2 Devices</span></button>
        </div>
       </div>
       <div id="capcutFixedDevice" class="product-device-access" style="display:none"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
       <div class="product-plan-selector mt-3">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}
-      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
+      ${p.slug==='capcut'?'':`<div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>`}
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
       <div class="sr2-coupon" id="arCouponBox">
         <div class="sr2-coupon-row">
@@ -267,7 +267,6 @@ function productSR2Template(p,featuredPlan){
     </div>
     <div class="product-trust-strip pv2-trust sr2-trust"><span><i class="fa-solid fa-circle-check"></i> Clear Pricing</span><span><i class="fa-solid fa-circle-check"></i> WhatsApp Support</span><span><i class="fa-solid fa-circle-check"></i> Simple Ordering</span></div>
     <div class="glass-card product-content-card sr2-card">
-      <div class="product-section-kicker">Product Details</div>
       <h2 class="h3 fw-bold mb-3">Product Details</h2>
       <p id="productDescription" class="text-silver product-about-description"></p>
       <h3 class="h5 fw-bold mb-3 sr2-sub">What's Included</h3>
@@ -278,7 +277,7 @@ function productSR2Template(p,featuredPlan){
       <ul id="productBenefits" class="product-included-list"></ul>
       <h3 class="h5 fw-bold mb-3 sr2-sub">How It Works</h3>
       <div id="productSteps" class="product-steps"></div>
-      <div class="product-info-rows mt-4">${infoRow('Delivery',info.delivery)}${infoRow('Warranty',info.warranty)}${infoRow('Support','WhatsApp · Mon–Sat 9am–9pm · Sun 12pm–9pm')}</div>
+      <div class="product-info-rows mt-4">${infoRow('Delivery',info.delivery)}${infoRow('Support','WhatsApp · Mon–Sat 9am–9pm · Sun 12pm–9pm')}</div>
       <p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p>
       <h3 class="h5 fw-bold mb-3 sr2-sub">Warranty Rules</h3>
       <ul class="pv2-warranty-list">${warrantyItems}</ul>
@@ -296,72 +295,7 @@ function renderProductPage(){
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
  const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
- root.innerHTML= slug==='capcut' ? productSR2Template(p,featuredPlan) : `
- <section class="product-page">
-  <div class="container">
-   <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
-   <div class="row g-4 g-lg-5 align-items-start">
-    <div class="col-lg-5"><div class="glass-card product-main-visual text-center">
-      <div class="product-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
-      <div class="small-label mt-3">${p.category}</div><h1 class="h2 fw-bold mt-2">${escapeHtml(p.name)}</h1><p class="text-silver mb-0">${escapeHtml(p.description)}</p>
-    </div></div>
-    <div class="col-lg-7"><div class="product-purchase-card">
-      <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
-      <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
-      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
-      ${p.slug==='capcut'?`
-      <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
-       <span class="device-access-label">Device Access</span>
-       <div class="device-option-row">
-        <button type="button" class="device-option active" data-devices="1" data-price="Rs. 650"><strong>1 Device</strong><span>Rs. 650</span></button>
-        <button type="button" class="device-option" data-devices="2" data-price="Rs. 699"><strong>2 Devices</strong><span>Rs. 699</span></button>
-       </div>
-      </div>
-      <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
-      <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}
-      ${productInfoRows(p)}
-      <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
-      <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
-      <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
-    </div><div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
-   </div>
-  </div>
- </section>
- <section class="product-about-section"><div class="container">
-  <div class="glass-card product-content-card product-about-master-card">
-    <div class="product-section-kicker">About the Tool</div>
-    <h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2>
-    <p id="productDescription" class="text-silver product-about-description"></p>
-    <div class="product-about-grid mt-4">
-      <div class="product-inner-card">
-        <h3 class="h5 fw-bold mb-3">Benefits</h3>
-        <ul id="productBenefits" class="product-included-list"></ul>
-      </div>
-      <div class="product-inner-card">
-        <h3 class="h5 fw-bold mb-3">Key Features</h3>
-        <ul id="productFeatures" class="product-included-list"></ul>
-      </div>
-      <div class="product-inner-card">
-        <h3 class="h5 fw-bold mb-3">What's Included</h3>
-        <ul id="productIncluded" class="product-included-list"></ul>
-      </div>
-    </div>
-    <p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p>
-  </div>
-</div></section>
-
-<section class="product-how-section"><div class="container">
-  <div class="glass-card product-content-card">
-    <div class="product-section-kicker">Simple Steps</div>
-    <h2 class="h3 fw-bold mb-3">How It Works</h2>
-    <p class="text-silver small mb-4">Follow the product-specific steps below to complete your order and activate your access.</p>
-    <div id="productSteps" class="product-steps"></div>
-  </div>
-</div></section>
-
-<section class="section-alt"><div class="container"><div class="glass-card product-content-card mx-auto" style="max-width:900px"><h2 class="h3 fw-bold mb-3">Customer Reviews</h2><p class="text-silver mb-4">Real customer feedback shared with AR SERVICES.</p><div id="productReviews" class="product-review-placeholder"></div><a class="btn btn-outline-glass mt-3" href="reviews.html">View All Reviews</a></div></div></section>
- <section><div class="container"><h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2><div id="productFaq" class="accordion mx-auto" style="max-width:850px"></div></div></section>
- <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
+ root.innerHTML= productSR2Template(p,featuredPlan);
  document.title=`${p.name} Price in Pakistan \u2013 from ${p.price} | AR SERVICES`;
  const sectionData=PRODUCT_SECTIONS[p.slug]||{};
  const sectionDescription=sectionData.description||p.detailedDescription||p.description;
@@ -372,7 +306,7 @@ function renderProductPage(){
  stickyOrder.className='product-sticky-order';
  stickyOrder.innerHTML='<div class="product-sticky-inner"><div class="product-sticky-info"><span class="product-sticky-name"></span><strong class="product-sticky-price"></strong></div><button type="button" class="product-sticky-btn">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>';
  document.body.appendChild(stickyOrder);
- if(slug==='capcut'){root.classList.add('pv2','sr2');stickyOrder.classList.add('d1-sticky');
+ {root.classList.add('pv2','sr2');stickyOrder.classList.add('d1-sticky');
   const srPay=root.querySelector('.pv2-pay');
   if(srPay){const srToggle=srPay.querySelector('.pv2-pay-toggle'),srBody=srPay.querySelector('.pv2-pay-body');
    srToggle.addEventListener('click',()=>{const open=srToggle.getAttribute('aria-expanded')==='true';srToggle.setAttribute('aria-expanded',String(!open));srBody.hidden=open;srPay.classList.toggle('open',!open);});}
@@ -433,7 +367,7 @@ function renderProductPage(){
   if(faqEl)faqEl.innerHTML=faq.map((x,i)=>'<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button '+(i?'collapsed':'')+'" data-bs-toggle="collapse" data-bs-target="#pf'+i+'_'+p.slug+'">'+escapeHtml(x[0])+'</button></h2><div id="pf'+i+'_'+p.slug+'" class="accordion-collapse collapse '+(i?'':'show')+'"><div class="accordion-body">'+escapeHtml(x[1])+'</div></div></div>').join('');
  }
  const capcutDevices=root.querySelector('#capcutDeviceOptions'), capcutFixed=root.querySelector('#capcutFixedDevice');
- let selectedDevices=1, selectedCapcutPrice='Rs. 650';
+ let selectedDevices=1, selectedCapcutPrice='Rs. 399';
  function selectPlan(i){
   const pl=p.plans[i]||p.plans[0];
   if(pl.outOfStock)return;
@@ -445,7 +379,7 @@ function renderProductPage(){
    if(capcutDevices)capcutDevices.style.display=isMonth?'block':'none';
    if(capcutFixed)capcutFixed.style.display=isMonth?'none':'flex';
    selectedDevices=isMonth?1:2;
-   selectedCapcutPrice=isMonth?'Rs. 650':pl.price;
+   selectedCapcutPrice=isMonth?'Rs. 399':pl.price;
    if(total)total.textContent=selectedCapcutPrice;
    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
    updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
@@ -463,7 +397,7 @@ function renderProductPage(){
     capcutDevices.querySelectorAll('.device-option').forEach(x=>x.classList.remove('active'));
     btn.classList.add('active');
     selectedDevices=Number(btn.dataset.devices)||1;
-    selectedCapcutPrice=btn.dataset.price||'Rs. 650';
+    selectedCapcutPrice=btn.dataset.price||'Rs. 399';
     if(total)total.textContent=selectedCapcutPrice;
     const pl=p.plans[Math.max(0,planButtons.findIndex(b=>b.classList.contains('active')))]||p.plans[0];
     if(selected)selected.textContent=`${pl.name} • ${selectedDevices} Device${selectedDevices>1?'s':''}`;
@@ -474,7 +408,7 @@ function renderProductPage(){
   });
  }
  planButtons.forEach((btn,i)=>btn.addEventListener('click',()=>selectPlan(i)));selectPlan(Math.max(0,p.plans.findIndex(pl=>!pl.outOfStock)));
- const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
+ const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="mb-2"><span class="text-silver small">from</span> <strong class="text-gradient">${escapeHtml(x.price)}</strong></p><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
 document.addEventListener('DOMContentLoaded',()=>{

@@ -595,7 +595,7 @@
     var row = document.createElement('div');
     row.className = 'ar-qty-row';
     row.id = 'arQtyRow';
-    row.innerHTML = '<span class="ar-qty-label">Quantity <small>(accounts)</small></span>' +
+    row.innerHTML = '<span class="ar-qty-label">Quantity <small>(separate accounts)</small></span>' +
       '<div class="ar-qty-ctrl">' +
       '<button type="button" class="ar-qty-btn" data-ar-pq="-1" aria-label="Decrease quantity">\u2212</button>' +
       '<span class="ar-qty-val">1</span>' +
@@ -605,6 +605,10 @@
     note.className = 'ar-qty-note';
     note.textContent = 'Buy more, save more: 2 accounts = 5% off \u00b7 3 = 10% off \u00b7 4+ = 15% off';
     totalBox.parentNode.insertBefore(note, totalBox);
+    var note2 = document.createElement('p');
+    note2.className = 'ar-qty-note';
+    note2.textContent = 'Each quantity is a separate account. Device access is part of the plan selected above.';
+    totalBox.parentNode.insertBefore(note2, totalBox);
     var save = document.createElement('p');
     save.className = 'ar-qty-save';
     save.id = 'arQtySave';
@@ -631,7 +635,13 @@
         var t = totalEl.textContent;
         if (t === pageLastDisplay) return;
         var v = parsePrice(t);
-        if (v > 0) { pageUnit = v; refreshProductTotal(root); }
+        if (v > 0) {
+          pageUnit = v;
+          /* Plan/device changed: drop any stale coupon message (e.g. an old
+             error) instead of leaving the customer reading a past result. */
+          if (!couponCode) { var pMsg = $('#arCouponMsg', root); if (pMsg) { pMsg.hidden = true; pMsg.textContent = ''; } }
+          refreshProductTotal(root);
+        }
       }).observe(totalEl, { childList: true, characterData: true, subtree: true });
     }
     injectQtyControl(root);

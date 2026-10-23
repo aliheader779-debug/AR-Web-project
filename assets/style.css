@@ -1076,7 +1076,7 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
    Rollback: delete this block + the app.js SR2 branch + cart.js coupon code.
    ========================================================================== */
 .sr2-wrap{max-width:880px;margin:0 auto}
-#productPage.sr2 .product-main-visual{min-height:300px}
+#productPage.sr2 .product-main-visual{min-height:0;padding:24px 18px}
 #productPage.sr2 .product-detail-icon{--logo-size:150px!important;width:176px;height:176px;min-width:176px;min-height:176px;flex-basis:176px;border-radius:22px}
 #productPage.sr2 .pv2-stars{justify-content:flex-start}
 .sr2-head{padding:0 4px}
@@ -1086,6 +1086,8 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .sr2-card{margin-top:22px;padding:28px}
 .sr2-card .product-section-kicker{margin-bottom:6px}
 .sr2-sub{margin-top:26px}
+/* Reviews inside the SR2 template: always show the full screenshot */
+#productPage.sr2 .review-image-card img{height:auto;max-height:75vh;object-fit:contain}
 
 /* Payment method Copy buttons (SR-style, AR colours) */
 .pv2-copy-btn{margin-left:10px;flex:none;border:1.5px solid rgba(124,58,237,.45);background:#fff;color:#6d28d9;font:600 .72rem 'Poppins',sans-serif;padding:4px 13px;border-radius:999px;cursor:pointer;transition:border-color .2s ease,color .2s ease,background .2s ease}
@@ -1120,9 +1122,11 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 
 /* Order Now + Ask a Question (standard button sizes, side by side) */
 .sr2-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-.sr2-order-btn{flex:1 1 auto;padding:12px 25px}
-.sr2-actions .ar-add-cart-product{flex:1 1 100%;margin-top:0}
-.sr2-ask-btn{border:1.5px solid rgba(124,58,237,.55);color:#6d28d9!important;background:#fff;border-radius:30px;padding:11px 25px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;transition:.25s}
+.sr2-order-btn{flex:1 1 100%;padding:12px 25px}
+.sr2-actions .ar-add-cart-product{flex:1 1 0;margin-top:0}
+#productPage.sr2 .ar-add-cart-product{background:#fff;color:#6d28d9;border:1.5px solid rgba(124,58,237,.55);box-shadow:none;padding:10px 16px;font-size:.92rem}
+#productPage.sr2 .ar-add-cart-product:hover{background:rgba(124,58,237,.07);color:#6d28d9;transform:translateY(-1px);box-shadow:none}
+.sr2-ask-btn{flex:1 1 0;border:1.5px solid rgba(124,58,237,.55);color:#6d28d9!important;background:#fff;border-radius:30px;padding:11px 25px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;transition:.25s}
 .sr2-ask-btn:hover{background:rgba(124,58,237,.07);color:#6d28d9!important;transform:translateY(-1px)}
 
 /* Checkout coupon field (restored with SAVE10; cart.js renders the markup) */
@@ -1137,12 +1141,12 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .ar-co-coupon-remove{margin-top:6px;background:none;border:0;padding:0;color:#64748b;font:600 .78rem 'Poppins',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
 @media(max-width:575px){
- #productPage.sr2 .product-main-visual{min-height:230px}
+ #productPage.sr2 .product-main-visual{min-height:0;padding:20px 14px}
  #productPage.sr2 .product-detail-icon{--logo-size:110px!important;width:132px;height:132px;min-width:132px;min-height:132px;flex-basis:132px}
  .sr2-card{padding:22px}
  .sr2-trust span{padding:0 8px}
  #productPage.sr2 .device-option-row{grid-template-columns:repeat(2,minmax(0,1fr))}
  #productPage.sr2 .device-option strong{font-size:.98rem}
- .sr2-actions{flex-direction:column}
- .sr2-order-btn,.sr2-ask-btn{width:100%}
+ .sr2-order-btn{width:100%}
+ .sr2-actions .ar-add-cart-product,.sr2-ask-btn{padding-left:8px;padding-right:8px;font-size:.85rem}
 }
