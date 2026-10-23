@@ -166,17 +166,25 @@ function initStoreFilters(){
  search?.addEventListener('input',apply);
  apply();
 }
-/* ===== Product Page — Design 1 "Sticky Buy" (2026-10-23, CapCut TEST) =====
+/* ===== Product Page — SR STRUCTURE (2026-10-23, CapCut TEST) =====
    Only CapCut renders this layout (see the slug check in renderProductPage);
    the other 10 product pages keep the standard template below, unchanged.
-   Structure: hero card (site's stars line + starting price) -> Choose Your
-   Plan card -> Quick Facts tiles -> accordions (Payment Methods / Product
-   Details / Warranty / FAQ) -> reviews + related sections. All copy and
-   prices come from the same PRODUCTS / PRODUCT_SECTIONS / PRODUCT_INFO data,
-   and every hook app.js + cart.js rely on (#productTotalPrice,
-   .product-plan-option, #capcutDeviceOptions, #productOrderBtn, the section
-   IDs) is preserved. Colours and buttons are the site's own classes. */
-const D1_WARRANTY={
+   Section order mirrors SR Digital World's product pages (confirmed live
+   on their Canva page, 2026-10-23): big product image -> category tag ->
+   name -> stars/reviews line -> one-line description -> Payment Methods
+   accordion -> Select Plan (plan selector + CapCut device options + the
+   quantity selector cart.js injects, with its tier discount) -> 3 trust
+   ticks -> Product Details -> Features -> How It Works -> Warranty Rules
+   -> FAQ -> Customer Reviews -> You May Also Like.
+   Only the STRUCTURE is SR's: every word, price and claim is AR SERVICES'
+   own published data (PRODUCTS / PRODUCT_SECTIONS / PRODUCT_INFO), AR's
+   colours and button classes are unchanged, the WhatsApp/order buttons
+   keep the site's standard size, and SR-only claims (numeric 4.9/5
+   ratings, payment-after-activation, free bonuses, ~2-minute delivery)
+   are deliberately NOT used. All hooks app.js + cart.js rely on
+   (#productTotalPrice, .product-plan-option, #capcutDeviceOptions,
+   #productOrderBtn, the section IDs) are preserved. */
+const SR_WARRANTY={
  'surfshark':{line:'Surfshark VPN includes a 25-day replacement warranty.',cover:true},
  'netflix':{line:'Netflix includes a 25-day AR SERVICES warranty.',cover:true},
  'office365':{line:'MS Office 365 Plus includes a 20-day full warranty.',cover:true},
@@ -185,43 +193,37 @@ const D1_WARRANTY={
  'duolingo':{line:'Super Duolingo does not include a warranty after activation. Please make sure your account is eligible before ordering.',cover:false},
  'generic':{line:'Warranty terms for this product are confirmed with you on WhatsApp before payment.',cover:true}
 };
-const D1_FACTS={
- capcut:[
-  ['Delivery','10–15 min after payment is verified'],
-  ['Access','Email & password login provided'],
-  ['Payment','JazzCash · EasyPaisa'],
-  ['Support','WhatsApp · Mon–Sat 9am–9pm · Sun 12pm–9pm']
- ]
-};
-function productD1Template(p,featuredPlan){
+function productSRTemplate(p,featuredPlan){
  const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
- const facts=D1_FACTS[p.slug]||[
-  ['Delivery','10–15 min after payment is verified'],
-  ['Access',p.accessDetails||'See plan details'],
-  ['Payment','JazzCash · EasyPaisa'],
-  ['Support','WhatsApp · Mon–Sat 9am–9pm · Sun 12pm–9pm']
- ];
- const w=D1_WARRANTY[p.slug]||D1_WARRANTY['generic'];
+ const w=SR_WARRANTY[p.slug]||SR_WARRANTY['generic'];
  let warrantyItems='<li><strong>'+escapeHtml(w.line)+'</strong></li>';
  if(w.cover){
   warrantyItems+='<li>If your account or access develops an issue during its warranty period, contact us on WhatsApp with your order details and we will arrange a replacement for you.</li>'+'<li>If, because of a technical issue, we are unable to provide a replacement, your full purchase amount will be refunded within 5 hours.</li>';
  }
- const faqCount=((PRODUCT_SECTIONS[p.slug]||{}).faq||[]).length;
  const infoRow=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
  return `
  <section class="product-page">
   <div class="container">
    <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
-   <div class="row g-4 g-lg-5 align-items-start">
-    <div class="col-lg-5"><div class="glass-card product-main-visual text-center">
+   <div class="sr1-wrap">
+    <div class="glass-card product-main-visual text-center">
       <div class="product-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
+    </div>
+    <div class="sr1-head">
       <div class="small-label mt-3">${p.category}</div><h1 class="h2 fw-bold mt-2">${escapeHtml(p.name)}</h1>
       <div class="pv2-stars"><span class="pv2-stars-icons" aria-hidden="true">★★★★★</span><span class="pv2-stars-text">Loved by students &amp; creators across Pakistan</span><a class="pv2-stars-link" href="reviews.html">See customer reviews</a></div>
       <p class="text-silver mb-0 mt-3">${escapeHtml(p.description)}</p>
-      <div class="d1-hero-price"><strong>${escapeHtml(featuredPlan.price)}</strong><span>· ${escapeHtml(featuredPlan.name)}</span></div>
-    </div></div>
-    <div class="col-lg-7"><div class="product-purchase-card">
-      <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
+    </div>
+    <div class="pv2-pay">
+      <button type="button" class="pv2-pay-toggle" aria-expanded="false"><span class="pv2-pay-title"><i class="fa-solid fa-credit-card"></i> Payment Methods</span><span class="pv2-pay-names">JazzCash · EasyPaisa</span><i class="fa-solid fa-chevron-down pv2-pay-chevron" aria-hidden="true"></i></button>
+      <div class="pv2-pay-body" hidden>
+        <div class="pv2-pay-row"><span>JazzCash</span><strong>0317 9172511</strong><small>Ali Haider</small></div>
+        <div class="pv2-pay-row"><span>EasyPaisa</span><strong>0317 9172511</strong><small>Ali Haider</small></div>
+        <p class="pv2-pay-note">Pay first, then send your payment screenshot on WhatsApp. Delivery is usually within 10–15 minutes after payment is verified (up to 1 hour in some cases).</p>
+      </div>
+    </div>
+    <div class="product-purchase-card">
+      <div class="small-label">Select Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
       <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
       <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
       ${p.slug==='capcut'?`
@@ -237,59 +239,48 @@ function productD1Template(p,featuredPlan){
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
       <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
-    </div></div>
+    </div>
+    <div class="product-trust-strip pv2-trust sr1-trust"><span><i class="fa-solid fa-circle-check"></i> Clear Pricing</span><span><i class="fa-solid fa-circle-check"></i> WhatsApp Support</span><span><i class="fa-solid fa-circle-check"></i> Simple Ordering</span></div>
+    <div class="glass-card product-content-card sr1-card">
+      <div class="product-section-kicker">Product Details</div>
+      <h2 class="h3 fw-bold mb-3">Product Details</h2>
+      <p id="productDescription" class="text-silver product-about-description"></p>
+      <h3 class="h5 fw-bold mt-4 mb-3">What's Included</h3>
+      <ul id="productIncluded" class="product-included-list"></ul>
+      <div class="product-info-rows mt-4">${infoRow('Delivery',info.delivery)}${infoRow('Warranty',info.warranty)}${infoRow('Support','WhatsApp · Mon–Sat 9am–9pm · Sun 12pm–9pm')}</div>
+      <p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p>
+    </div>
+    <div class="glass-card product-content-card sr1-card">
+      <div class="product-section-kicker">Features</div>
+      <h2 class="h3 fw-bold mb-3">Key Features</h2>
+      <ul id="productFeatures" class="product-included-list"></ul>
+      <h3 class="h5 fw-bold mt-4 mb-3">Benefits</h3>
+      <ul id="productBenefits" class="product-included-list"></ul>
+    </div>
+    <div class="glass-card product-content-card sr1-card">
+      <div class="product-section-kicker">Simple Steps</div>
+      <h2 class="h3 fw-bold mb-3">How It Works</h2>
+      <div id="productSteps" class="product-steps"></div>
+    </div>
+    <div class="glass-card product-content-card pv2-warranty-card sr1-card">
+      <div class="product-section-kicker">Warranty</div>
+      <h2 class="h3 fw-bold mb-3">Warranty Rules</h2>
+      <ul class="pv2-warranty-list">${warrantyItems}</ul>
+      <p class="text-silver small mb-0">Full details: <a href="refund-policy.html">Refund, Replacement &amp; Delivery Policy</a></p>
+    </div>
    </div>
-   <div class="d1-facts">${facts.map(f=>`<div class="d1-fact"><span class="d1-fact-label">${escapeHtml(f[0])}</span><span class="d1-fact-value">${escapeHtml(f[1])}</span></div>`).join('')}</div>
-   <div class="d1-acc-wrap"><div class="accordion d1-accordion" id="d1Accordion-${p.slug}">
-    <div class="accordion-item">
-      <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#d1acc-pay-${p.slug}" aria-expanded="false">Payment Methods<span class="d1-acc-sub">JazzCash · EasyPaisa</span></button></h2>
-      <div id="d1acc-pay-${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">
-        <div class="pv2-pay-row"><span>JazzCash</span><strong>0317 9172511</strong><small>Ali Haider</small></div>
-        <div class="pv2-pay-row"><span>EasyPaisa</span><strong>0317 9172511</strong><small>Ali Haider</small></div>
-        <p class="pv2-pay-note">Pay first, then send your payment screenshot on WhatsApp. Delivery is usually within 10–15 minutes after payment is verified (up to 1 hour in some cases).</p>
-      </div></div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#d1acc-details-${p.slug}" aria-expanded="false">Product Details<span class="d1-acc-sub">Features · What's included</span></button></h2>
-      <div id="d1acc-details-${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">
-        <p id="productDescription" class="text-silver product-about-description"></p>
-        <div class="product-about-grid mt-4">
-          <div class="product-inner-card"><h3 class="h5 fw-bold mb-3">Benefits</h3><ul id="productBenefits" class="product-included-list"></ul></div>
-          <div class="product-inner-card"><h3 class="h5 fw-bold mb-3">Key Features</h3><ul id="productFeatures" class="product-included-list"></ul></div>
-          <div class="product-inner-card"><h3 class="h5 fw-bold mb-3">What's Included</h3><ul id="productIncluded" class="product-included-list"></ul></div>
-        </div>
-        <p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p>
-        <div class="product-section-kicker mt-4">Simple Steps</div>
-        <h3 class="h5 fw-bold mb-3">How It Works</h3>
-        <div id="productSteps" class="product-steps"></div>
-        <div class="product-info-rows mt-4">${infoRow('Delivery',info.delivery)}${infoRow('Warranty',info.warranty)}</div>
-      </div></div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#d1acc-warranty-${p.slug}" aria-expanded="false">Warranty<span class="d1-acc-sub">Warranty &amp; Support</span></button></h2>
-      <div id="d1acc-warranty-${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">
-        <ul class="pv2-warranty-list">${warrantyItems}</ul>
-        <p class="text-silver small mb-0">Full details: <a href="refund-policy.html">Refund, Replacement &amp; Delivery Policy</a></p>
-      </div></div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#d1acc-faq-${p.slug}" aria-expanded="false">FAQ<span class="d1-acc-sub">${faqCount} Question${faqCount===1?'':'s'}</span></button></h2>
-      <div id="d1acc-faq-${p.slug}" class="accordion-collapse collapse"><div class="accordion-body">
-        <div id="productFaq" class="accordion"></div>
-      </div></div>
-    </div>
-   </div></div>
   </div>
  </section>
+ <section><div class="container"><h2 class="section-title">Product <span class="text-gradient">FAQ</span></h2><div id="productFaq" class="accordion mx-auto" style="max-width:850px"></div></div></section>
  <section class="section-alt"><div class="container"><div class="glass-card product-content-card mx-auto" style="max-width:900px"><h2 class="h3 fw-bold mb-3">Customer Reviews</h2><p class="text-silver mb-4">Real customer feedback shared with AR SERVICES.</p><div id="productReviews" class="product-review-placeholder"></div><a class="btn btn-outline-glass mt-3" href="reviews.html">View All Reviews</a></div></div></section>
- <section class="section-alt"><div class="container"><h2 class="section-title">More <span class="text-gradient">Premium Tools</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
+ <section class="section-alt"><div class="container"><h2 class="section-title">You May <span class="text-gradient">Also Like</span></h2><div id="relatedProducts" class="row g-4 justify-content-center"></div></div></section>`;
 }
 function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
  const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
- root.innerHTML= slug==='capcut' ? productD1Template(p,featuredPlan) : `
+ root.innerHTML= slug==='capcut' ? productSRTemplate(p,featuredPlan) : `
  <section class="product-page">
   <div class="container">
    <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
@@ -365,7 +356,11 @@ function renderProductPage(){
  stickyOrder.className='product-sticky-order';
  stickyOrder.innerHTML='<div class="product-sticky-inner"><div class="product-sticky-info"><span class="product-sticky-name"></span><strong class="product-sticky-price"></strong></div><button type="button" class="product-sticky-btn">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>';
  document.body.appendChild(stickyOrder);
- if(slug==='capcut'){root.classList.add('pv2','d1');stickyOrder.classList.add('d1-sticky');}
+ if(slug==='capcut'){root.classList.add('pv2','sr1');stickyOrder.classList.add('d1-sticky');
+  const srPay=root.querySelector('.pv2-pay');
+  if(srPay){const srToggle=srPay.querySelector('.pv2-pay-toggle'),srBody=srPay.querySelector('.pv2-pay-body');
+   srToggle.addEventListener('click',()=>{const open=srToggle.getAttribute('aria-expanded')==='true';srToggle.setAttribute('aria-expanded',String(!open));srBody.hidden=open;srPay.classList.toggle('open',!open);});}
+ }
  const stickyName=stickyOrder.querySelector('.product-sticky-name'),stickyPrice=stickyOrder.querySelector('.product-sticky-price'),stickyBtn=stickyOrder.querySelector('.product-sticky-btn');
  function updateStickyOrder(planText,price){
   if(stickyName)stickyName.textContent=p.name+(planText?' • '+planText:'');

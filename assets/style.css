@@ -1036,3 +1036,30 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
   .product-sticky-order.d1-sticky{display:none}
   body:has(.product-sticky-order.d1-sticky.is-visible) .ar-cart-fab{bottom:25px}
 }
+
+/* ==========================================================================
+   PRODUCT PAGE — SR STRUCTURE (2026-10-23) — CapCut TEST only.
+   Every rule hangs off .sr1 classes, which only product-capcut.html renders
+   (app.js slug branch), so the other 10 product pages are untouched.
+   Single-column flow mirroring SR's product pages, built entirely from the
+   site's own light-theme colours, cards and standard button classes — no
+   new colours, no oversized WhatsApp button (the sticky Buy button keeps
+   the standard .d1-sticky metrics above).
+   Rollback: delete this block + the app.js SR branch.
+   ========================================================================== */
+.sr1-wrap{max-width:880px;margin:0 auto}
+#productPage.sr1 .product-main-visual{min-height:300px}
+#productPage.sr1 .product-detail-icon{--logo-size:150px!important;width:176px;height:176px;min-width:176px;min-height:176px;flex-basis:176px;border-radius:22px}
+#productPage.sr1 .pv2-stars{justify-content:flex-start}
+.sr1-head{padding:0 4px}
+#productPage.sr1 .pv2-pay{margin-top:22px;margin-bottom:0}
+#productPage.sr1 .product-purchase-card{margin-top:18px}
+.sr1-trust{justify-content:center}
+.sr1-card{margin-top:22px;padding:28px}
+.sr1-card .product-section-kicker{margin-bottom:6px}
+@media(max-width:575px){
+ #productPage.sr1 .product-main-visual{min-height:230px}
+ #productPage.sr1 .product-detail-icon{--logo-size:110px!important;width:132px;height:132px;min-width:132px;min-height:132px;flex-basis:132px}
+ .sr1-card{padding:22px}
+ .sr1-trust span{padding:0 8px}
+}
