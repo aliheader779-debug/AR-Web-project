@@ -60,7 +60,7 @@
 
   /* ---------------- coupon (SAVE10, 2026-10-23) ----------------
      One public code: SAVE10 = 10% off. Rules:
-       - CapCut Pro 1 Month — 1 Device (id 'capcut-1-month-1device', Rs 399)
+       - CapCut Pro 1 Month — 1 Device (id 'capcut-1-month-1device', Rs 650)
          is NEVER discountable (margin protection).
        - Bundle-priced items never get a second discount. (Bundle orders on
          this site go through the homepage bundle WhatsApp link and never
@@ -91,10 +91,53 @@
     return r;
   }
   /* COUPON-LOGIC-END */
+
+  /* ---------------- quantity discount (2026-10-23) ----------------
+     Per-line tiers on the quantity of the SAME plan (multiple accounts):
+       2 accounts = 5% off - 3 accounts = 10% off - 4+ accounts = 15% off.
+     Applies to every cart line, CapCut 1-Device included (separate accounts;
+     the SAVE10 exclusion for that plan is coupon-only). Quantity discount
+     and SAVE10 NEVER stack: checkout applies whichever is BIGGER.
+     Pure logic between the QTY-LOGIC markers for Node unit tests. */
+  /* QTY-LOGIC-START */
+  var QTY_MAX = 10;
+  function clampQty(q) { q = parseInt(q, 10); if (isNaN(q) || q < 1) return 1; return q > QTY_MAX ? QTY_MAX : q; }
+  function qtyTierPercent(qty) {
+    qty = clampQty(qty);
+    if (qty >= 4) return 15;
+    if (qty === 3) return 10;
+    if (qty === 2) return 5;
+    return 0;
+  }
+  function qtyDiscountFor(list) {
+    var amount = 0, percents = [];
+    (list || []).forEach(function (x) {
+      var pct = qtyTierPercent(x && x.qty);
+      if (pct > 0) {
+        amount += Math.round((Number(x.price) || 0) * pct / 100);
+        if (percents.indexOf(pct) === -1) percents.push(pct);
+      }
+    });
+    return { amount: amount, percents: percents };
+  }
+  function bestDiscount(list, code) {
+    var gross = (list || []).reduce(function (sm, x) { return sm + (Number(x.price) || 0); }, 0);
+    var qd = qtyDiscountFor(list);
+    var cc = couponCalc(list, code);
+    var couponAmt = cc.applied ? cc.discount : 0;
+    var r = { type: '', amount: 0, percent: 0, code: '', gross: gross };
+    if (couponAmt > 0 && couponAmt >= qd.amount) {
+      r.type = 'coupon'; r.amount = couponAmt; r.percent = cc.percent; r.code = cc.code;
+    } else if (qd.amount > 0) {
+      r.type = 'qty'; r.amount = qd.amount;
+      r.percent = qd.percents.length === 1 ? qd.percents[0] : 0;
+    }
+    return r;
+  }
+  /* QTY-LOGIC-END */
   var appliedCoupon = '';
   function finalTotal() {
-    var calc = couponCalc(items, appliedCoupon);
-    return cartTotal() - (calc.applied ? calc.discount : 0);
+    return cartTotal() - bestDiscount(items, appliedCoupon).amount;
   }
 
   /* ---------------- cart state ---------------- */
@@ -108,6 +151,11 @@
          saved cart must not resurrect it). */
       return arr.filter(function (x) {
         return x && x.id && x.name && typeof x.price === 'number' && x.id !== 'capcut-7-days';
+      }).map(function (x) {
+        var q = clampQty(x.qty);
+        var unit = Number(x.unit) > 0 ? Number(x.unit) : Math.round((Number(x.price) || 0) / q);
+        x.qty = q; x.unit = unit; x.price = unit * q;
+        return x;
       });
     } catch (e) { return []; }
   }
@@ -130,6 +178,7 @@
           '<button type="button" class="ar-cart-close" data-ar-close aria-label="Close cart">&times;</button></div>' +
         '<div id="arCartItems" class="ar-cart-items"></div>' +
         '<div class="ar-cart-foot">' +
+          '<div class="ar-cart-total ar-cart-disc-row" id="arCartDiscRow" hidden><span>Discount</span><strong id="arCartDisc">−Rs 0</strong></div>' +
           '<div class="ar-cart-total"><span>Total</span><strong id="arCartTotal">Rs 0</strong></div>' +
           '<button type="button" id="arCartCheckoutBtn" class="ar-btn-gradient ar-w100">Checkout</button>' +
           '<button type="button" class="ar-cart-continue" data-ar-close>Continue shopping</button>' +
@@ -163,6 +212,7 @@
     els.fab = $('#arCartFab'); els.badge = $('#arCartBadge');
     els.overlay = $('#arCartOverlay'); els.drawer = $('#arCartDrawer');
     els.itemsBox = $('#arCartItems'); els.total = $('#arCartTotal');
+    els.discRow = $('#arCartDiscRow'); els.disc = $('#arCartDisc');
     els.checkoutBtn = $('#arCartCheckoutBtn');
     els.modal = $('#arCheckoutModal'); els.summary = $('#arCheckoutSummary');
     els.form = $('#arCheckoutForm'); els.error = $('#arCoError');
@@ -177,7 +227,14 @@
     els.checkoutBtn.addEventListener('click', openCheckout);
     els.couponApply.addEventListener('click', applyCouponFromInput);
     els.itemsBox.addEventListener('click', function (e) {
-      var btn = e.target.closest ? e.target.closest('[data-ar-remove]') : null;
+      if (!e.target.closest) return;
+      var qbtn = e.target.closest('[data-ar-qinc],[data-ar-qdec]');
+      if (qbtn) {
+        var qid = qbtn.getAttribute('data-ar-qinc') || qbtn.getAttribute('data-ar-qdec');
+        ARCart.changeQty(qid, qbtn.hasAttribute('data-ar-qinc') ? 1 : -1);
+        return;
+      }
+      var btn = e.target.closest('[data-ar-remove]');
       if (btn) ARCart.remove(btn.getAttribute('data-ar-remove'));
     });
     els.modal.addEventListener('click', function (e) { if (e.target === els.modal) closeCheckout(); });
@@ -190,22 +247,32 @@
   /* ---------------- rendering / feedback ---------------- */
   function renderCart() {
     if (!els.badge) return;
-    var count = items.length;
-    els.badge.textContent = count;
-    els.badge.hidden = count === 0;
-    if (!count) {
+    var units = items.reduce(function (sm, x) { return sm + clampQty(x.qty); }, 0);
+    els.badge.textContent = units;
+    els.badge.hidden = units === 0;
+    if (!items.length) {
       els.itemsBox.innerHTML = '<p class="ar-cart-empty">Your cart is empty.<br>Add a plan and checkout in one tap.</p>';
     } else {
       els.itemsBox.innerHTML = items.map(function (x) {
+        var q = clampQty(x.qty);
         return '<div class="ar-cart-item"><div class="ar-cart-item-info">' +
-          '<strong>' + escapeHtml(x.name) + '</strong><span>' + fmt(x.price) + '</span></div>' +
+          '<strong>' + escapeHtml(x.name) + '</strong>' +
+          '<span>' + fmt(x.unit) + (q > 1 ? ' × ' + q : '') + ' — ' + fmt(x.price) + '</span>' +
+          '<div class="ar-cart-qty"><button type="button" data-ar-qdec="' + escapeHtml(x.id) + '" aria-label="Decrease quantity">−</button><span>' + q + '</span><button type="button" data-ar-qinc="' + escapeHtml(x.id) + '" aria-label="Increase quantity">+</button></div>' +
+          '</div>' +
           '<button type="button" class="ar-cart-remove" data-ar-remove="' + escapeHtml(x.id) + '" aria-label="Remove item">&times;</button></div>';
       }).join('');
     }
-    els.total.textContent = fmt(cartTotal());
-    els.checkoutBtn.disabled = count === 0;
-    els.checkoutBtn.classList.toggle('ar-disabled', count === 0);
+    var best = bestDiscount(items, appliedCoupon);
+    if (els.discRow && els.disc) {
+      els.discRow.hidden = best.amount <= 0;
+      if (best.amount > 0) els.disc.textContent = '−' + fmt(best.amount);
+    }
+    els.total.textContent = fmt(finalTotal());
+    els.checkoutBtn.disabled = items.length === 0;
+    els.checkoutBtn.classList.toggle('ar-disabled', items.length === 0);
   }
+
   function pulseBadge() {
     if (!els.fab) return;
     els.fab.classList.remove('ar-pulse');
@@ -239,18 +306,24 @@
     els.couponMsg.className = 'ar-coupon-msg ' + (ok ? 'ok' : 'err');
   }
   function renderSummary() {
-    var calc = couponCalc(items, appliedCoupon);
+    var best = bestDiscount(items, appliedCoupon);
     var html = items.map(function (x) {
-      return '<div class="ar-co-line"><span>' + escapeHtml(x.name) + '</span><strong>' + fmt(x.price) + '</strong></div>';
+      var q = clampQty(x.qty);
+      return '<div class="ar-co-line"><span>' + escapeHtml(x.name) + (q > 1 ? ' × ' + q : '') + '</span><strong>' + fmt(x.price) + '</strong></div>';
     }).join('');
-    if (calc.applied) {
-      html += '<div class="ar-co-line"><span>Subtotal</span><strong>' + fmt(cartTotal()) + '</strong></div>' +
-        '<div class="ar-co-line ar-co-discount"><span>Coupon: ' + calc.code + ' (−' + calc.percent + '%)</span><strong>−' + fmt(calc.discount) + '</strong></div>';
+    if (best.amount > 0) {
+      html += '<div class="ar-co-line"><span>Subtotal</span><strong>' + fmt(cartTotal()) + '</strong></div>';
+      if (best.type === 'coupon') {
+        html += '<div class="ar-co-line ar-co-discount"><span>Coupon: ' + best.code + ' (−' + best.percent + '%)</span><strong>−' + fmt(best.amount) + '</strong></div>';
+      } else {
+        html += '<div class="ar-co-line ar-co-discount"><span>Quantity discount' + (best.percent ? ' (' + best.percent + '%)' : '') + '</span><strong>−' + fmt(best.amount) + '</strong></div>';
+      }
     }
     html += '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(finalTotal()) + '</strong></div>';
     els.summary.innerHTML = html;
-    return calc;
+    return best;
   }
+
   function applyCouponFromInput() {
     var code = els.couponInput ? els.couponInput.value : '';
     if (!code || !String(code).trim()) { couponMsgShow('Enter a coupon code.', false); return; }
@@ -266,22 +339,28 @@
       return;
     }
     appliedCoupon = calc.code;
-    renderSummary();
-    couponMsgShow('Coupon ' + calc.code + ' applied — you save ' + fmt(calc.discount) + '.', true);
+    var bestNow = renderSummary();
+    if (bestNow.type === 'coupon') {
+      couponMsgShow('Coupon ' + calc.code + ' applied — you save ' + fmt(calc.discount) + '.', true);
+    } else {
+      couponMsgShow('Coupon valid hai, lekin quantity discount zyada hai — wohi apply ho gaya hai.', true);
+    }
   }
   function openCheckout() {
     if (!items.length) { toast('Cart khaali hai — pehle koi plan add karein'); return; }
     closeDrawer();
-    var calc = renderSummary();
+    var best = renderSummary();
     if (appliedCoupon) {
-      if (calc.applied) couponMsgShow('Coupon ' + calc.code + ' applied — you save ' + fmt(calc.discount) + '.', true);
-      else if (calc.reason === 'not_applicable') couponMsgShow('This code does not apply to this plan.', false);
+      var cc = couponCalc(items, appliedCoupon);
+      if (cc.applied && best.type === 'coupon') couponMsgShow('Coupon ' + cc.code + ' applied — you save ' + fmt(cc.discount) + '.', true);
+      else if (cc.applied) couponMsgShow('Coupon valid hai, lekin quantity discount zyada hai — wohi apply ho gaya hai.', true);
+      else if (cc.reason === 'not_applicable') couponMsgShow('This code does not apply to this plan.', false);
     } else if (els.couponMsg) { els.couponMsg.hidden = true; }
     els.error.hidden = true;
     els.modal.classList.add('open'); els.modal.setAttribute('aria-hidden', 'false');
     /* Pixel: InitiateCheckout on modal open (spec) */
     fbqTrack('InitiateCheckout', {
-      value: finalTotal(), currency: 'PKR', num_items: items.length,
+      value: finalTotal(), currency: 'PKR', num_items: items.reduce(function (sm, x) { return sm + clampQty(x.qty); }, 0),
       content_ids: items.map(function (x) { return x.id; }), content_type: 'product'
     });
   }
@@ -306,9 +385,9 @@
     try {
       var leadPayload = JSON.stringify({ action: 'websitelead', data: {
         name: name, number: phoneRaw, city: city,
-        items: items.map(function (x) { return x.name + ' Rs ' + x.price; }).join('; '),
+        items: items.map(function (x) { var q = clampQty(x.qty); return x.name + (q > 1 ? ' x' + q : '') + ' Rs ' + x.price; }).join('; '),
         total: finalTotal(),
-        coupon: couponCalc(items, appliedCoupon).applied ? appliedCoupon : ''
+        coupon: bestDiscount(items, appliedCoupon).type === 'coupon' ? appliedCoupon : ''
       } });
       var leadUrl = 'https://script.google.com/macros/s/AKfycby-brB_YTJvxp-dwjbVkI21OT1onpe7eck-3JpB-UJaw3BuVp-YaUHvMsRUO_K4om4/exec';
       try {
@@ -318,13 +397,15 @@
       }
     } catch (leadErr) { /* lead send is best-effort only — ignore */ }
 
-    var lines = items.map(function (x) { return '• ' + x.name + ' — Rs ' + x.price; });
-    var calc = couponCalc(items, appliedCoupon);
+    var lines = items.map(function (x) { var q = clampQty(x.qty); return '• ' + x.name + (q > 1 ? ' × ' + q : '') + ' — Rs ' + x.price; });
+    var best = bestDiscount(items, appliedCoupon);
     var totalsText = '\nTotal: Rs ' + finalTotal();
-    if (calc.applied) {
+    if (best.amount > 0) {
       totalsText = '\nSubtotal: Rs ' + cartTotal() +
-        '\nCoupon: ' + calc.code + ' (−' + calc.percent + '%)' +
-        '\nDiscount: −Rs ' + calc.discount +
+        (best.type === 'coupon'
+          ? '\nCoupon: ' + best.code + ' (−' + best.percent + '%)'
+          : '\nQuantity discount' + (best.percent ? ' (' + best.percent + '%)' : '')) +
+        '\nDiscount: −Rs ' + best.amount +
         '\nTotal: Rs ' + finalTotal();
     }
     var msg = 'Assalam o Alaikum! Main website se order karna chahta hoon:\n' +
@@ -347,10 +428,21 @@
   var ARCart = {
     add: function (item) {
       if (!item || !item.id || !item.name) return false;
+      var qty = clampQty(item.qty);
+      var unit = Number(item.unit) > 0 ? Number(item.unit) : (Number(item.price) || 0);
+      var entry = { id: String(item.id), name: String(item.name), unit: unit, qty: qty, price: unit * qty };
       for (var i = 0; i < items.length; i++) {
-        if (items[i].id === item.id) { toast('Ye plan pehle se cart mein hai'); pulseBadge(); return false; }
+        if (items[i].id === entry.id) {
+          items[i] = entry;
+          save(); renderCart(); pulseBadge();
+          toast('Cart update ho gaya — ' + qty + ' account' + (qty > 1 ? 's' : '') + ' set ho gaye');
+          fbqTrack('AddToCart', {
+            content_name: entry.name, content_ids: [entry.id], content_type: 'product',
+            value: entry.price, currency: 'PKR'
+          });
+          return true;
+        }
       }
-      var entry = { id: String(item.id), name: String(item.name), price: Number(item.price) || 0 };
       items.push(entry);
       save(); renderCart(); pulseBadge();
       fbqTrack('AddToCart', {
@@ -359,6 +451,17 @@
       });
       return true;
     },
+    changeQty: function (id, delta) {
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].id === id) {
+          items[i].qty = clampQty(items[i].qty + (parseInt(delta, 10) || 0));
+          items[i].price = items[i].unit * items[i].qty;
+          break;
+        }
+      }
+      save(); renderCart();
+    },
+
     remove: function (id) {
       items = items.filter(function (x) { return x.id !== id; });
       save(); renderCart();
@@ -370,6 +473,87 @@
     openCheckout: openCheckout
   };
   window.ARCart = ARCart;
+
+  /* ---------------- product page: quantity selector + live total ----------------
+     The purchase card is rendered by app.js; its #productTotalPrice always
+     shows the UNIT price after a plan/device change. A MutationObserver
+     treats any foreign write to that element as a new unit price, then
+     re-applies quantity x tier discount to the displayed total (and to the
+     sticky bar price). Add to Cart reads pageUnit/pageQty via
+     currentProductSelection below. */
+  var pageQty = 1, pageUnit = 0, pageLastDisplay = '';
+  function refreshProductTotal(root) {
+    var totalEl = $('#productTotalPrice', root);
+    if (!totalEl || !(pageUnit > 0)) return;
+    var gross = pageUnit * pageQty;
+    var pct = qtyTierPercent(pageQty);
+    var disc = Math.round(gross * pct / 100);
+    var display = 'Rs. ' + (gross - disc).toLocaleString('en-US');
+    pageLastDisplay = display;
+    if (totalEl.textContent !== display) totalEl.textContent = display;
+    var sticky = document.querySelector('.product-sticky-price');
+    if (sticky && sticky.textContent !== display) sticky.textContent = display;
+    var saveEl = $('#arQtySave', root);
+    if (saveEl) {
+      saveEl.hidden = disc <= 0;
+      if (disc > 0) saveEl.textContent = 'You save ' + fmt(disc) + ' (' + pct + '% quantity discount)';
+    }
+    var val = $('.ar-qty-val', root);
+    if (val) val.textContent = pageQty;
+    var dec = $('[data-ar-pq="-1"]', root), inc = $('[data-ar-pq="1"]', root);
+    if (dec) dec.disabled = pageQty <= 1;
+    if (inc) inc.disabled = pageQty >= QTY_MAX;
+  }
+  function injectQtyControl(root) {
+    if ($('#arQtyRow', root)) return true;
+    var totalBox = $('.product-total-box', root);
+    if (!totalBox || !totalBox.parentNode) return false;
+    var row = document.createElement('div');
+    row.className = 'ar-qty-row';
+    row.id = 'arQtyRow';
+    row.innerHTML = '<span class="ar-qty-label">Quantity <small>(accounts)</small></span>' +
+      '<div class="ar-qty-ctrl">' +
+      '<button type="button" class="ar-qty-btn" data-ar-pq="-1" aria-label="Decrease quantity">\u2212</button>' +
+      '<span class="ar-qty-val">1</span>' +
+      '<button type="button" class="ar-qty-btn" data-ar-pq="1" aria-label="Increase quantity">+</button></div>';
+    totalBox.parentNode.insertBefore(row, totalBox);
+    var note = document.createElement('p');
+    note.className = 'ar-qty-note';
+    note.textContent = 'Buy more, save more: 2 accounts = 5% off \u00b7 3 = 10% off \u00b7 4+ = 15% off';
+    totalBox.parentNode.insertBefore(note, totalBox);
+    var save = document.createElement('p');
+    save.className = 'ar-qty-save';
+    save.id = 'arQtySave';
+    save.hidden = true;
+    totalBox.parentNode.insertBefore(save, totalBox.nextSibling);
+    row.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-ar-pq]') : null;
+      if (!b) return;
+      pageQty = clampQty(pageQty + (parseInt(b.getAttribute('data-ar-pq'), 10) || 0));
+      refreshProductTotal(root);
+    });
+    return true;
+  }
+  function watchProductTotal(root) {
+    var totalEl = $('#productTotalPrice', root);
+    if (!totalEl) return false;
+    if (!(pageUnit > 0)) {
+      pageUnit = parsePrice(totalEl.textContent);
+      pageLastDisplay = totalEl.textContent;
+    }
+    if (window.MutationObserver && !totalEl.__arWatched) {
+      totalEl.__arWatched = true;
+      new MutationObserver(function () {
+        var t = totalEl.textContent;
+        if (t === pageLastDisplay) return;
+        var v = parsePrice(t);
+        if (v > 0) { pageUnit = v; refreshProductTotal(root); }
+      }).observe(totalEl, { childList: true, characterData: true, subtree: true });
+    }
+    injectQtyControl(root);
+    refreshProductTotal(root);
+    return true;
+  }
 
   /* ---------------- product page: selection + button + ViewContent ---------------- */
   function currentProductSelection(root) {
@@ -399,7 +583,8 @@
     var name = prodName + (planName ? ' — ' + planName : '') +
       (devices ? ' (' + devices + ' Device' + (devices > 1 ? 's' : '') + ')' : '');
     var id = slug + '-' + slugify(planName) + (devices ? '-' + devices + 'device' : '');
-    return { id: id, name: name, price: price };
+    var unitPrice = pageUnit > 0 ? pageUnit : price;
+    return { id: id, name: name, price: unitPrice, unit: unitPrice, qty: pageQty };
   }
 
   function injectProductButton(root) {
@@ -476,7 +661,7 @@
        (registered before ours). Poll briefly as a safety net. */
     var tries = 0;
     (function inject() {
-      var doneProduct = root ? injectProductButton(root) : true;
+      var doneProduct = root ? (injectProductButton(root) && watchProductTotal(root)) : true;
       var doneCards = injectCardButtons();
       tries++;
       if ((!doneProduct || !doneCards) && tries < 20) setTimeout(inject, 150);
