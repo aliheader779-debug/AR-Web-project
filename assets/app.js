@@ -101,7 +101,7 @@ const LOGO_FIT={
 };
 function logoStyle(p){const fit=LOGO_FIT[p.slug]||{size:'48px'};return `--logo-size:${fit.size}`;}
 
-const WA_NUMBER='923351925662';
+const WA_NUMBER='923179172511';
 
 function productBySlug(slug){return PRODUCTS.find(p=>p.slug===slug)}
 function money(p){return p.price}

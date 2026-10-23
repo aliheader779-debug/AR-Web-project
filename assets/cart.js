@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var WA_NUMBER = '923351925662';
+  var WA_NUMBER = '923179172511';
   var STORAGE_KEY = 'ar_cart_v1';
 
   /* ---------------- helpers ---------------- */
