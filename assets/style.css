@@ -953,8 +953,8 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .offer-tcell strong{display:block;font-size:1.35rem;font-weight:800;color:#ffffff;font-variant-numeric:tabular-nums;line-height:1.1}
 .offer-tcell span{font-size:.62rem;letter-spacing:1.4px;color:#e0e7ff;text-transform:uppercase;font-weight:700}
 .offer-ended{color:#fda4af;font-weight:700;margin:14px 0 0;font-size:.95rem;text-align:center}
-.offer-cta{display:flex;align-items:center;justify-content:center;max-width:430px;margin:20px auto 0;background:linear-gradient(135deg,#22c55e,#15803d);color:#ffffff;font-weight:700;font-size:1.05rem;padding:14px 20px;border-radius:14px;text-decoration:none;box-shadow:0 12px 26px rgba(21,128,61,.45);transition:transform .15s ease,box-shadow .15s ease}
-.offer-cta:hover{color:#ffffff;transform:translateY(-1px);box-shadow:0 16px 30px rgba(21,128,61,.50)}
+.offer-cta{display:flex;align-items:center;justify-content:center;max-width:300px;margin:20px auto 0;background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);color:#ffffff;font-weight:600;font-size:.95rem;padding:11px 25px;border-radius:30px;text-decoration:none;box-shadow:0 10px 24px rgba(99,102,241,.25);transition:transform .15s ease,box-shadow .15s ease}
+.offer-cta:hover{color:#ffffff;transform:translateY(-1px);box-shadow:0 14px 28px rgba(6,182,212,.24)}
 .offer-details{display:inline-block;margin-top:12px;color:rgba(255,255,255,.78);font-size:.85rem;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .offer-details:hover{color:#ffffff}
 @media(max-width:575px){
@@ -1003,4 +1003,36 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
   .byob-name{font-size:.95rem}
   .byob-price{font-size:1.05rem}
   .byob-summary{padding:18px}
+}
+
+/* ==========================================================================
+   PRODUCT PAGE — DESIGN 1 "STICKY BUY" (2026-10-23) — CapCut TEST only.
+   Every rule hangs off .d1 classes, which only product-capcut.html renders
+   (app.js slug branch), so the other 10 product pages are untouched.
+   No new colours or button styles: tiles/cards reuse the light theme, and
+   the sticky Buy button below is restyled to the site's standard
+   .btn-gradient metrics (site gradient, 30px radius, normal padding).
+   Rollback: delete this block + the app.js D1 branch.
+   ========================================================================== */
+.d1-hero-price{margin-top:16px;color:#64748b;font-size:.95rem}
+.d1-hero-price strong{font-size:1.7rem;font-weight:800;color:#6d28d9;margin-right:5px}
+.d1-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:22px}
+@media(min-width:992px){.d1-facts{grid-template-columns:repeat(4,1fr)}}
+.d1-fact{background:#ffffff;border:1px solid rgba(15,23,42,.08);border-radius:16px;padding:15px 16px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
+.d1-fact-label{display:block;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#7c3aed;font-weight:700;margin-bottom:5px}
+.d1-fact-value{display:block;color:#0f172a;font-size:.88rem;font-weight:600;line-height:1.45}
+.d1-acc-wrap{max-width:900px;margin:24px auto 0}
+.d1-accordion .accordion-item{background:#ffffff;border:1px solid rgba(15,23,42,.09);border-radius:16px!important;overflow:hidden;margin-bottom:12px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
+.d1-accordion .accordion-button{font:600 .95rem 'Poppins',sans-serif;color:#0f172a;background:#ffffff;box-shadow:none;padding:16px 18px}
+.d1-accordion .accordion-button:not(.collapsed){background:#f8fafc;color:#0f172a}
+.d1-accordion .accordion-body{padding:16px 18px 20px}
+.d1-acc-sub{margin-left:auto;margin-right:10px;color:#94a3b8;font-size:.78rem;font-weight:500;white-space:nowrap}
+.d1-accordion #productFaq .accordion-item{box-shadow:none}
+/* Sticky bar (CapCut test): standard-size gradient Buy button, mobile only */
+.product-sticky-order.d1-sticky .product-sticky-btn{background:linear-gradient(135deg,#7c3aed,#2563eb 58%,#06b6d4);border:0;border-radius:30px;min-width:0;padding:10px 25px;font-size:.92rem;box-shadow:0 10px 24px rgba(99,102,241,.20)}
+.product-sticky-order.d1-sticky .product-sticky-btn:hover{box-shadow:0 14px 28px rgba(6,182,212,.24)}
+@media(max-width:575px){.product-sticky-order.d1-sticky .product-sticky-btn{padding:10px 18px;font-size:.85rem}}
+@media(min-width:992px){
+  .product-sticky-order.d1-sticky{display:none}
+  body:has(.product-sticky-order.d1-sticky.is-visible) .ar-cart-fab{bottom:25px}
 }
