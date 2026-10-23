@@ -1063,3 +1063,86 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
  .sr1-card{padding:22px}
  .sr1-trust span{padding:0 8px}
 }
+
+/* ==========================================================================
+   PRODUCT PAGE — SR STRUCTURE v2 (2026-10-23) — CapCut only.
+   Full SR flow in AR's own light scheme: every rule hangs off .sr2 classes,
+   which only product-capcut.html renders (app.js slug branch), so the other
+   10 product pages are untouched. No new colours: accents are the site's
+   gradient family (#7c3aed / #2563eb / #06b6d4) and buttons keep the site's
+   standard sizes (.btn-gradient metrics) — nothing oversized.
+   Also in this block: the restored SAVE10 coupon UI (product-page box +
+   checkout field; logic lives in assets/cart.js).
+   Rollback: delete this block + the app.js SR2 branch + cart.js coupon code.
+   ========================================================================== */
+.sr2-wrap{max-width:880px;margin:0 auto}
+#productPage.sr2 .product-main-visual{min-height:300px}
+#productPage.sr2 .product-detail-icon{--logo-size:150px!important;width:176px;height:176px;min-width:176px;min-height:176px;flex-basis:176px;border-radius:22px}
+#productPage.sr2 .pv2-stars{justify-content:flex-start}
+.sr2-head{padding:0 4px}
+#productPage.sr2 .pv2-pay{margin-top:22px;margin-bottom:0}
+#productPage.sr2 .product-purchase-card{margin-top:18px}
+.sr2-trust{justify-content:center}
+.sr2-card{margin-top:22px;padding:28px}
+.sr2-card .product-section-kicker{margin-bottom:6px}
+.sr2-sub{margin-top:26px}
+
+/* Payment method Copy buttons (SR-style, AR colours) */
+.pv2-copy-btn{margin-left:10px;flex:none;border:1.5px solid rgba(124,58,237,.45);background:#fff;color:#6d28d9;font:600 .72rem 'Poppins',sans-serif;padding:4px 13px;border-radius:999px;cursor:pointer;transition:border-color .2s ease,color .2s ease,background .2s ease}
+.pv2-copy-btn:hover{background:rgba(124,58,237,.07)}
+.pv2-copy-btn.copied{border-color:rgba(22,163,74,.6);color:#16a34a}
+
+/* Select Plan — the device pills ARE the plan pills (price inside the pill) */
+#productPage.sr2 .product-device-options{margin-top:14px;padding:0;border:0;background:transparent;border-radius:0}
+#productPage.sr2 .device-option-row{gap:12px}
+#productPage.sr2 .device-option{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-height:66px;padding:12px 16px;border:1.5px solid rgba(15,23,42,.12);border-radius:16px;background:#fff;box-shadow:none}
+#productPage.sr2 .device-option strong{font-size:1.08rem;font-weight:700;color:#0f172a;line-height:1.25}
+#productPage.sr2 .device-option span{font-size:.8rem;font-weight:600;color:#64748b}
+#productPage.sr2 .device-option:hover{border-color:rgba(6,182,212,.45)}
+#productPage.sr2 .device-option.active{background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(6,182,212,.08));border-color:#7c3aed;box-shadow:0 10px 22px rgba(124,58,237,.13)}
+
+/* Big live price */
+#productPage.sr2 .product-total-box{padding:16px 18px}
+#productPage.sr2 .product-total-box strong{font-size:1.9rem}
+
+/* Coupon box (SR position: under the price, before the order buttons) */
+.sr2-coupon{margin-top:16px;border:1.5px dashed rgba(124,58,237,.5);background:rgba(124,58,237,.04);border-radius:14px;padding:13px}
+.sr2-coupon-row{display:flex;gap:10px}
+.sr2-coupon input{flex:1;min-width:0;border:1px solid rgba(15,23,42,.14);border-radius:10px;padding:11px 13px;font:600 .85rem 'Poppins',sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#0f172a;background:#fff}
+.sr2-coupon input::placeholder{color:#94a3b8}
+.sr2-coupon input:focus{outline:none;border-color:#06b6d4;box-shadow:0 0 0 4px rgba(6,182,212,.10)}
+.sr2-coupon-btn{white-space:nowrap;padding:10px 22px;text-transform:none;letter-spacing:.01em}
+.sr2-coupon-msg{margin:10px 0 0;font-size:.82rem;font-weight:600;line-height:1.5}
+.sr2-coupon-msg.is-error{color:#dc2626}
+.sr2-coupon-msg.is-ok{color:#16a34a}
+.sr2-coupon-msg.is-warn{color:#b45309}
+.sr2-coupon-remove{margin-top:7px;background:none;border:0;padding:0;color:#64748b;font:600 .78rem 'Poppins',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+/* Order Now + Ask a Question (standard button sizes, side by side) */
+.sr2-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.sr2-order-btn{flex:1 1 auto;padding:12px 25px}
+.sr2-actions .ar-add-cart-product{flex:1 1 100%;margin-top:0}
+.sr2-ask-btn{border:1.5px solid rgba(124,58,237,.55);color:#6d28d9!important;background:#fff;border-radius:30px;padding:11px 25px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;transition:.25s}
+.sr2-ask-btn:hover{background:rgba(124,58,237,.07);color:#6d28d9!important;transform:translateY(-1px)}
+
+/* Checkout coupon field (restored with SAVE10; cart.js renders the markup) */
+.ar-co-coupon{margin:2px 0 14px}
+.ar-co-coupon-row{display:flex;gap:10px}
+.ar-co-coupon-row .ar-co-input{flex:1;min-width:0;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.ar-co-coupon-apply{white-space:nowrap;padding:10px 20px}
+.ar-co-coupon-msg{margin:8px 0 0;font-size:.82rem;font-weight:600;line-height:1.5}
+.ar-co-coupon-msg.is-error{color:#dc2626}
+.ar-co-coupon-msg.is-ok{color:#16a34a}
+.ar-co-coupon-msg.is-warn{color:#b45309}
+.ar-co-coupon-remove{margin-top:6px;background:none;border:0;padding:0;color:#64748b;font:600 .78rem 'Poppins',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+@media(max-width:575px){
+ #productPage.sr2 .product-main-visual{min-height:230px}
+ #productPage.sr2 .product-detail-icon{--logo-size:110px!important;width:132px;height:132px;min-width:132px;min-height:132px;flex-basis:132px}
+ .sr2-card{padding:22px}
+ .sr2-trust span{padding:0 8px}
+ #productPage.sr2 .device-option-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #productPage.sr2 .device-option strong{font-size:.98rem}
+ .sr2-actions{flex-direction:column}
+ .sr2-order-btn,.sr2-ask-btn{width:100%}
+}

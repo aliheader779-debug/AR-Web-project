@@ -62,7 +62,7 @@
      Per-line tiers on the quantity of the SAME plan (multiple accounts):
        2 accounts = 5% off - 3 accounts = 10% off - 4+ accounts = 15% off.
      Applies to every cart line, CapCut 1-Device included (separate
-     accounts). This is the ONLY discount at checkout.
+     accounts).
      Pure logic between the QTY-LOGIC markers for Node unit tests. */
   /* QTY-LOGIC-START */
   var QTY_MAX = 10;
@@ -85,17 +85,61 @@
     });
     return { amount: amount, percents: percents };
   }
-  function appliedDiscount(list) {
+  /* QTY-LOGIC-END */
+
+  /* ---------------- coupon SAVE10 (restored 2026-10-23, owner order) ----
+     One code: SAVE10 = 10% off. Rules (same as the original system):
+       - CapCut 1-Device plan (id 'capcut-1-month-1device') is EXCLUDED
+         from the coupon base; if the cart/selection has ONLY that item,
+         the code does not apply at all.
+       - Coupon and quantity discount NEVER stack: both are computed and
+         only the LARGER one is applied.
+     The applied code is a single shared state (localStorage) so a coupon
+     applied on a product page also applies in the cart/checkout.
+     Pure logic between the COUPON-LOGIC markers for Node unit tests. */
+  var COUPON_KEY = 'ar_coupon_v1';
+  var couponCode = '';
+  function loadCoupon() {
+    try { couponCode = normalizeCouponCode(localStorage.getItem(COUPON_KEY)); } catch (e) { couponCode = ''; }
+    if (!couponPercent(couponCode)) couponCode = '';
+  }
+  function saveCoupon() {
+    try {
+      if (couponCode) localStorage.setItem(COUPON_KEY, couponCode);
+      else localStorage.removeItem(COUPON_KEY);
+    } catch (e) { /* private mode */ }
+  }
+  /* COUPON-LOGIC-START */
+  var COUPONS = { SAVE10: 10 };
+  var COUPON_EXCLUDED_IDS = ['capcut-1-month-1device'];
+  function normalizeCouponCode(code) { return String(code == null ? '' : code).replace(/\s+/g, '').toUpperCase(); }
+  function couponPercent(code) { return COUPONS[normalizeCouponCode(code)] || 0; }
+  function isCouponExcluded(item) { return !!item && COUPON_EXCLUDED_IDS.indexOf(String(item.id || '')) !== -1; }
+  function couponBaseFor(list) {
+    return (list || []).reduce(function (s, x) { return isCouponExcluded(x) ? s : s + (Number(x.price) || 0); }, 0);
+  }
+  function couponDiscountFor(list, code) {
+    var pct = couponPercent(code);
+    var base = couponBaseFor(list);
+    if (!pct) return { amount: 0, percent: 0, base: base };
+    return { amount: Math.round(base * pct / 100), percent: pct, base: base };
+  }
+  function bestDiscountFor(list, code) {
     var gross = (list || []).reduce(function (sm, x) { return sm + (Number(x.price) || 0); }, 0);
     var qd = qtyDiscountFor(list);
-    var r = { type: '', amount: 0, percent: 0, gross: gross };
-    if (qd.amount > 0) {
+    var cd = couponDiscountFor(list, code);
+    var r = { type: '', amount: 0, percent: 0, gross: gross, qtyAmount: qd.amount, couponAmount: cd.amount, couponBase: cd.base };
+    if (cd.amount > 0 && cd.amount >= qd.amount) {
+      r.type = 'coupon'; r.amount = cd.amount; r.percent = cd.percent;
+    } else if (qd.amount > 0) {
       r.type = 'qty'; r.amount = qd.amount;
       r.percent = qd.percents.length === 1 ? qd.percents[0] : 0;
     }
     return r;
   }
-  /* QTY-LOGIC-END */
+  function appliedDiscount(list) { return bestDiscountFor(list, couponCode); }
+  /* COUPON-LOGIC-END */
+  loadCoupon();
   function finalTotal() {
     return cartTotal() - appliedDiscount(items).amount;
   }
@@ -138,7 +182,7 @@
           '<button type="button" class="ar-cart-close" data-ar-close aria-label="Close cart">&times;</button></div>' +
         '<div id="arCartItems" class="ar-cart-items"></div>' +
         '<div class="ar-cart-foot">' +
-          '<div class="ar-cart-total ar-cart-disc-row" id="arCartDiscRow" hidden><span>Discount</span><strong id="arCartDisc">−Rs 0</strong></div>' +
+          '<div class="ar-cart-total ar-cart-disc-row" id="arCartDiscRow" hidden><span id="arCartDiscLabel">Discount</span><strong id="arCartDisc">−Rs 0</strong></div>' +
           '<div class="ar-cart-total"><span>Total</span><strong id="arCartTotal">Rs 0</strong></div>' +
           '<button type="button" id="arCartCheckoutBtn" class="ar-btn-gradient ar-w100">Checkout</button>' +
           '<button type="button" class="ar-cart-continue" data-ar-close>Continue shopping</button>' +
@@ -156,6 +200,15 @@
             '<input id="arCoPhone" class="ar-co-input" type="tel" placeholder="03XXXXXXXXX" autocomplete="tel">' +
             '<label class="ar-co-label" for="arCoCity">City (optional)</label>' +
             '<input id="arCoCity" class="ar-co-input" type="text" placeholder="e.g. Mirpur" autocomplete="address-level2">' +
+            '<div class="ar-co-coupon">' +
+              '<label class="ar-co-label" for="arCoCouponInput">Coupon Code (agar hai to)</label>' +
+              '<div class="ar-co-coupon-row">' +
+                '<input id="arCoCouponInput" class="ar-co-input" type="text" placeholder="COUPON CODE (AGAR HAI TO)" autocomplete="off" spellcheck="false">' +
+                '<button type="button" id="arCoCouponApply" class="ar-btn-gradient ar-co-coupon-apply">Apply</button>' +
+              '</div>' +
+              '<p id="arCoCouponMsg" class="ar-co-coupon-msg" hidden></p>' +
+              '<button type="button" id="arCoCouponRemove" class="ar-co-coupon-remove" hidden>Remove coupon</button>' +
+            '</div>' +
             '<p id="arCoError" class="ar-co-error" hidden></p>' +
             '<button type="submit" class="ar-btn-gradient ar-w100 ar-co-submit">Place Order on WhatsApp <i class="fa-brands fa-whatsapp"></i></button>' +
             '<p class="ar-co-note">Payment JazzCash / EasyPaisa par WhatsApp par confirm hoga. Koi online payment nahi hai.</p>' +
@@ -173,6 +226,9 @@
     els.modal = $('#arCheckoutModal'); els.summary = $('#arCheckoutSummary');
     els.form = $('#arCheckoutForm'); els.error = $('#arCoError');
     els.toast = $('#arToast');
+    els.discLabel = $('#arCartDiscLabel');
+    els.couponInput = $('#arCoCouponInput'); els.couponApply = $('#arCoCouponApply');
+    els.couponMsg = $('#arCoCouponMsg'); els.couponRemove = $('#arCoCouponRemove');
 
     els.fab.addEventListener('click', openDrawer);
     els.overlay.addEventListener('click', closeDrawer);
@@ -195,6 +251,62 @@
       if (e.key === 'Escape') { closeCheckout(); closeDrawer(); }
     });
     els.form.addEventListener('submit', onCheckoutSubmit);
+    if (els.couponApply) els.couponApply.addEventListener('click', function () {
+      if (tryApplyCoupon(els.couponInput.value, function () { return items; }, els.couponMsg)) {
+        renderSummary(); renderCart(); syncCouponUI();
+      }
+      /* On failure the error message set by tryApplyCoupon stays as-is. */
+    });
+    if (els.couponRemove) els.couponRemove.addEventListener('click', function () {
+      clearCoupon();
+      renderSummary(); renderCart(); syncCouponUI();
+    });
+  }
+
+  /* ---------------- coupon UI helpers ---------------- */
+  function setCouponMsg(el, text, kind) {
+    if (!el) return;
+    el.textContent = text;
+    el.hidden = !text;
+    el.classList.remove('is-error', 'is-ok', 'is-warn');
+    if (text && kind) el.classList.add('is-' + kind);
+  }
+  function clearCoupon() {
+    couponCode = '';
+    saveCoupon();
+    if (els.couponInput) els.couponInput.value = '';
+    setCouponMsg(els.couponMsg, '', '');
+    var pIn = $('#arCouponInput'), pMsg = $('#arCouponMsg'), pRem = $('#arCouponRemove');
+    if (pIn) pIn.value = '';
+    setCouponMsg(pMsg, '', '');
+    if (pRem) pRem.hidden = true;
+  }
+  /* Validate + apply a code against a context list (cart items at checkout,
+     the current selection line on a product page). Returns true if applied. */
+  function tryApplyCoupon(raw, getList, msgEl) {
+    var code = normalizeCouponCode(raw);
+    if (!code) { setCouponMsg(msgEl, 'Please enter a coupon code.', 'error'); return false; }
+    if (!couponPercent(code)) { setCouponMsg(msgEl, 'Invalid coupon code. Please check and try again.', 'error'); return false; }
+    if (couponBaseFor(getList()) <= 0) { setCouponMsg(msgEl, 'This code does not apply to this plan.', 'error'); return false; }
+    couponCode = code;
+    saveCoupon();
+    setCouponMsg(msgEl, 'Coupon ' + code + ' applied — ' + couponPercent(code) + '% off.', 'ok');
+    return true;
+  }
+  /* Keep the checkout coupon field in step with the shared coupon state. */
+  function syncCouponUI() {
+    if (!els.couponInput) return;
+    if (couponCode) {
+      els.couponInput.value = couponCode;
+      if (els.couponRemove) els.couponRemove.hidden = false;
+      if (couponBaseFor(items) <= 0 && items.length) {
+        setCouponMsg(els.couponMsg, 'Coupon ' + couponCode + ' is applied, but it does not apply to this plan.', 'warn');
+      } else {
+        setCouponMsg(els.couponMsg, 'Coupon ' + couponCode + ' applied — ' + couponPercent(couponCode) + '% off.', 'ok');
+      }
+    } else {
+      if (els.couponRemove) els.couponRemove.hidden = true;
+    }
   }
 
   /* ---------------- rendering / feedback ---------------- */
@@ -219,7 +331,10 @@
     var best = appliedDiscount(items);
     if (els.discRow && els.disc) {
       els.discRow.hidden = best.amount <= 0;
-      if (best.amount > 0) els.disc.textContent = '−' + fmt(best.amount);
+      if (best.amount > 0) {
+        els.disc.textContent = '−' + fmt(best.amount);
+        if (els.discLabel) els.discLabel.textContent = best.type === 'coupon' ? 'Discount (Coupon ' + couponCode + ')' : 'Discount';
+      }
     }
     els.total.textContent = fmt(finalTotal());
     els.checkoutBtn.disabled = items.length === 0;
@@ -260,7 +375,10 @@
     }).join('');
     if (best.amount > 0) {
       html += '<div class="ar-co-line"><span>Subtotal</span><strong>' + fmt(cartTotal()) + '</strong></div>';
-      html += '<div class="ar-co-line ar-co-discount"><span>Quantity discount' + (best.percent ? ' (' + best.percent + '%)' : '') + '</span><strong>−' + fmt(best.amount) + '</strong></div>';
+      var discLabel = best.type === 'coupon'
+        ? 'Coupon ' + couponCode + ' (' + best.percent + '%)'
+        : 'Quantity discount' + (best.percent ? ' (' + best.percent + '%)' : '');
+      html += '<div class="ar-co-line ar-co-discount"><span>' + discLabel + '</span><strong>−' + fmt(best.amount) + '</strong></div>';
     }
     html += '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(finalTotal()) + '</strong></div>';
     els.summary.innerHTML = html;
@@ -271,6 +389,7 @@
     if (!items.length) { toast('Cart khaali hai — pehle koi plan add karein'); return; }
     closeDrawer();
     renderSummary();
+    syncCouponUI();
     els.error.hidden = true;
     els.modal.classList.add('open'); els.modal.setAttribute('aria-hidden', 'false');
     /* Pixel: InitiateCheckout on modal open (spec) */
@@ -298,10 +417,12 @@
     /* Phase B: send the lead to the sheet endpoint (fire-and-forget).
        Must NEVER block/delay/break the WhatsApp flow below. */
     try {
+      var leadBest = appliedDiscount(items);
       var leadPayload = JSON.stringify({ action: 'websitelead', data: {
         name: name, number: phoneRaw, city: city,
         items: items.map(function (x) { var q = clampQty(x.qty); return x.name + (q > 1 ? ' x' + q : '') + ' Rs ' + x.price; }).join('; '),
-        total: finalTotal()
+        total: finalTotal(),
+        coupon: leadBest.type === 'coupon' ? couponCode : ''
       } });
       var leadUrl = 'https://script.google.com/macros/s/AKfycby-brB_YTJvxp-dwjbVkI21OT1onpe7eck-3JpB-UJaw3BuVp-YaUHvMsRUO_K4om4/exec';
       try {
@@ -315,8 +436,11 @@
     var best = appliedDiscount(items);
     var totalsText = '\nTotal: Rs ' + finalTotal();
     if (best.amount > 0) {
+      var totalsDiscLine = best.type === 'coupon'
+        ? '\nCoupon: ' + couponCode + ' (' + best.percent + '%)'
+        : '\nQuantity discount' + (best.percent ? ' (' + best.percent + '%)' : '');
       totalsText = '\nSubtotal: Rs ' + cartTotal() +
-        '\nQuantity discount' + (best.percent ? ' (' + best.percent + '%)' : '') +
+        totalsDiscLine +
         '\nDiscount: −Rs ' + best.amount +
         '\nTotal: Rs ' + finalTotal();
     }
@@ -329,6 +453,7 @@
     /* The site-wide wa.me window.open wrapper fires the Lead event once. */
     window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     ARCart.clear();
+    clearCoupon();
     closeCheckout();
     toast('Shukriya! Aap ka order WhatsApp par bhej diya gaya hai.');
   }
@@ -391,12 +516,20 @@
      sticky bar price). Add to Cart reads pageUnit/pageQty via
      currentProductSelection below. */
   var pageQty = 1, pageUnit = 0, pageLastDisplay = '';
+  /* The product page's current selection as a one-line discount context:
+     coupon (with its CapCut 1-Device exclusion) and the quantity tiers are
+     both computed on this line, larger discount wins — same as checkout. */
+  function pageContextList(root) {
+    var sel = currentProductSelection(root);
+    if (!sel || sel.outOfStock || !(pageUnit > 0)) return [];
+    return [{ id: sel.id, price: pageUnit * pageQty, qty: pageQty }];
+  }
   function refreshProductTotal(root) {
     var totalEl = $('#productTotalPrice', root);
     if (!totalEl || !(pageUnit > 0)) return;
     var gross = pageUnit * pageQty;
-    var pct = qtyTierPercent(pageQty);
-    var disc = Math.round(gross * pct / 100);
+    var best = bestDiscountFor(pageContextList(root), couponCode);
+    var disc = best.amount;
     var display = 'Rs. ' + (gross - disc).toLocaleString('en-US');
     pageLastDisplay = display;
     if (totalEl.textContent !== display) totalEl.textContent = display;
@@ -405,13 +538,55 @@
     var saveEl = $('#arQtySave', root);
     if (saveEl) {
       saveEl.hidden = disc <= 0;
-      if (disc > 0) saveEl.textContent = 'You save ' + fmt(disc) + ' (' + pct + '% quantity discount)';
+      if (disc > 0) {
+        saveEl.textContent = best.type === 'coupon'
+          ? 'You save ' + fmt(disc) + ' (Coupon ' + couponCode + ' — ' + best.percent + '% off)'
+          : 'You save ' + fmt(disc) + ' (' + best.percent + '% quantity discount)';
+      }
     }
     var val = $('.ar-qty-val', root);
     if (val) val.textContent = pageQty;
     var dec = $('[data-ar-pq="-1"]', root), inc = $('[data-ar-pq="1"]', root);
     if (dec) dec.disabled = pageQty <= 1;
     if (inc) inc.disabled = pageQty >= QTY_MAX;
+    updatePageCouponUI(root);
+  }
+  /* ---------------- product page coupon box (SR2 template renders it) ---- */
+  function updatePageCouponUI(root) {
+    var box = $('#arCouponBox', root || document);
+    if (!box) return;
+    var input = $('#arCouponInput', box), msg = $('#arCouponMsg', box), rem = $('#arCouponRemove', box);
+    if (couponCode) {
+      if (input && input.value !== couponCode) input.value = couponCode;
+      if (rem) rem.hidden = false;
+      if (couponBaseFor(pageContextList(root)) <= 0) {
+        setCouponMsg(msg, 'Coupon ' + couponCode + ' is applied, but it does not apply to this plan.', 'warn');
+      } else {
+        setCouponMsg(msg, 'Coupon ' + couponCode + ' applied — ' + couponPercent(couponCode) + '% off.', 'ok');
+      }
+    } else if (rem) {
+      rem.hidden = true;
+    }
+  }
+  function bindCouponBox(root) {
+    var box = $('#arCouponBox', root);
+    if (!box || box.__arBound) return false;
+    box.__arBound = true;
+    var input = $('#arCouponInput', box), apply = $('#arCouponApply', box), msg = $('#arCouponMsg', box), rem = $('#arCouponRemove', box);
+    if (apply) apply.addEventListener('click', function () {
+      if (tryApplyCoupon(input ? input.value : '', function () { return pageContextList(root); }, msg)) {
+        refreshProductTotal(root); /* also refreshes the coupon status line */
+      }
+      /* On failure the error message set by tryApplyCoupon stays as-is. */
+    });
+    if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); if (apply) apply.click(); } });
+    if (rem) rem.addEventListener('click', function () {
+      clearCoupon();
+      refreshProductTotal(root);
+      renderCart();
+    });
+    updatePageCouponUI(root);
+    return true;
   }
   function injectQtyControl(root) {
     if ($('#arQtyRow', root)) return true;
@@ -572,6 +747,7 @@
     (function inject() {
       var doneProduct = root ? (injectProductButton(root) && watchProductTotal(root)) : true;
       var doneCards = injectCardButtons();
+      if (root) bindCouponBox(root);
       tries++;
       if ((!doneProduct || !doneCards) && tries < 20) setTimeout(inject, 150);
     })();

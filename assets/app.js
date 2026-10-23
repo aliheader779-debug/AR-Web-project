@@ -166,24 +166,30 @@ function initStoreFilters(){
  search?.addEventListener('input',apply);
  apply();
 }
-/* ===== Product Page — SR STRUCTURE (2026-10-23, CapCut TEST) =====
+/* ===== Product Page — SR STRUCTURE v2 (2026-10-23, CapCut only) =====
    Only CapCut renders this layout (see the slug check in renderProductPage);
    the other 10 product pages keep the standard template below, unchanged.
-   Section order mirrors SR Digital World's product pages (confirmed live
-   on their Canva page, 2026-10-23): big product image -> category tag ->
-   name -> stars/reviews line -> one-line description -> Payment Methods
-   accordion -> Select Plan (plan selector + CapCut device options + the
-   quantity selector cart.js injects, with its tier discount) -> 3 trust
-   ticks -> Product Details -> Features -> How It Works -> Warranty Rules
-   -> FAQ -> Customer Reviews -> You May Also Like.
+   Section order mirrors SR Digital World's product pages (full live visit,
+   2026-10-23), in ONE clean single-column flow: big product image ->
+   category badge -> name -> stars/reviews line -> one-line description ->
+   Payment Methods collapsible card (method blocks with Copy buttons) ->
+   Select Plan (for CapCut the device pills ARE the plan pills — the price
+   sits inside each pill) -> big live price -> COUPON box -> Order Now +
+   Ask a Question -> 3 trust ticks -> ONE Product Details card (details,
+   included, features, benefits, steps, delivery/warranty rows, warranty
+   rules) -> FAQ -> Customer Reviews -> You May Also Like.
    Only the STRUCTURE is SR's: every word, price and claim is AR SERVICES'
    own published data (PRODUCTS / PRODUCT_SECTIONS / PRODUCT_INFO), AR's
-   colours and button classes are unchanged, the WhatsApp/order buttons
-   keep the site's standard size, and SR-only claims (numeric 4.9/5
-   ratings, payment-after-activation, free bonuses, ~2-minute delivery)
-   are deliberately NOT used. All hooks app.js + cart.js rely on
-   (#productTotalPrice, .product-plan-option, #capcutDeviceOptions,
-   #productOrderBtn, the section IDs) are preserved. */
+   light colour scheme and standard button classes are unchanged, and
+   SR-only claims (numeric 4.9/5 ratings, payment-after-activation, free
+   bonuses, ~2-minute delivery) are deliberately NOT used.
+   AR-only sections SR does not have are kept: the quantity selector
+   (cart.js injects it before the total box; tier discount) and the
+   SAVE10 coupon box (logic + shared state live in cart.js).
+   Hooks preserved for cart.js: #productTotalPrice, #capcutDeviceOptions
+   (.device-option[data-devices][data-price]), #productOrderBtn, the
+   coupon box ids (#arCouponBox/#arCouponInput/#arCouponApply/
+   #arCouponMsg/#arCouponRemove) and all content section IDs. */
 const SR_WARRANTY={
  'surfshark':{line:'Surfshark VPN includes a 25-day replacement warranty.',cover:true},
  'netflix':{line:'Netflix includes a 25-day AR SERVICES warranty.',cover:true},
@@ -193,7 +199,15 @@ const SR_WARRANTY={
  'duolingo':{line:'Super Duolingo does not include a warranty after activation. Please make sure your account is eligible before ordering.',cover:false},
  'generic':{line:'Warranty terms for this product are confirmed with you on WhatsApp before payment.',cover:true}
 };
-function productSRTemplate(p,featuredPlan){
+function copyTextFallback(text,done){
+ try{
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  document.execCommand('copy');document.body.removeChild(ta);done();
+ }catch(e){/* clipboard unavailable — the number stays visible to copy by hand */}
+}
+function productSR2Template(p,featuredPlan){
  const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
  const w=SR_WARRANTY[p.slug]||SR_WARRANTY['generic'];
  let warrantyItems='<li><strong>'+escapeHtml(w.line)+'</strong></li>';
@@ -201,15 +215,16 @@ function productSRTemplate(p,featuredPlan){
   warrantyItems+='<li>If your account or access develops an issue during its warranty period, contact us on WhatsApp with your order details and we will arrange a replacement for you.</li>'+'<li>If, because of a technical issue, we are unable to provide a replacement, your full purchase amount will be refunded within 5 hours.</li>';
  }
  const infoRow=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
+ const askHref='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent('Assalam-o-Alaikum! I have a question about '+p.name+'.');
  return `
  <section class="product-page">
   <div class="container">
    <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
-   <div class="sr1-wrap">
+   <div class="sr2-wrap">
     <div class="glass-card product-main-visual text-center">
       <div class="product-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
     </div>
-    <div class="sr1-head">
+    <div class="sr2-head">
       <div class="small-label mt-3">${p.category}</div><h1 class="h2 fw-bold mt-2">${escapeHtml(p.name)}</h1>
       <div class="pv2-stars"><span class="pv2-stars-icons" aria-hidden="true">★★★★★</span><span class="pv2-stars-text">Loved by students &amp; creators across Pakistan</span><a class="pv2-stars-link" href="reviews.html">See customer reviews</a></div>
       <p class="text-silver mb-0 mt-3">${escapeHtml(p.description)}</p>
@@ -217,54 +232,55 @@ function productSRTemplate(p,featuredPlan){
     <div class="pv2-pay">
       <button type="button" class="pv2-pay-toggle" aria-expanded="false"><span class="pv2-pay-title"><i class="fa-solid fa-credit-card"></i> Payment Methods</span><span class="pv2-pay-names">JazzCash · EasyPaisa</span><i class="fa-solid fa-chevron-down pv2-pay-chevron" aria-hidden="true"></i></button>
       <div class="pv2-pay-body" hidden>
-        <div class="pv2-pay-row"><span>JazzCash</span><strong>0317 9172511</strong><small>Ali Haider</small></div>
-        <div class="pv2-pay-row"><span>EasyPaisa</span><strong>0317 9172511</strong><small>Ali Haider</small></div>
+        <div class="pv2-pay-row"><span>JazzCash</span><strong>0317 9172511</strong><small>Ali Haider</small><button type="button" class="pv2-copy-btn" data-copy="03179172511">Copy</button></div>
+        <div class="pv2-pay-row"><span>EasyPaisa</span><strong>0317 9172511</strong><small>Ali Haider</small><button type="button" class="pv2-copy-btn" data-copy="03179172511">Copy</button></div>
         <p class="pv2-pay-note">Pay first, then send your payment screenshot on WhatsApp. Delivery is usually within 10–15 minutes after payment is verified (up to 1 hour in some cases).</p>
       </div>
     </div>
     <div class="product-purchase-card">
-      <div class="small-label">Select Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
-      <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
-      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
+      <div class="small-label">Select Plan</div>
       ${p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
-       <span class="device-access-label">Device Access</span>
        <div class="device-option-row">
-        <button type="button" class="device-option active" data-devices="1" data-price="Rs. 650"><strong>1 Device</strong><span>Rs. 650</span></button>
-        <button type="button" class="device-option" data-devices="2" data-price="Rs. 699"><strong>2 Devices</strong><span>Rs. 699</span></button>
+        <button type="button" class="device-option active" data-devices="1" data-price="Rs. 650"><strong>Rs. 650</strong><span>1 Month · 1 Device</span></button>
+        <button type="button" class="device-option" data-devices="2" data-price="Rs. 699"><strong>Rs. 699</strong><span>1 Month · 2 Devices</span></button>
        </div>
       </div>
-      <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
+      <div id="capcutFixedDevice" class="product-device-access" style="display:none"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
+      <div class="product-plan-selector mt-3">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}
+      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
-      <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
+      <div class="sr2-coupon" id="arCouponBox">
+        <div class="sr2-coupon-row">
+          <input id="arCouponInput" type="text" placeholder="COUPON CODE (AGAR HAI TO)" autocomplete="off" spellcheck="false" aria-label="Coupon code">
+          <button type="button" id="arCouponApply" class="btn btn-gradient sr2-coupon-btn">Apply</button>
+        </div>
+        <p id="arCouponMsg" class="sr2-coupon-msg" hidden></p>
+        <button type="button" id="arCouponRemove" class="sr2-coupon-remove" hidden>Remove coupon</button>
+      </div>
+      <div class="sr2-actions">
+        <button id="productOrderBtn" type="button" class="btn btn-gradient sr2-order-btn">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
+        <a class="btn sr2-ask-btn" href="${askHref}" target="_blank" rel="noopener"><i class="fa-solid fa-circle-question me-2"></i>Ask a Question</a>
+      </div>
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
     </div>
-    <div class="product-trust-strip pv2-trust sr1-trust"><span><i class="fa-solid fa-circle-check"></i> Clear Pricing</span><span><i class="fa-solid fa-circle-check"></i> WhatsApp Support</span><span><i class="fa-solid fa-circle-check"></i> Simple Ordering</span></div>
-    <div class="glass-card product-content-card sr1-card">
+    <div class="product-trust-strip pv2-trust sr2-trust"><span><i class="fa-solid fa-circle-check"></i> Clear Pricing</span><span><i class="fa-solid fa-circle-check"></i> WhatsApp Support</span><span><i class="fa-solid fa-circle-check"></i> Simple Ordering</span></div>
+    <div class="glass-card product-content-card sr2-card">
       <div class="product-section-kicker">Product Details</div>
       <h2 class="h3 fw-bold mb-3">Product Details</h2>
       <p id="productDescription" class="text-silver product-about-description"></p>
-      <h3 class="h5 fw-bold mt-4 mb-3">What's Included</h3>
+      <h3 class="h5 fw-bold mb-3 sr2-sub">What's Included</h3>
       <ul id="productIncluded" class="product-included-list"></ul>
+      <h3 class="h5 fw-bold mb-3 sr2-sub">Key Features</h3>
+      <ul id="productFeatures" class="product-included-list"></ul>
+      <h3 class="h5 fw-bold mb-3 sr2-sub">Benefits</h3>
+      <ul id="productBenefits" class="product-included-list"></ul>
+      <h3 class="h5 fw-bold mb-3 sr2-sub">How It Works</h3>
+      <div id="productSteps" class="product-steps"></div>
       <div class="product-info-rows mt-4">${infoRow('Delivery',info.delivery)}${infoRow('Warranty',info.warranty)}${infoRow('Support','WhatsApp · Mon–Sat 9am–9pm · Sun 12pm–9pm')}</div>
       <p class="text-silver mt-4 mb-0"><strong>Best For:</strong> ${escapeHtml(p.bestFor||"")}</p>
-    </div>
-    <div class="glass-card product-content-card sr1-card">
-      <div class="product-section-kicker">Features</div>
-      <h2 class="h3 fw-bold mb-3">Key Features</h2>
-      <ul id="productFeatures" class="product-included-list"></ul>
-      <h3 class="h5 fw-bold mt-4 mb-3">Benefits</h3>
-      <ul id="productBenefits" class="product-included-list"></ul>
-    </div>
-    <div class="glass-card product-content-card sr1-card">
-      <div class="product-section-kicker">Simple Steps</div>
-      <h2 class="h3 fw-bold mb-3">How It Works</h2>
-      <div id="productSteps" class="product-steps"></div>
-    </div>
-    <div class="glass-card product-content-card pv2-warranty-card sr1-card">
-      <div class="product-section-kicker">Warranty</div>
-      <h2 class="h3 fw-bold mb-3">Warranty Rules</h2>
+      <h3 class="h5 fw-bold mb-3 sr2-sub">Warranty Rules</h3>
       <ul class="pv2-warranty-list">${warrantyItems}</ul>
       <p class="text-silver small mb-0">Full details: <a href="refund-policy.html">Refund, Replacement &amp; Delivery Policy</a></p>
     </div>
@@ -280,7 +296,7 @@ function renderProductPage(){
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
  const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
- root.innerHTML= slug==='capcut' ? productSRTemplate(p,featuredPlan) : `
+ root.innerHTML= slug==='capcut' ? productSR2Template(p,featuredPlan) : `
  <section class="product-page">
   <div class="container">
    <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
@@ -356,10 +372,18 @@ function renderProductPage(){
  stickyOrder.className='product-sticky-order';
  stickyOrder.innerHTML='<div class="product-sticky-inner"><div class="product-sticky-info"><span class="product-sticky-name"></span><strong class="product-sticky-price"></strong></div><button type="button" class="product-sticky-btn">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>';
  document.body.appendChild(stickyOrder);
- if(slug==='capcut'){root.classList.add('pv2','sr1');stickyOrder.classList.add('d1-sticky');
+ if(slug==='capcut'){root.classList.add('pv2','sr2');stickyOrder.classList.add('d1-sticky');
   const srPay=root.querySelector('.pv2-pay');
   if(srPay){const srToggle=srPay.querySelector('.pv2-pay-toggle'),srBody=srPay.querySelector('.pv2-pay-body');
    srToggle.addEventListener('click',()=>{const open=srToggle.getAttribute('aria-expanded')==='true';srToggle.setAttribute('aria-expanded',String(!open));srBody.hidden=open;srPay.classList.toggle('open',!open);});}
+  root.querySelectorAll('.pv2-copy-btn').forEach(btn=>{
+   btn.addEventListener('click',()=>{
+    const text=btn.getAttribute('data-copy')||'';
+    const done=()=>{const old=btn.textContent;btn.textContent='Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent=old;btn.classList.remove('copied')},1500);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>copyTextFallback(text,done));}
+    else copyTextFallback(text,done);
+   });
+  });
  }
  const stickyName=stickyOrder.querySelector('.product-sticky-name'),stickyPrice=stickyOrder.querySelector('.product-sticky-price'),stickyBtn=stickyOrder.querySelector('.product-sticky-btn');
  function updateStickyOrder(planText,price){
@@ -393,8 +417,15 @@ function renderProductPage(){
   if(benefitsEl)benefitsEl.innerHTML=sectionBenefits.map(x=>'<li><i class="fa-solid fa-check"></i><span>'+escapeHtml(x)+'</span></li>').join('');
   if(featuresEl)featuresEl.innerHTML=sectionFeatures.map(x=>'<li><i class="fa-solid fa-check"></i><span>'+escapeHtml(x)+'</span></li>').join('');
   const included=(sectionData.included||[]).slice();
-  if(pl&&pl.name)included.unshift('Selected plan: '+pl.name);
-  if(pl&&pl.details)included.push('Plan detail: '+pl.details);
+  if(p.slug==='capcut'){
+   /* CapCut's data list already opens with the selected-plan line
+      ("Selected CapCut 1 Month plan"); adding the generic 'Selected plan:'
+      and 'Plan detail:' lines on top duplicated it (owner live-check
+      2026-10-23) — so for CapCut the list stays exactly as published. */
+  }else{
+   if(pl&&pl.name)included.unshift('Selected plan: '+pl.name);
+   if(pl&&pl.details)included.push('Plan detail: '+pl.details);
+  }
   if(includedEl)includedEl.innerHTML=included.map(x=>'<li><i class="fa-solid fa-check"></i><span>'+escapeHtml(x)+'</span></li>').join('');
   const steps=sectionData.steps||['Choose your plan','Click Order Now','Continue via WhatsApp','Receive your access'];
   if(stepsEl)stepsEl.innerHTML=steps.map((x,i)=>'<div class="product-step"><span>'+String(i+1).padStart(2,'0')+'</span><strong>'+escapeHtml(x)+'</strong></div>').join('');
