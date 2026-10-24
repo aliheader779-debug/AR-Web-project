@@ -1023,4 +1023,4 @@ footer .text-gradient{background:none!important;-webkit-background-clip:initial!
 .ar-announce-text{display:inline-block;transition:opacity .45s ease}
 
 /* Hero shimmer must beat the light-theme .text-gradient !important solid (line 411) */
-.hero .text-gradient{background:linear-gradient(100deg,#2f3a8c 0%,#5563b8 24%,#7d86c8 52%,#5563b8 78%,#2f3a8c 100%)!important;background-size:220% 100%!important}
+.hero .text-gradient{background:linear-gradient(100deg,#2f3a8c 0%,#5563b8 24%,#7d86c8 52%,#5563b8 78%,#2f3a8c 100%)!important;background-size:220% 100%!important;background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important}
