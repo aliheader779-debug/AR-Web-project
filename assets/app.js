@@ -133,6 +133,53 @@ function productCardDG(p){
    </article>
   </div>`
 }
+const SR_USD_RATE=277; /* Rs per USD — card par (~$...) ke liye */
+const SR_POPULAR={capcut:true}; /* POPULAR tag sirf CapCut par — us ki video sab se zyada dekhi gayi (1,911 views). Kisi aur tool ko popular kehna ho to yahan add karein. */
+function srPlanDays(name){const m=/(\d+)\s*month/i.exec(name||'');return m?parseInt(m[1],10)*30:0}
+function srUsd(priceText){const n=parseInt(String(priceText||'').replace(/[^0-9]/g,''),10)||0;return n?('(~$'+(n/SR_USD_RATE).toFixed(2)+')'):''}
+function productCardSR(p){
+ const plans=p.plans||[];
+ const first=plans[0]||{name:'',price:p.price};
+ const days=srPlanDays(first.name);
+ const pills=plans.map((pl,i)=>`<button type="button" class="sr-plan${i===0?' is-active':''}" data-plan="${i}" data-name="${escapeHtml(pl.name)}" data-price="${escapeHtml(pl.price)}">${escapeHtml(pl.name)}</button>`).join('');
+ return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
+   <article class="sr-card" data-slug="${p.slug}" tabindex="0" role="link" aria-label="${escapeHtml(p.name)} — View Details">
+    <div class="sr-media"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">${days?`<span class="sr-pill sr-days">✓ ${days}D</span>`:''}<span class="sr-pill sr-stock">● In Stock</span></div>
+    <div class="sr-body">
+     ${SR_POPULAR[p.slug]?'<span class="sr-popular">🔥 POPULAR</span>':''}
+     <h3 class="sr-name">${escapeHtml(p.name)}</h3>
+     <div class="sr-plans">${pills}</div>
+     <div class="sr-foot">
+      <div class="sr-price"><strong class="sr-price-now">${escapeHtml(first.price)}</strong> <span class="sr-price-usd">${srUsd(first.price)}</span></div>
+      <div class="sr-actions"><button type="button" class="sr-cart" aria-label="Add to Cart"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button><button type="button" class="sr-buy">BUY NOW →</button></div>
+     </div>
+    </div>
+   </article>
+  </div>`
+}
+function initSrCards(){
+ document.addEventListener('click',e=>{
+  const planBtn=e.target.closest('.sr-plan');
+  if(planBtn){
+   const card=planBtn.closest('.sr-card'); if(!card)return;
+   card.querySelectorAll('.sr-plan').forEach(b=>b.classList.remove('is-active'));
+   planBtn.classList.add('is-active');
+   const now=card.querySelector('.sr-price-now'),usd=card.querySelector('.sr-price-usd'),daysEl=card.querySelector('.sr-days');
+   if(now)now.textContent=planBtn.dataset.price;
+   if(usd)usd.textContent=srUsd(planBtn.dataset.price);
+   const d=srPlanDays(planBtn.dataset.name);
+   if(daysEl)daysEl.textContent=d?('✓ '+d+'D'):'';
+   return;
+  }
+  const card=e.target.closest('.sr-card');
+  if(card&&!e.target.closest('.sr-cart,.sr-buy'))window.location.href='product-'+card.dataset.slug+'.html';
+ });
+ document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const card=e.target.closest?e.target.closest('.sr-card'):null;
+  if(card&&!e.target.closest('.sr-plan,.sr-cart,.sr-buy'))window.location.href='product-'+card.dataset.slug+'.html';
+ });
+}
 function renderProductGrid(targetId,limit=99,cardFn=productCard){
  const el=document.getElementById(targetId); if(!el)return;
  el.innerHTML=PRODUCTS.slice(0,limit).map(cardFn).join('');
@@ -353,8 +400,9 @@ document.addEventListener('DOMContentLoaded',()=>{
  };
  run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
  run('Product page',renderProductPage);
- run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6,productCardDG)});
- run('Store products',()=>{if(document.getElementById('storeGrid')){renderProductGrid('storeGrid');initStoreFilters()}});
+ run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6,productCardSR)});
+ run('Store products',()=>{if(document.getElementById('storeGrid')){renderProductGrid('storeGrid',99,productCardSR);initStoreFilters()}});
+ run('SR cards',initSrCards);
  run('Home reviews',()=>{if(document.getElementById('homeReviews'))renderCustomerReviews('homeReviews',6)});
  run('Homepage FAQ',()=>{const toggle=document.getElementById('homeFaqToggle');if(!toggle)return;const extras=[...document.querySelectorAll('.home-faq-extra')];let expanded=false;toggle.addEventListener('click',()=>{expanded=!expanded;extras.forEach(el=>el.style.display=expanded?'block':'none');toggle.textContent=expanded?'Show Fewer Questions':'View More Questions';if(!expanded){extras.forEach(el=>el.querySelector('.accordion-collapse')?.classList.remove('show'));extras.forEach(el=>el.querySelector('.accordion-button')?.classList.add('collapsed'));}})});
  run('Reviews page',()=>{if(document.getElementById('reviewsGrid'))renderCustomerReviews('reviewsGrid',CUSTOMER_REVIEWS.length)});

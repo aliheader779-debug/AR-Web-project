@@ -722,10 +722,48 @@
       price: parsePrice(dp.price)
     };
   }
+  function srCardItem(card, p) {
+    var active = card.querySelector('.sr-plan.is-active') || card.querySelector('.sr-plan');
+    if (!active) return null;
+    var planName = active.getAttribute('data-name') || '';
+    var price = parsePrice(active.getAttribute('data-price') || '');
+    var devices = (p.slug === 'capcut' && /month/i.test(planName)) ? 1 : null;
+    return {
+      id: p.slug + '-' + slugify(planName) + (devices ? '-1device' : ''),
+      name: p.name + ' — ' + planName + (devices ? ' (1 Device)' : ''),
+      price: price
+    };
+  }
+  function wireSrCard(card, p) {
+    var cartBtn = card.querySelector('.sr-cart');
+    var buyBtn = card.querySelector('.sr-buy');
+    if (cartBtn && !cartBtn.getAttribute('data-ar-wired')) {
+      cartBtn.setAttribute('data-ar-wired', '1');
+      cartBtn.addEventListener('click', function () {
+        var item = srCardItem(card, p);
+        if (item) ARCart.add(item);
+      });
+    }
+    if (buyBtn && !buyBtn.getAttribute('data-ar-wired')) {
+      buyBtn.setAttribute('data-ar-wired', '1');
+      buyBtn.addEventListener('click', function () {
+        var item = srCardItem(card, p);
+        if (!item) return;
+        ARCart.add(item);
+        ARCart.openCheckout();
+      });
+    }
+  }
   function injectCardButtons() {
     var found = false;
     $all('#homeProducts .product-item, #storeGrid .product-item').forEach(function (card) {
       found = true;
+      var sr = card.querySelector('.sr-card');
+      if (sr) {
+        var p = productBySlug(sr.getAttribute('data-slug') || '');
+        if (p) wireSrCard(card, p);
+        return;
+      }
       if (card.querySelector('.ar-add-cart-btn')) return;
       var link = card.querySelector('a[href^="product-"]');
       if (!link) return;
