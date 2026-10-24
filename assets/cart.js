@@ -198,8 +198,6 @@
             '<input id="arCoName" class="ar-co-input" type="text" placeholder="Enter your name" autocomplete="name">' +
             '<label class="ar-co-label" for="arCoPhone">WhatsApp Number *</label>' +
             '<input id="arCoPhone" class="ar-co-input" type="tel" placeholder="03XXXXXXXXX" autocomplete="tel">' +
-            '<label class="ar-co-label" for="arCoCity">City (optional)</label>' +
-            '<input id="arCoCity" class="ar-co-input" type="text" placeholder="e.g. Mirpur" autocomplete="address-level2">' +
             '<div class="ar-co-coupon">' +
               '<label class="ar-co-label" for="arCoCouponInput">Coupon Code (agar hai to)</label>' +
               '<div class="ar-co-coupon-row">' +
@@ -406,7 +404,7 @@
     e.preventDefault();
     var name = $('#arCoName').value.trim();
     var phoneRaw = $('#arCoPhone').value.trim();
-    var city = $('#arCoCity').value.trim();
+    var city = ''; /* City field hata diya gaya 2026-10-24 (owner: form sirf Name + Number + Coupon) — lead mein City khaali jayegi. */
     var phone = phoneRaw.replace(/[\s-]/g, '');
     function fail(msg) { els.error.textContent = msg; els.error.hidden = false; }
     if (!name) { fail('Meherbani karke apna naam likhein.'); return; }

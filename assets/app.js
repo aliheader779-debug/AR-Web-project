@@ -187,15 +187,11 @@ function renderProductGrid(targetId,limit=99,cardFn=productCard){
 function setPackage(value){
  const select=document.getElementById('waPackage'); if(select)select.value=value;
 }
+var currentOrderPkg=''; /* 2026-10-24: order form sirf Name + Number + Coupon — Package dropdown hata diya; plan yahan save hota hai aur WhatsApp message mein jata hai. */
 function openOrder(productName='',plan=''){
  const modal=document.getElementById('whatsappModal');
  if(productName){
-  const pkg=plan?`${productName} - ${plan}`:productName;
-  const select=document.getElementById('waPackage');
-  if(select){
-   select.innerHTML=`<option value="${escapeHtml(pkg)}">${escapeHtml(pkg)}</option>`;
-   select.value=pkg;
-  }
+  currentOrderPkg=plan?`${productName} - ${plan}`:productName;
  }
  if(modal) bootstrap.Modal.getOrCreateInstance(modal).show();
 }
@@ -204,9 +200,13 @@ function sendToWhatsApp(e){
  e.preventDefault();
  const name=document.getElementById('waName').value.trim();
  const phone=document.getElementById('waPhone').value.trim();
- const email=document.getElementById('waEmail').value.trim();
- const pkg=document.getElementById('waPackage').value;
- const message=`Hello AR SERVICES! I would like to place an order.%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Email:* ${encodeURIComponent(email)}%0A*Package:* ${encodeURIComponent(pkg)}`;
+ const couponEl=document.getElementById('waCoupon');
+ const coupon=couponEl?couponEl.value.trim().toUpperCase():'';
+ const msgEl=document.getElementById('waCouponMsg');
+ if(msgEl)msgEl.hidden=true;
+ if(coupon&&coupon!=='SAVE10'){if(msgEl){msgEl.textContent='Coupon code ghalat hai. SAVE10 likhein ya khaali chhorein.';msgEl.hidden=false;}return;}
+ const pkg=currentOrderPkg||'';
+ const message=`Hello AR SERVICES! I would like to place an order.%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}`+(pkg?`%0A*Package:* ${encodeURIComponent(pkg)}`:'')+(coupon?`%0A*Coupon:* ${encodeURIComponent(coupon)} (10% off)`:'');
  window.open(`https://wa.me/${WA_NUMBER}?text=${message}`,'_blank');
 }
 function initStoreFilters(){

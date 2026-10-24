@@ -1005,3 +1005,5 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .product-buy-now:hover{background:#26307a!important;color:#fff!important}
 .product-purchase-card.simple .ar-add-cart-btn{background:#111827!important;border-radius:999px!important;color:#fff!important;border:0!important}
 .product-stars-num{color:#0f172a;font-weight:700;letter-spacing:0;margin-right:2px}
+
+footer .text-gradient{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:#fff!important;color:#fff!important} /* footer logo (AR SERVICES) proper white — owner 2026-10-24; dark footer par gehra neela nazar nahi ata tha */
