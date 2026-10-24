@@ -144,10 +144,10 @@ function productCardSR(p){
  const pills=plans.map((pl,i)=>`<button type="button" class="sr-plan${i===0?' is-active':''}" data-plan="${i}" data-name="${escapeHtml(pl.name)}" data-price="${escapeHtml(pl.price)}">${escapeHtml(pl.name)}</button>`).join('');
  return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
    <article class="sr-card" data-slug="${p.slug}" tabindex="0" role="link" aria-label="${escapeHtml(p.name)} — View Details">
-    <div class="sr-media"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">${days?`<span class="sr-pill sr-days">✓ ${days}D</span>`:''}<span class="sr-pill sr-stock">● In Stock</span></div>
+    <div class="sr-media"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">${days?`<span class="sr-pill sr-days">✓ ${days}D</span>`:''}</div>
     <div class="sr-body">
-     ${SR_POPULAR[p.slug]?'<span class="sr-popular">🔥 POPULAR</span>':''}
-     <h3 class="sr-name">${escapeHtml(p.name)}</h3>
+     <span class="sr-stock">● In Stock</span>
+     <div class="sr-name-row"><h3 class="sr-name">${escapeHtml(p.name)}</h3>${SR_POPULAR[p.slug]?'<span class="sr-popular">🔥 POPULAR</span>':''}</div>
      <div class="sr-plans">${pills}</div>
      <div class="sr-foot">
       <div class="sr-price"><strong class="sr-price-now">${escapeHtml(first.price)}</strong> <span class="sr-price-usd">${srUsd(first.price)}</span></div>
@@ -239,7 +239,7 @@ function renderProductPage(){
    <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
    <div class="row g-4 g-lg-5 align-items-start">
     <div class="col-lg-5"><div class="glass-card product-main-visual text-center">
-      <div class="product-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
+      <div class="product-main-img"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy"></div>
       <div class="small-label mt-3">${p.category}</div><h1 class="h2 fw-bold mt-2">${escapeHtml(p.name)}</h1><p class="text-silver mb-0">${escapeHtml(p.description)}</p>
     </div></div>
     <div class="col-lg-7"><div class="product-purchase-card">
