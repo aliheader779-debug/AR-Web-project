@@ -387,7 +387,7 @@ function renderProductPage(){
  const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
-/* 2026-10-24: Announcement bar (owner hukum) — header se upar; 4 asli announcements, hero slideshow ki tarah har 3 second baad auto-change (hover par rukti hai). SAVE10 copy chip + band karne ka button har slide par rehte hain. Sirf asli offers/facts, koi fake deal nahi. */
+/* 2026-10-24: Announcement bar (owner hukum) — header se upar; 4 asli announcements, hero slideshow ki tarah har 3 second baad auto-change (hover par rukti hai). SAVE10 copy chip SIRF SAVE10 wali headline ke saath dikhta hai (owner, 2026-10-24 23:31) — baaki headlines par nahi. Band karne ka button har slide par rehta hai. Sirf asli offers/facts, koi fake deal nahi. */
 function renderAnnouncementBar(){
  if(document.querySelector('.ar-announce'))return;
  var MESSAGES=[
@@ -401,12 +401,14 @@ function renderAnnouncementBar(){
  bar.innerHTML='<span class="ar-announce-text">'+MESSAGES[0]+'</span><button type="button" class="ar-announce-code" title="Copy coupon code">SAVE10 \uD83D\uDCCB</button><button type="button" class="ar-announce-close" aria-label="Close announcement">\u00D7</button>';
  document.body.insertBefore(bar,document.body.firstChild);
  var textEl=bar.querySelector('.ar-announce-text');
+ var code=bar.querySelector('.ar-announce-code');
  var idx=0,timer=null;
  function showNext(){
   textEl.style.opacity='0';
   setTimeout(function(){
    idx=(idx+1)%MESSAGES.length;
    textEl.innerHTML=MESSAGES[idx];
+   if(code)code.style.display=idx===0?'':'none';
    textEl.style.opacity='1';
   },450);
  }
@@ -415,7 +417,6 @@ function renderAnnouncementBar(){
  start();
  bar.addEventListener('mouseenter',stop);
  bar.addEventListener('mouseleave',start);
- var code=bar.querySelector('.ar-announce-code');
  if(code)code.addEventListener('click',function(){
   var done=function(){code.textContent='Copied \u2713';setTimeout(function(){code.textContent='SAVE10 \uD83D\uDCCB';},1500);};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('SAVE10').then(done,function(){});}
