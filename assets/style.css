@@ -1015,3 +1015,5 @@ footer .text-gradient{background:none!important;-webkit-background-clip:initial!
 .ar-announce-code{margin-left:10px;background:#fff;color:#2f3a8c;border:0;border-radius:999px;padding:3px 12px;font-size:.8rem;font-weight:800;letter-spacing:.5px;cursor:pointer;white-space:nowrap}
 .ar-announce-close{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:rgba(255,255,255,.85);font-size:1.25rem;line-height:1;cursor:pointer;padding:2px 6px}
 @media(max-width:575px){.ar-announce{font-size:.78rem;padding:8px 40px 8px 10px}}
+
+.ar-announce-text{display:inline-block;transition:opacity .45s ease}

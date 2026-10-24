@@ -124,12 +124,15 @@
     if (!pct) return { amount: 0, percent: 0, base: base };
     return { amount: Math.round(base * pct / 100), percent: pct, base: base };
   }
-  function bestDiscountFor(list, code) {
+  function bestDiscountFor(list, code, bundleOn) {
     var gross = (list || []).reduce(function (sm, x) { return sm + (Number(x.price) || 0); }, 0);
     var qd = qtyDiscountFor(list);
     var cd = couponDiscountFor(list, code);
-    var r = { type: '', amount: 0, percent: 0, gross: gross, qtyAmount: qd.amount, couponAmount: cd.amount, couponBase: cd.base };
-    if (cd.amount > 0 && cd.amount >= qd.amount) {
+    var bd = (bundleOn && (list || []).length >= 2) ? { amount: Math.round(gross * 10 / 100), percent: 10 } : { amount: 0, percent: 0 };
+    var r = { type: '', amount: 0, percent: 0, gross: gross, qtyAmount: qd.amount, couponAmount: cd.amount, bundleAmount: bd.amount, couponBase: cd.base };
+    if (bd.amount > 0 && bd.amount >= cd.amount && bd.amount >= qd.amount) {
+      r.type = 'bundle'; r.amount = bd.amount; r.percent = bd.percent;
+    } else if (cd.amount > 0 && cd.amount >= qd.amount) {
       r.type = 'coupon'; r.amount = cd.amount; r.percent = cd.percent;
     } else if (qd.amount > 0) {
       r.type = 'qty'; r.amount = qd.amount;
@@ -137,9 +140,21 @@
     }
     return r;
   }
-  function appliedDiscount(list) { return bestDiscountFor(list, couponCode); }
+  function appliedDiscount(list) { return bestDiscountFor(list, couponCode, bundleMode); }
   /* COUPON-LOGIC-END */
   loadCoupon();
+  /* ---------------- bundle discount (2026-10-24, owner) ----------------
+     Build Your Own Bundle (2+ tools = flat 10% off) ab cart checkout se
+     guzarta hai — bundle ORDER button chosen tools cart mein daal kar
+     checkout kholta hai. bundleMode sirf bundle flow set karta hai; cart
+     mein koi bhi tabdeeli (add/remove/qty/clear) ya order submit hone par
+     ye khatam ho jata hai — taake aam cart par bundle discount na lage. */
+  var BUNDLE_KEY = 'ar_bundle_v1';
+  var bundleMode = false;
+  function loadBundleMode() { try { bundleMode = localStorage.getItem(BUNDLE_KEY) === '1'; } catch (e) { bundleMode = false; } }
+  function saveBundleMode() { try { if (bundleMode) localStorage.setItem(BUNDLE_KEY, '1'); else localStorage.removeItem(BUNDLE_KEY); } catch (e) {} }
+  function clearBundleMode() { bundleMode = false; saveBundleMode(); }
+  loadBundleMode();
   function finalTotal() {
     return cartTotal() - appliedDiscount(items).amount;
   }
@@ -342,7 +357,7 @@
       els.discRow.hidden = best.amount <= 0;
       if (best.amount > 0) {
         els.disc.textContent = '−' + fmt(best.amount);
-        if (els.discLabel) els.discLabel.textContent = best.type === 'coupon' ? 'Discount (Coupon ' + couponCode + ')' : 'Discount';
+        if (els.discLabel) els.discLabel.textContent = best.type === 'coupon' ? 'Discount (Coupon ' + couponCode + ')' : best.type === 'bundle' ? 'Bundle discount (10%)' : 'Discount';
       }
     }
     els.total.textContent = fmt(finalTotal());
@@ -386,6 +401,8 @@
       html += '<div class="ar-co-line"><span>Subtotal</span><strong>' + fmt(cartTotal()) + '</strong></div>';
       var discLabel = best.type === 'coupon'
         ? 'Coupon ' + couponCode + ' (' + best.percent + '%)'
+        : best.type === 'bundle'
+        ? 'Bundle discount (10%)'
         : 'Quantity discount' + (best.percent ? ' (' + best.percent + '%)' : '');
       html += '<div class="ar-co-line ar-co-discount"><span>' + discLabel + '</span><strong>−' + fmt(best.amount) + '</strong></div>';
     }
@@ -443,21 +460,21 @@
 
     var lines = items.map(function (x) { var q = clampQty(x.qty); return '• ' + x.name + (q > 1 ? ' × ' + q : '') + ' — Rs ' + x.price; });
     var best = appliedDiscount(items);
-    var totalsText = '\nTotal: Rs ' + finalTotal();
+    var totalsText = '\n\n*Total: Rs ' + finalTotal() + '*';
     if (best.amount > 0) {
       var totalsDiscLine = best.type === 'coupon'
-        ? '\nCoupon: ' + couponCode + ' (' + best.percent + '%)'
-        : '\nQuantity discount' + (best.percent ? ' (' + best.percent + '%)' : '');
-      totalsText = '\nSubtotal: Rs ' + cartTotal() +
-        totalsDiscLine +
-        '\nDiscount: −Rs ' + best.amount +
-        '\nTotal: Rs ' + finalTotal();
+        ? 'Coupon ' + couponCode + ' (' + best.percent + '%): −Rs ' + best.amount
+        : best.type === 'bundle'
+        ? 'Bundle discount (10%): −Rs ' + best.amount
+        : 'Quantity discount' + (best.percent ? ' (' + best.percent + '%)' : '') + ': −Rs ' + best.amount;
+      totalsText = '\n\n*Order Summary:*\nSubtotal: Rs ' + cartTotal() +
+        '\n' + totalsDiscLine +
+        '\n*Total: Rs ' + finalTotal() + '*';
     }
-    var msg = 'New Order — AR SERVICES\n\nItems:\n' +
+    var msg = 'Hello AR SERVICES, I am *' + name + '*. I would like to place an order:\n\n*Items:*\n' +
       lines.join('\n') +
       totalsText +
-      '\n\nCustomer Details:\nName: ' + name +
-      '\nWhatsApp: ' + phoneRaw; /* 2026-10-24 (owner): WhatsApp par professional English template — randomly bana hua message nahi. */
+      '\n\n*Customer Details:*\nName: *' + name + '*\nWhatsApp: ' + phoneRaw; /* 2026-10-24 (owner): professional English template — naam bold, items alag-alag, "New Order" nahi. WhatsApp mein *...* bold hota hai. */
     /* The site-wide wa.me window.open wrapper fires the Lead event once. */
     window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     ARCart.clear();
@@ -470,6 +487,7 @@
   var ARCart = {
     add: function (item) {
       if (!item || !item.id || !item.name) return false;
+      if (bundleMode) clearBundleMode(); /* bundle ke baad cart badla to bundle discount khatam */
       var qty = clampQty(item.qty);
       var unit = Number(item.unit) > 0 ? Number(item.unit) : (Number(item.price) || 0);
       var entry = { id: String(item.id), name: String(item.name), unit: unit, qty: qty, price: unit * qty };
@@ -494,6 +512,7 @@
       return true;
     },
     changeQty: function (id, delta) {
+      if (bundleMode) clearBundleMode();
       for (var i = 0; i < items.length; i++) {
         if (items[i].id === id) {
           items[i].qty = clampQty(items[i].qty + (parseInt(delta, 10) || 0));
@@ -505,13 +524,15 @@
     },
 
     remove: function (id) {
+      if (bundleMode) clearBundleMode();
       items = items.filter(function (x) { return x.id !== id; });
       save(); renderCart();
     },
     items: function () { return items.slice(); },
     total: cartTotal,
-    clear: function () { items = []; save(); renderCart(); },
+    clear: function () { if (bundleMode) clearBundleMode(); items = []; save(); renderCart(); },
     openDrawer: openDrawer,
+    setBundleDiscount: function (v) { bundleMode = !!v; saveBundleMode(); },
     openCheckout: openCheckout,
     currentProductSelection: currentProductSelection
   };

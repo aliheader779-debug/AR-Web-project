@@ -387,13 +387,34 @@ function renderProductPage(){
  const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
-/* 2026-10-24: Announcement bar (owner hukum) — header se upar; deals (SAVE10 10% OFF + Bundle 10% OFF) + coupon code copy chip. Sirf asli offers, koi fake deal nahi. */
+/* 2026-10-24: Announcement bar (owner hukum) — header se upar; 4 asli announcements, hero slideshow ki tarah har 3 second baad auto-change (hover par rukti hai). SAVE10 copy chip + band karne ka button har slide par rehte hain. Sirf asli offers/facts, koi fake deal nahi. */
 function renderAnnouncementBar(){
  if(document.querySelector('.ar-announce'))return;
+ var MESSAGES=[
+  '\uD83C\uDF89 <strong>SAVE10</strong> — 10% OFF on your order &nbsp;•&nbsp; Build Your Own Bundle — any 2+ tools, 10% OFF',
+  '\uD83D\uDCB0 2 accounts = 5% OFF &nbsp;•&nbsp; 3 accounts = 10% OFF &nbsp;•&nbsp; 4+ accounts = 15% OFF',
+  '\u26A1 Fast delivery in 10–15 minutes after payment &nbsp;•&nbsp; WhatsApp support, Mon–Sat 9am–9pm',
+  '\uD83D\uDD25 CapCut Pro from Rs 399 &nbsp;•&nbsp; Gemini from Rs 250 &nbsp;•&nbsp; Canva Edu from Rs 149'
+ ];
  var bar=document.createElement('div');
  bar.className='ar-announce';
- bar.innerHTML='<span class="ar-announce-text">\uD83C\uDF89 <strong>SAVE10</strong> — 10% OFF on your order &nbsp;•&nbsp; Build Your Own Bundle — any 2+ tools, 10% OFF</span><button type="button" class="ar-announce-code" title="Copy coupon code">SAVE10 \uD83D\uDCCB</button><button type="button" class="ar-announce-close" aria-label="Close announcement">\u00D7</button>';
+ bar.innerHTML='<span class="ar-announce-text">'+MESSAGES[0]+'</span><button type="button" class="ar-announce-code" title="Copy coupon code">SAVE10 \uD83D\uDCCB</button><button type="button" class="ar-announce-close" aria-label="Close announcement">\u00D7</button>';
  document.body.insertBefore(bar,document.body.firstChild);
+ var textEl=bar.querySelector('.ar-announce-text');
+ var idx=0,timer=null;
+ function showNext(){
+  textEl.style.opacity='0';
+  setTimeout(function(){
+   idx=(idx+1)%MESSAGES.length;
+   textEl.innerHTML=MESSAGES[idx];
+   textEl.style.opacity='1';
+  },450);
+ }
+ function start(){if(!timer)timer=setInterval(showNext,3000);}
+ function stop(){if(timer){clearInterval(timer);timer=null;}}
+ start();
+ bar.addEventListener('mouseenter',stop);
+ bar.addEventListener('mouseleave',start);
  var code=bar.querySelector('.ar-announce-code');
  if(code)code.addEventListener('click',function(){
   var done=function(){code.textContent='Copied \u2713';setTimeout(function(){code.textContent='SAVE10 \uD83D\uDCCB';},1500);};
@@ -401,7 +422,7 @@ function renderAnnouncementBar(){
   else{var ta=document.createElement('textarea');ta.value='SAVE10';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta);}
  });
  var close=bar.querySelector('.ar-announce-close');
- if(close)close.addEventListener('click',function(){bar.remove();});
+ if(close)close.addEventListener('click',function(){stop();bar.remove();});
 }
 document.addEventListener('DOMContentLoaded',()=>{
  const run=(label,fn)=>{

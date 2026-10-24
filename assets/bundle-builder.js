@@ -4,8 +4,11 @@
    and assets/cart.js.
 
    Bundle formula (SR-style): select any 2 or more tools -> flat 10% off
-   the combined regular total. Bundle orders go straight to WhatsApp
-   (never through the cart), so cart discounts do not apply here.
+   the combined regular total. Bundle orders go through the cart
+   checkout form (owner, 2026-10-24): ORDER adds the chosen tools to
+   the cart, sets the 10% bundle discount in cart.js, and opens the
+   checkout modal — so the customer's name/number come through the form.
+   The old direct wa.me message is gone.
    Cards are rendered from the PRODUCTS data in app.js — each tool's own
    logo, default (first) plan and current price — so prices never drift.
 
@@ -20,7 +23,6 @@
 (function () {
   'use strict';
 
-  var WA_NUMBER = '923179172511';
   var OFFER_END = '2026-10-31T23:59:59+05:00'; /* Gemini offer deadline (PKT) */
 
   /* Card order on the homepage bundle builder: the first VISIBLE_COUNT
@@ -118,6 +120,8 @@
         icon: p.icon || 'fa-box',
         planLabel: planLabel(p),
         orderLabel: orderLabel(p),
+        planName: plan ? plan.name : '',
+        devices: p.slug === 'capcut' ? 1 : null, /* default = 1 Device (cart id 'capcut-1-month-1device') */
         price: parsePrice(plan ? plan.price : p.price)
       };
     });
@@ -127,6 +131,10 @@
     var extraSlugs = extraTools.map(function (t) { return t.slug; });
     var selected = {}; /* slug -> tool */
     var expanded = false;
+    var currentChosen = []; /* upd() se taaza selection — ORDER click handler ke liye */
+    var currentBundle = null;
+    function bundleSlugify(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+    function bundleItemId(t) { return t.slug + '-' + bundleSlugify(t.planName) + (t.devices ? '-' + t.devices + 'device' : ''); } /* cart.js currentProductSelection jaisi id — taake SAVE10 ki CapCut exclusion bhi sahi lage */
 
     var html = visibleTools.map(function (t) { return cardHtml(t, false); }).join('');
     if (extraTools.length) {
@@ -164,21 +172,15 @@
         btn.classList.add('disabled');
         btn.setAttribute('aria-disabled', 'true');
         btn.removeAttribute('href');
+        currentChosen = [];
+        currentBundle = null;
         return;
       }
       hintEl.innerHTML = '<span class="byob-save">Bundle discount applied — you save ' + fmt(r.discount) + '.</span>';
-      var lines = chosen.map(function (t) {
-        return '• ' + t.name + ' — ' + t.orderLabel + ' — ' + fmt(t.price);
-      });
-      var msg = 'New Bundle Order — AR SERVICES\n\nItems:\n' +
-        lines.join('\n') +
-        '\nRegular total: ' + fmt(r.total) +
-        '\nBundle discount (10%): -' + fmt(r.discount) +
-        '\nBundle price: ' + fmt(r.price) +
-        '\n\nPlease confirm the order and share the payment details.'; /* 2026-10-24 (owner): professional English template. */
-      btn.setAttribute('href', 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg));
+      currentChosen = chosen.slice();
+      currentBundle = r;
       btn.classList.remove('disabled');
-      btn.removeAttribute('aria-disabled');
+      btn.removeAttribute('aria-disabled'); /* 2026-10-24 (owner): ORDER seedha wa.me nahi — checkout form kholta hai (neeche click handler). */
     }
 
     Array.prototype.forEach.call(wrap.querySelectorAll('[data-byob]'), function (card) {
@@ -200,6 +202,16 @@
       });
     });
 
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!currentBundle || !currentBundle.unlocked || !currentChosen.length) return;
+      if (typeof ARCart === 'undefined' || !ARCart.add || !ARCart.openCheckout) return;
+      currentChosen.forEach(function (t) {
+        ARCart.add({ id: bundleItemId(t), name: t.name + ' — ' + t.planName + (t.devices ? ' (' + t.devices + ' Device)' : ''), price: t.price, unit: t.price, qty: 1 });
+      });
+      if (ARCart.setBundleDiscount) ARCart.setBundleDiscount(true);
+      ARCart.openCheckout();
+    });
     if (toggleBtn && moreWrap) {
       toggleBtn.addEventListener('click', function () {
         expanded = !expanded;
