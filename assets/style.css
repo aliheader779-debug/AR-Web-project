@@ -1002,6 +1002,6 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .product-purchase-card.simple .ar-qty-btn{background:#fff;color:#0f172a;border:1px solid rgba(15,23,42,.12);box-shadow:none}
 .product-buy-row{display:flex;gap:12px;margin-top:18px}
 .product-buy-row .ar-add-cart-product{flex:1;width:auto;margin-top:0!important}
-.product-buy-now{flex:1;background:#0f766e!important;border:0!important;color:#fff!important;border-radius:999px!important;padding:14px 10px!important;font-size:1rem!important;font-weight:700!important}
-.product-buy-now:hover{background:#0d6b62!important;color:#fff!important}
+.product-buy-now{flex:1;background:#2f3a8c!important;border:0!important;color:#fff!important;border-radius:999px!important;padding:14px 10px!important;font-size:1rem!important;font-weight:700!important} /* brand logo blue (AR monogram) — owner 2026-10-24 */
+.product-buy-now:hover{background:#26307a!important;color:#fff!important}
 .product-purchase-card.simple .ar-add-cart-btn{background:#111827!important;border-radius:999px!important;color:#fff!important;border:0!important}
