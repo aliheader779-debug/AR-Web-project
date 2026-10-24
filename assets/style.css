@@ -966,5 +966,3 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .ar-co-coupon-msg.is-ok{color:#16a34a}
 .ar-co-coupon-msg.is-warn{color:#b45309}
 .ar-co-coupon-remove{margin-top:6px;background:none;border:0;padding:0;color:#64748b;font:600 .78rem 'Poppins',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-
-
