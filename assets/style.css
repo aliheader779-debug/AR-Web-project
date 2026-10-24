@@ -169,7 +169,7 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
 }
 
 /* Hero live effects: rotating headline word (typing) + caret */
-.hero-rotator{display:inline-block;text-align:left}
+.hero-rotator{display:inline-block}
 .hero-rotator::after{content:'';display:inline-block;width:3px;height:.9em;margin-left:3px;vertical-align:-.08em;background:#2f3a8c;animation:heroCaretBlink 1s step-end infinite}
 @keyframes heroCaretBlink{0%,100%{opacity:1}50%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.hero-rotator::after{animation:none}}
@@ -1016,10 +1016,9 @@ footer .text-gradient{background:none!important;-webkit-background-clip:initial!
 
 .ar-co-payments{margin:2px 0 14px} /* checkout modal mein Payment Methods box (coupon se upar) */
 
-.ar-announce{background:#2f3a8c;color:#fff;text-align:center;font-size:.85rem;font-weight:600;padding:9px 46px 9px 12px;position:relative;line-height:1.5}
+.ar-announce{background:#2f3a8c;color:#fff;text-align:center;font-size:.85rem;font-weight:600;padding:9px 12px;position:sticky;top:0;z-index:1001;line-height:1.5}
 .ar-announce strong{font-weight:800}
-.ar-announce-close{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:rgba(255,255,255,.85);font-size:1.25rem;line-height:1;cursor:pointer;padding:2px 6px}
-@media(max-width:575px){.ar-announce{font-size:.78rem;padding:8px 40px 8px 10px}}
+@media(max-width:575px){.ar-announce{font-size:.78rem;padding:8px 10px}}
 
 .ar-announce-text{display:inline-block;transition:opacity .45s ease}
 

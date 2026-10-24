@@ -398,7 +398,7 @@ function renderAnnouncementBar(){
  ];
  var bar=document.createElement('div');
  bar.className='ar-announce';
- bar.innerHTML='<span class="ar-announce-text">'+MESSAGES[0]+'</span><button type="button" class="ar-announce-close" aria-label="Close announcement">\u00D7</button>';
+ bar.innerHTML='<span class="ar-announce-text">'+MESSAGES[0]+'</span>';
  document.body.insertBefore(bar,document.body.firstChild);
  var textEl=bar.querySelector('.ar-announce-text');
  var idx=0,timer=null;
@@ -415,8 +415,6 @@ function renderAnnouncementBar(){
  start();
  bar.addEventListener('mouseenter',stop);
  bar.addEventListener('mouseleave',start);
- var close=bar.querySelector('.ar-announce-close');
- if(close)close.addEventListener('click',function(){stop();bar.remove();});
 }
 
 function initHeroLive(){
@@ -424,16 +422,6 @@ function initHeroLive(){
  const rot=document.getElementById('heroRotator');
  if(rot){
   const words=['Possibilities.','Creativity.','Savings.','Growth.'];
-  const cs=getComputedStyle(rot);
-  const probe=document.createElement('span');
-  probe.style.cssText='position:absolute;visibility:hidden;white-space:nowrap';
-  probe.style.fontFamily=cs.fontFamily;probe.style.fontWeight=cs.fontWeight;
-  probe.style.fontSize=cs.fontSize;probe.style.letterSpacing=cs.letterSpacing;
-  document.body.appendChild(probe);
-  let maxW=0;
-  words.forEach(w=>{probe.textContent=w;maxW=Math.max(maxW,probe.offsetWidth)});
-  probe.remove();
-  rot.style.minWidth=Math.ceil(maxW)+'px';
   let wi=0,ci=words[0].length,deleting=true;
   const typeMs=75,delMs=35,holdMs=1900;
   function tick(){
