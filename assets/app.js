@@ -228,14 +228,13 @@ function initStoreFilters(){
  search?.addEventListener('input',apply);
  apply();
 }
-const SIMPLE_PURCHASE_CARD={gemini:true}; /* PILOT 2026-10-24: sirf Gemini ka purchase card simple hai (info rows Details mein). Pasand aaye to baqi tools yahan add karein. NOTE: CapCut ko add karne se pehle Details mein device options bhi le jana hoga. */
+const SIMPLE_PURCHASE_CARD={capcut:true,gemini:true,canva:true,surfshark:true,netflix:true,office365:true,'adobe-express':true,ilovepdf:true,quillbot:true,duolingo:true,'youtube-premium':true}; /* 2026-10-24: DG/SR simple purchase panel — SAB tools par (owner hukum 22:18). CapCut ka device selector card mein rehta hai; Details mein CapCut ki access row nahi hoti. */
 function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
  const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
  const simpleCard=SIMPLE_PURCHASE_CARD[slug]===true;
- const usd0=((Number((featuredPlan.price||'').replace(/[^0-9.]/g,''))||0)/277).toFixed(2);
  root.innerHTML=`
  <section class="product-page">
   <div class="container">
@@ -250,7 +249,7 @@ function renderProductPage(){
       ${simpleCard?`<a class="product-stars" href="#productReviews" aria-label="Customer reviews"><span class="product-stars-num">4.5</span> ★★★★★</a><details class="product-payments"><summary><span>💳 Payment Methods</span></summary><div class="product-payments-body"><div class="pay-method"><div><strong>JazzCash / EasyPaisa</strong><span>Ali Haider — 03179172511</span></div><button type="button" class="pay-copy-btn" data-copy="03179172511">Copy</button></div><p class="pay-note">Payment ke baad screenshot WhatsApp par bhejen.</p></div></details>`:''}
       <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
       ${simpleCard?'':`<div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>`}
-      ${simpleCard?'':(p.slug==='capcut'?`
+      ${p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
        <span class="device-access-label">Device Access</span>
        <div class="device-option-row">
@@ -258,13 +257,13 @@ function renderProductPage(){
         <button type="button" class="device-option" data-devices="2" data-price="Rs. 699"><strong>2 Devices</strong><span>Rs. 699</span></button>
        </div>
       </div>
-      <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
+      <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`:(simpleCard?'':`
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`)}
       ${simpleCard?'':productInfoRows(p)}
-      ${simpleCard?`<div class="product-total-box mt-4"><span>TOTAL PRICE</span><div class="product-total-price-wrap"><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong><span class="product-total-usd" id="productTotalUsd">~ $${usd0}</span></div></div>`:`<div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>`}
+      ${simpleCard?`<div class="product-total-box mt-4"><span>TOTAL PRICE</span><div class="product-total-price-wrap"><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div></div>`:`<div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>`}
       ${simpleCard?`<div class="product-buy-row"><button id="productOrderBtn" type="button" class="btn product-buy-now">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>`:`<button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>`}
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
-    </div>${simpleCard?`<details class="product-details"><summary>Details</summary><div class="product-details-body"><div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>${productInfoRows(p,true)}</div></details>`:``}<div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
+    </div>${simpleCard?`<details class="product-details"><summary>Details</summary><div class="product-details-body">${p.slug==='capcut'?'':`<div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}${productInfoRows(p,true)}</div></details>`:``}<div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
    </div>
   </div>
  </section>
