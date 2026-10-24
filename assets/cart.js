@@ -198,6 +198,7 @@
             '<input id="arCoName" class="ar-co-input" type="text" placeholder="Enter your name" autocomplete="name">' +
             '<label class="ar-co-label" for="arCoPhone">WhatsApp Number *</label>' +
             '<input id="arCoPhone" class="ar-co-input" type="tel" placeholder="03XXXXXXXXX" autocomplete="tel">' +
+            '<details class="product-payments ar-co-payments"><summary><span>\uD83D\uDCB3 Payment Methods</span></summary><div class="product-payments-body"><div class="pay-method"><div><strong>JazzCash / EasyPaisa</strong><span>Ali Haider — 03179172511</span></div><button type="button" class="pay-copy-btn" data-copy="03179172511">Copy</button></div><p class="pay-note">Payment ke baad screenshot WhatsApp par bhejen.</p></div></details>' +
             '<div class="ar-co-coupon">' +
               '<label class="ar-co-label" for="arCoCouponInput">Coupon Code (agar hai to)</label>' +
               '<div class="ar-co-coupon-row">' +
@@ -233,6 +234,15 @@
     $all('[data-ar-close]', wrap).forEach(function (b) { b.addEventListener('click', closeDrawer); });
     $all('[data-ar-close-checkout]', wrap).forEach(function (b) { b.addEventListener('click', closeCheckout); });
     els.checkoutBtn.addEventListener('click', openCheckout);
+    /* Copy button inside the checkout Payment Methods box (same pattern as the product-page dropdown). */
+    els.modal.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-copy]') : null;
+      if (!b) return;
+      var t = b.getAttribute('data-copy') || '';
+      var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(done, function () {}); }
+      else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (err) {} document.body.removeChild(ta); }
+    });
     els.itemsBox.addEventListener('click', function (e) {
       if (!e.target.closest) return;
       var qbtn = e.target.closest('[data-ar-qinc],[data-ar-qdec]');
@@ -502,7 +512,8 @@
     total: cartTotal,
     clear: function () { items = []; save(); renderCart(); },
     openDrawer: openDrawer,
-    openCheckout: openCheckout
+    openCheckout: openCheckout,
+    currentProductSelection: currentProductSelection
   };
   window.ARCart = ARCart;
 

@@ -1007,3 +1007,5 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 .product-stars-num{color:#0f172a;font-weight:700;letter-spacing:0;margin-right:2px}
 
 footer .text-gradient{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:#fff!important;color:#fff!important} /* footer logo (AR SERVICES) proper white — owner 2026-10-24; dark footer par gehra neela nazar nahi ata tha */
+
+.ar-co-payments{margin:2px 0 14px} /* checkout modal mein Payment Methods box (coupon se upar) */

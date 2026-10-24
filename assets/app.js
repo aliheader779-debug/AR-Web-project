@@ -184,31 +184,10 @@ function renderProductGrid(targetId,limit=99,cardFn=productCard){
  const el=document.getElementById(targetId); if(!el)return;
  el.innerHTML=PRODUCTS.slice(0,limit).map(cardFn).join('');
 }
-function setPackage(value){
- const select=document.getElementById('waPackage'); if(select)select.value=value;
-}
-var currentOrderPkg=''; /* 2026-10-24: order form sirf Name + Number + Coupon — Package dropdown hata diya; plan yahan save hota hai aur WhatsApp message mein jata hai. */
-function openOrder(productName='',plan=''){
- const modal=document.getElementById('whatsappModal');
- if(productName){
-  currentOrderPkg=plan?`${productName} - ${plan}`:productName;
- }
- if(modal) bootstrap.Modal.getOrCreateInstance(modal).show();
-}
+
+
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function sendToWhatsApp(e){
- e.preventDefault();
- const name=document.getElementById('waName').value.trim();
- const phone=document.getElementById('waPhone').value.trim();
- const couponEl=document.getElementById('waCoupon');
- const coupon=couponEl?couponEl.value.trim().toUpperCase():'';
- const msgEl=document.getElementById('waCouponMsg');
- if(msgEl)msgEl.hidden=true;
- if(coupon&&coupon!=='SAVE10'){if(msgEl){msgEl.textContent='Coupon code ghalat hai. SAVE10 likhein ya khaali chhorein.';msgEl.hidden=false;}return;}
- const pkg=currentOrderPkg||'';
- const message=`Hello AR SERVICES! I would like to place an order.%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}`+(pkg?`%0A*Package:* ${encodeURIComponent(pkg)}`:'')+(coupon?`%0A*Coupon:* ${encodeURIComponent(coupon)} (10% off)`:'');
- window.open(`https://wa.me/${WA_NUMBER}?text=${message}`,'_blank');
-}
+
 function initStoreFilters(){
  const grid=document.getElementById('storeGrid'), search=document.getElementById('toolSearch');
  if(!grid)return;
@@ -229,6 +208,16 @@ function initStoreFilters(){
  apply();
 }
 const SIMPLE_PURCHASE_CARD={capcut:true,gemini:true,canva:true,surfshark:true,netflix:true,office365:true,'adobe-express':true,ilovepdf:true,quillbot:true,duolingo:true,'youtube-premium':true}; /* 2026-10-24: DG/SR simple purchase panel — SAB tools par (owner hukum 22:18). CapCut ka device selector card mein rehta hai; Details mein CapCut ki access row nahi hoti. */
+/* 2026-10-24: EK HI order form (owner hukum) — Buy Now / sticky button ab cart checkout modal kholta hai (wahi form jo cards se khulta hai). */
+function buyNowCheckout(){
+ var root=document.getElementById('productPage');
+ var cart=window.ARCart;
+ if(!cart||!cart.currentProductSelection||!cart.add||!cart.openCheckout)return;
+ var sel=cart.currentProductSelection(root);
+ if(!sel)return;
+ cart.add(sel);
+ cart.openCheckout();
+}
 function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
@@ -316,7 +305,7 @@ function renderProductPage(){
  function updateStickyOrder(planText,price){
   if(stickyName)stickyName.textContent=p.name+(planText?' • '+planText:'');
   if(stickyPrice)stickyPrice.textContent=price||p.price;
-  if(stickyBtn)stickyBtn.onclick=()=>openOrder(p.name,planText||'');
+  if(stickyBtn)stickyBtn.onclick=()=>buyNowCheckout();
  }
  function syncStickyVisibility(){
   const show=window.scrollY>420;
@@ -367,12 +356,12 @@ function renderProductPage(){
    selectedDevices=isMonth?1:2;
    selectedCapcutPrice=isMonth?'Rs. 399':pl.price;
    if(total)total.textContent=selectedCapcutPrice;
-   if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+   if(order)order.onclick=()=>buyNowCheckout();
    updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
    updateStickyOrder(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''}`,selectedCapcutPrice);
   }else{
    if(total)total.textContent=pl.price;
-   if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${pl.price}`);
+   if(order)order.onclick=()=>buyNowCheckout();
    updateFloatingWhatsApp(`${pl.name} - ${pl.price}`);
    updateStickyOrder(`${pl.name} - ${pl.price}`,pl.price);
   }
@@ -387,7 +376,7 @@ function renderProductPage(){
     if(total)total.textContent=selectedCapcutPrice;
     const pl=p.plans[Math.max(0,planButtons.findIndex(b=>b.classList.contains('active')))]||p.plans[0];
     if(selected)selected.textContent=`${pl.name} • ${selectedDevices} Device${selectedDevices>1?'s':''}`;
-    if(order)order.onclick=()=>openOrder(p.name,`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
+    if(order)order.onclick=()=>buyNowCheckout();
     updateFloatingWhatsApp(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''} - ${selectedCapcutPrice}`);
     updateStickyOrder(`${pl.name} - ${selectedDevices} Device${selectedDevices>1?'s':''}`,selectedCapcutPrice);
    });
