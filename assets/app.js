@@ -121,10 +121,11 @@ function productCard(p){
 function productCardDG(p){
  return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
    <article class="dg-card">
-    <div class="dg-card-img-wrap"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">${p.stock?`<span class="dg-stock-pill dg-stock-in">${escapeHtml(p.stock)}</span>`: ''}</div>
+    <div class="dg-card-img-wrap"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy"></div>
     <div class="dg-card-body">
-     <div class="dg-card-meta"><span class="dg-cat-label">${escapeHtml(p.category.toUpperCase())}</span></div>
+     <div class="dg-card-meta"><span class="dg-cat-label">${escapeHtml(p.category.toUpperCase())}</span>${p.stock?`<span class="dg-stock-pill dg-stock-in">${escapeHtml(p.stock)}</span>`: ''}</div>
      <h3 class="dg-card-title">${escapeHtml(p.name)}</h3>
+     <div class="dg-stars" aria-hidden="true">★★★★★</div>
      <hr class="dg-card-divider">
      <div class="dg-price-row"><span class="dg-price">${money(p)}</span></div>
      <div class="dg-card-actions"><a class="dg-btn dg-btn-black" href="product-${p.slug}.html">View Details</a></div>

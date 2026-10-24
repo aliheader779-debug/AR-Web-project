@@ -337,3 +337,11 @@ a.category-card {
 }
 
 
+
+/* Home card tweaks (2026-10-24): stock pill image se hata kar category ke saath,
+   naam ke neeche stars, aur card buttons compact. Sirf home DG cards par asar. */
+.dg-card-meta .dg-stock-pill { position: static; background: #ecfdf5; border: 1px solid #d1fae5; }
+.dg-card .dg-stars { color: #f59e0b; font-size: .95rem; letter-spacing: 2px; margin: 2px 0 10px; line-height: 1; }
+.dg-card-actions { gap: 8px; padding-top: 12px; align-items: center; }
+.dg-card-actions .dg-btn { padding: 10px 14px; font-size: .88rem; }
+.dg-card-actions .ar-add-cart-btn { margin-top: 0; width: auto; flex: 1; padding: 10px 14px; font-size: .88rem; }
