@@ -970,3 +970,11 @@ body:has(.product-sticky-order.is-visible) .ar-cart-fab{bottom:96px}
 /* Product page main image — owner ki product image (assets/images), purane Drive logo ki jagah (2026-10-24) */
 .product-main-img{width:100%;margin:0 0 18px}
 .product-main-img img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:20px;box-shadow:0 10px 24px rgba(15,23,42,.08)}
+
+/* Product purchase Details — collapsible info (Gemini pilot 2026-10-24) */
+.product-details{margin-top:14px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 6px 18px rgba(15,23,42,.06)}
+.product-details summary{list-style:none;cursor:pointer;padding:14px 18px;font-weight:700;color:#0f172a;display:flex;align-items:center;justify-content:space-between}
+.product-details summary::-webkit-details-marker{display:none}
+.product-details summary::after{content:"+";font-size:1.25rem;font-weight:700;color:#2563eb;line-height:1}
+.product-details[open] summary::after{content:"\2212"}
+.product-details-body{padding:2px 18px 16px}

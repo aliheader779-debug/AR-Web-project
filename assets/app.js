@@ -228,11 +228,13 @@ function initStoreFilters(){
  search?.addEventListener('input',apply);
  apply();
 }
+const SIMPLE_PURCHASE_CARD={gemini:true}; /* PILOT 2026-10-24: sirf Gemini ka purchase card simple hai (info rows Details mein). Pasand aaye to baqi tools yahan add karein. NOTE: CapCut ko add karne se pehle Details mein device options bhi le jana hoga. */
 function renderProductPage(){
  const root=document.getElementById('productPage'); if(!root)return;
  const slug=root.dataset.slug,p=productBySlug(slug);
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
  const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
+ const simpleCard=SIMPLE_PURCHASE_CARD[slug]===true;
  root.innerHTML=`
  <section class="product-page">
   <div class="container">
@@ -246,7 +248,7 @@ function renderProductPage(){
       <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
       <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
       <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
-      ${p.slug==='capcut'?`
+      ${simpleCard?'':(p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
        <span class="device-access-label">Device Access</span>
        <div class="device-option-row">
@@ -255,12 +257,12 @@ function renderProductPage(){
        </div>
       </div>
       <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
-      <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}
-      ${productInfoRows(p)}
+      <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`)}
+      ${simpleCard?'':productInfoRows(p)}
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
       <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
-    </div><div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
+    </div>${simpleCard?`<details class="product-details"><summary>Details</summary><div class="product-details-body"><div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>${productInfoRows(p)}</div></details>`:``}<div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
    </div>
   </div>
  </section>
