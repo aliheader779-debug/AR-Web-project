@@ -32,21 +32,31 @@ document.addEventListener('click', function (e) {
 </script>
 </head><body>
 
-<nav class="navbar navbar-expand-lg glass-header">
- <div class="container-fluid">
-  <a class="navbar-brand" href="index.html">AR SERVICES</a>
-  <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Open navigation"><i class="fa-solid fa-bars text-white fs-4"></i></button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-   <ul class="navbar-nav ms-auto align-items-lg-center"><li class="nav-item"><a class="nav-link " href="index.html">Home</a></li><li class="nav-item"><a class="nav-link active" href="tools.html">Tools</a></li><li class="nav-item"><a class="nav-link " href="categories.html">Categories</a></li><li class="nav-item"><a class="nav-link " href="how-it-works.html">How It Works</a></li><li class="nav-item"><a class="nav-link " href="reviews.html">Reviews</a></li><li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li><li class="nav-item"><a class="nav-link " href="about.html">About</a></li><li class="nav-item"><a class="nav-link " href="support.html">Support</a></li>
-    <li class="nav-item ms-lg-2 mt-2 mt-lg-0"><a class="btn btn-outline-glass" href="tools.html"><i class="fa-solid fa-magnifying-glass me-1"></i> Browse Tools</a></li>
-    <li class="nav-item ms-lg-2 mt-2 mt-lg-0"><a class="btn btn-gradient" href="https://wa.me/923179172511" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp me-1"></i> WhatsApp</a></li>
-   </ul>
-  </div>
- </div>
-</nav><main><div id="productPage" data-slug="duolingo"></div></main><footer class="dg-footer-dark"><div class="container">
+<header class="nh-header"><div class="nh-header-inner"><a class="nh-brand" href="index.html"><img src="assets/images/ar-logo.jpg" alt="AR SERVICES" width="57" height="47"></a><nav class="nh-nav" aria-label="Main"><a href="index.html" class="nh-nav-link">Home</a><a href="tools.html" class="nh-nav-link active">All Products</a><a href="categories.html" class="nh-nav-link">Categories</a><a href="index.html#bundle" class="nh-nav-link">Bundles</a><a href="how-it-works.html" class="nh-nav-link">How to Order</a><a href="blog.html" class="nh-nav-link">Blog</a><a href="support.html" class="nh-nav-link">Contact</a></nav><div class="nh-actions"><form class="nh-search" action="tools.html" method="get" role="search"><input type="search" name="q" placeholder="Search for tools (e.g. Canva, CapCut, Netflix...)" aria-label="Search tools"><button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button></form><a class="nh-icon-btn" href="tools.html" aria-label="Search tools"><i class="fa-solid fa-magnifying-glass"></i></a><button class="nh-icon-btn nh-cart-btn" type="button" aria-label="Open cart"><i class="fa-solid fa-cart-shopping"></i><span class="nh-cart-badge" hidden>0</span></button><a class="nh-wa-btn" href="https://wa.me/923179172511" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a><button class="nh-toggle" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button></div></div><div class="nh-mobile-nav"><a href="index.html" class="nh-nav-link">Home</a><a href="tools.html" class="nh-nav-link active">All Products</a><a href="categories.html" class="nh-nav-link">Categories</a><a href="index.html#bundle" class="nh-nav-link">Bundles</a><a href="how-it-works.html" class="nh-nav-link">How to Order</a><a href="blog.html" class="nh-nav-link">Blog</a><a href="support.html" class="nh-nav-link">Contact</a></div></header><script>
+document.addEventListener('DOMContentLoaded', function () {
+  var t = document.querySelector('.nh-toggle'), m = document.querySelector('.nh-mobile-nav');
+  if (t && m) t.addEventListener('click', function () { m.classList.toggle('open'); });
+  var cartBtn = document.querySelector('.nh-cart-btn'), badge = document.querySelector('.nh-cart-badge');
+  var fab = document.getElementById('arCartFab'), src = document.getElementById('arCartBadge');
+  if (!fab || !cartBtn) { if (cartBtn) cartBtn.style.display = 'none'; }
+  else {
+    cartBtn.addEventListener('click', function () { fab.click(); });
+    var sync = function () {
+      if (!src || !badge) return;
+      var n = parseInt((src.textContent || '0').replace(/[^0-9]/g, ''), 10) || 0;
+      badge.textContent = n; badge.hidden = n <= 0;
+    };
+    sync();
+    if (src && 'MutationObserver' in window) new MutationObserver(sync).observe(src, { childList: true, characterData: true, subtree: true });
+  }
+  var q = new URLSearchParams(location.search).get('q');
+  var si = document.getElementById('toolSearch');
+  if (q && si) setTimeout(function () { si.value = q; si.dispatchEvent(new Event('input', { bubbles: true })); }, 50);
+});
+</script><main><div id="productPage" data-slug="duolingo"></div></main><footer class="dg-footer-dark"><div class="container">
 <div class="row g-4">
 <div class="col-lg-5"><h5 class="fw-bold">AR SERVICES</h5><p class="mt-3">Premium digital tools and subscriptions with a simple, support-focused ordering experience.</p><div class="mt-3"><span class="dg-pay-badge">JazzCash</span><span class="dg-pay-badge">EasyPaisa</span></div></div>
-<div class="col-6 col-lg-2"><h5>Store</h5><div class="d-grid gap-2 mt-3"><a href="tools.html">All Tools</a><a href="categories.html">Categories</a><a href="how-it-works.html">How It Works</a><a href="blog.html">Blog</a></div></div>
+<div class="col-6 col-lg-2"><h5>Store</h5><div class="d-grid gap-2 mt-3"><a href="tools.html">All Tools</a><a href="categories.html">Categories</a><a href="how-it-works.html">How It Works</a><a href="blog.html">Blog</a><a href="about.html">About</a></div></div>
 <div class="col-6 col-lg-2"><h5>Help</h5><div class="d-grid gap-2 mt-3"><a href="reviews.html">Reviews</a><a href="faq.html">FAQ</a><a href="support.html">Support</a></div></div>
 <div class="col-6 col-lg-3"><h5>Legal</h5><div class="d-grid gap-2 mt-3"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="refund-policy.html">Refund Policy</a></div></div>
 </div><hr class="my-4" style="border-color:#334155">
