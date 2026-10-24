@@ -88,10 +88,10 @@ const PRODUCT_INFO={
  duolingo:{delivery:'Redeem link sent on WhatsApp after payment confirmation (2-hour hold time)',warranty:'No warranty after activation'},
  'youtube-premium':{delivery:'Activation on your own account after payment confirmation on WhatsApp (4-hour link hold time)',warranty:'1-month AR SERVICES warranty'}
 };
-function productInfoRows(p){
+function productInfoRows(p,noPayment){
  const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
  const row=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
- return `<div class="product-info-rows">${row('Delivery',info.delivery)}${row('Warranty',info.warranty)}${row('Payment','JazzCash & EasyPaisa — 03179172511 (Ali Haider)')}</div>`;
+ return `<div class="product-info-rows">${row('Delivery',info.delivery)}${row('Warranty',info.warranty)}${noPayment?'':row('Payment','JazzCash & EasyPaisa — 03179172511 (Ali Haider)')}</div>`;
 }
 
 const LOGO_FIT={
@@ -235,6 +235,7 @@ function renderProductPage(){
  if(!p){root.innerHTML='<div class="container py-5"><div class="alert alert-danger">Product not found.</div></div>';return}
  const featuredPlan=p.plans[0]||{name:'',price:p.price,details:''};
  const simpleCard=SIMPLE_PURCHASE_CARD[slug]===true;
+ const usd0=((Number((featuredPlan.price||'').replace(/[^0-9.]/g,''))||0)/277).toFixed(2);
  root.innerHTML=`
  <section class="product-page">
   <div class="container">
@@ -244,10 +245,11 @@ function renderProductPage(){
       <div class="product-main-img"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy"></div>
       <div class="small-label mt-3">${p.category}</div><h1 class="h2 fw-bold mt-2">${escapeHtml(p.name)}</h1><p class="text-silver mb-0">${escapeHtml(p.description)}</p>
     </div></div>
-    <div class="col-lg-7"><div class="product-purchase-card">
+    <div class="col-lg-7"><div class="${simpleCard?'product-purchase-card simple':'product-purchase-card'}">
       <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
+      ${simpleCard?`<a class="product-stars" href="#productReviews" aria-label="Customer reviews">★★★★★</a><details class="product-payments"><summary><span>💳 Payment Methods</span></summary><div class="product-payments-body"><div class="pay-method"><div><strong>JazzCash / EasyPaisa</strong><span>Ali Haider — 03179172511</span></div><button type="button" class="pay-copy-btn" data-copy="03179172511">Copy</button></div><p class="pay-note">Payment ke baad screenshot WhatsApp par bhejen.</p></div></details>`:''}
       <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
-      <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
+      ${simpleCard?'':`<div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>`}
       ${simpleCard?'':(p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
        <span class="device-access-label">Device Access</span>
@@ -259,10 +261,10 @@ function renderProductPage(){
       <div id="capcutFixedDevice" class="product-device-access"><span class="device-access-label">Device Access</span><strong>2 Devices</strong></div>`: `
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`)}
       ${simpleCard?'':productInfoRows(p)}
-      <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
-      <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
+      ${simpleCard?`<div class="product-total-box mt-4"><span>TOTAL PRICE</span><div class="product-total-price-wrap"><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong><span class="product-total-usd" id="productTotalUsd">~ $${usd0}</span></div></div>`:`<div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>`}
+      ${simpleCard?`<div class="product-buy-row"><button id="productOrderBtn" type="button" class="btn product-buy-now">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>`:`<button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>`}
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
-    </div>${simpleCard?`<details class="product-details"><summary>Details</summary><div class="product-details-body"><div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>${productInfoRows(p)}</div></details>`:``}<div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
+    </div>${simpleCard?`<details class="product-details"><summary>Details</summary><div class="product-details-body"><div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>${productInfoRows(p,true)}</div></details>`:``}<div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
    </div>
   </div>
  </section>
@@ -393,6 +395,7 @@ function renderProductPage(){
   });
  }
  planButtons.forEach((btn,i)=>btn.addEventListener('click',()=>selectPlan(i)));selectPlan(Math.max(0,p.plans.findIndex(pl=>!pl.outOfStock)));
+ root.addEventListener('click',function(e){const b=e.target.closest?e.target.closest('[data-copy]'):null;if(!b)return;const t=b.getAttribute('data-copy')||'';const done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){});}else{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(err){}document.body.removeChild(ta);}});
  const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
