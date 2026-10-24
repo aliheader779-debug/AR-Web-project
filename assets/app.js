@@ -118,9 +118,23 @@ function productCard(p){
    </div>
  </div>`
 }
-function renderProductGrid(targetId,limit=99){
+function productCardDG(p){
+ return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
+   <article class="dg-card">
+    <div class="dg-card-img-wrap"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">${p.stock?`<span class="dg-stock-pill dg-stock-in">${escapeHtml(p.stock)}</span>`: ''}</div>
+    <div class="dg-card-body">
+     <div class="dg-card-meta"><span class="dg-cat-label">${escapeHtml(p.category.toUpperCase())}</span></div>
+     <h3 class="dg-card-title">${escapeHtml(p.name)}</h3>
+     <hr class="dg-card-divider">
+     <div class="dg-price-row"><span class="dg-price">${money(p)}</span></div>
+     <div class="dg-card-actions"><a class="dg-btn dg-btn-black" href="product-${p.slug}.html">View Details</a></div>
+    </div>
+   </article>
+  </div>`
+}
+function renderProductGrid(targetId,limit=99,cardFn=productCard){
  const el=document.getElementById(targetId); if(!el)return;
- el.innerHTML=PRODUCTS.slice(0,limit).map(productCard).join('');
+ el.innerHTML=PRODUCTS.slice(0,limit).map(cardFn).join('');
 }
 function setPackage(value){
  const select=document.getElementById('waPackage'); if(select)select.value=value;
@@ -338,7 +352,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  };
  run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
  run('Product page',renderProductPage);
- run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6)});
+ run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6,productCardDG)});
  run('Store products',()=>{if(document.getElementById('storeGrid')){renderProductGrid('storeGrid');initStoreFilters()}});
  run('Home reviews',()=>{if(document.getElementById('homeReviews'))renderCustomerReviews('homeReviews',6)});
  run('Homepage FAQ',()=>{const toggle=document.getElementById('homeFaqToggle');if(!toggle)return;const extras=[...document.querySelectorAll('.home-faq-extra')];let expanded=false;toggle.addEventListener('click',()=>{expanded=!expanded;extras.forEach(el=>el.style.display=expanded?'block':'none');toggle.textContent=expanded?'Show Fewer Questions':'View More Questions';if(!expanded){extras.forEach(el=>el.querySelector('.accordion-collapse')?.classList.remove('show'));extras.forEach(el=>el.querySelector('.accordion-button')?.classList.add('collapsed'));}})});
