@@ -408,6 +408,8 @@
     }
     html += '<div class="ar-co-line ar-co-grand"><span>Total</span><strong>' + fmt(finalTotal()) + '</strong></div>';
     els.summary.innerHTML = html;
+    var couponBox = $('.ar-co-coupon', els.modal); /* 2026-10-24 (owner): coupon sirf single product ke liye — bundle order par coupon option nahi dikhta (bundle discount pehle se milta hai). */
+    if (couponBox) couponBox.hidden = bundleMode;
     return best;
   }
 
