@@ -418,11 +418,62 @@ function renderAnnouncementBar(){
  var close=bar.querySelector('.ar-announce-close');
  if(close)close.addEventListener('click',function(){stop();bar.remove();});
 }
+
+function initHeroLive(){
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const rot=document.getElementById('heroRotator');
+ if(rot){
+  const words=['Possibilities.','Creativity.','Savings.','Growth.'];
+  const cs=getComputedStyle(rot);
+  const probe=document.createElement('span');
+  probe.style.cssText='position:absolute;visibility:hidden;white-space:nowrap';
+  probe.style.fontFamily=cs.fontFamily;probe.style.fontWeight=cs.fontWeight;
+  probe.style.fontSize=cs.fontSize;probe.style.letterSpacing=cs.letterSpacing;
+  document.body.appendChild(probe);
+  let maxW=0;
+  words.forEach(w=>{probe.textContent=w;maxW=Math.max(maxW,probe.offsetWidth)});
+  probe.remove();
+  rot.style.minWidth=Math.ceil(maxW)+'px';
+  let wi=0,ci=words[0].length,deleting=true;
+  const typeMs=75,delMs=35,holdMs=1900;
+  function tick(){
+   const word=words[wi];
+   if(!deleting){
+    ci++;rot.textContent=word.slice(0,ci);
+    if(ci===word.length){deleting=true;setTimeout(tick,holdMs);return}
+    setTimeout(tick,typeMs);
+   }else{
+    ci--;rot.textContent=word.slice(0,ci);
+    if(ci===0){deleting=false;wi=(wi+1)%words.length;setTimeout(tick,250);return}
+    setTimeout(tick,delMs);
+   }
+  }
+  setTimeout(tick,holdMs);
+ }
+ const counters=[...document.querySelectorAll('[data-count]')];
+ if(counters.length&&'IntersectionObserver' in window){
+  const io=new IntersectionObserver(entries=>{
+   entries.forEach(en=>{
+    if(!en.isIntersecting)return;
+    const el=en.target;io.unobserve(el);
+    const target=parseInt(el.dataset.count,10)||0;
+    const t0=performance.now(),dur=1200;
+    (function step(t){
+     const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+     el.textContent=Math.round(target*e);
+     if(p<1)requestAnimationFrame(step);
+    })(t0);
+   });
+  },{threshold:.4});
+  counters.forEach(el=>io.observe(el));
+ }
+}
 document.addEventListener('DOMContentLoaded',()=>{
  const run=(label,fn)=>{
   try{fn()}catch(error){console.error('[AR SERVICES] '+label+' failed:',error)}
  };
  run('Announcement bar',renderAnnouncementBar);
+ run('Hero live effects',initHeroLive);
  run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
  run('Product page',renderProductPage);
  run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6,productCardSR)});

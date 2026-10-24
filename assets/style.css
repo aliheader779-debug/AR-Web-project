@@ -161,12 +161,18 @@ footer a{color:#cfcfd6}footer a:hover{color:var(--secondary)}
 
 /* Final hero refinements */
 .hero .text-gradient{
-  background:linear-gradient(100deg,#cda7ff 0%,#9b4dff 24%,#00e5ff 52%,#9b4dff 78%,#cda7ff 100%);
+  background:linear-gradient(100deg,#2f3a8c 0%,#5563b8 24%,#7d86c8 52%,#5563b8 78%,#2f3a8c 100%);
   background-size:220% 100%;
   background-position:0% 50%;
   animation:heroGradientSmooth 8s ease-in-out infinite alternate;
   will-change:background-position;
 }
+
+/* Hero live effects: rotating headline word (typing) + caret */
+.hero-rotator{display:inline-block;text-align:left}
+.hero-rotator::after{content:'';display:inline-block;width:3px;height:.9em;margin-left:3px;vertical-align:-.08em;background:#2f3a8c;animation:heroCaretBlink 1s step-end infinite}
+@keyframes heroCaretBlink{0%,100%{opacity:1}50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.hero-rotator::after{animation:none}}
 @keyframes heroGradientSmooth{
   0%{background-position:0% 50%}
   100%{background-position:100% 50%}
