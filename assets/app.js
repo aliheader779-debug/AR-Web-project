@@ -387,10 +387,27 @@ function renderProductPage(){
  const rr=document.getElementById('relatedProducts');if(rr)rr.innerHTML=PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,3).map(x=>`<div class="col-md-4"><div class="glass-card product-related-card"><div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(x)}"><img src="${x.logo}" alt="${x.name} logo" loading="lazy"></div></div><h3 class="h6 fw-bold">${escapeHtml(x.name)}</h3><p class="text-silver small">${escapeHtml(x.description)}</p><a class="btn btn-outline-glass w-100" href="product-${x.slug}.html">View Product</a></div></div>`).join('');
  const pr=document.getElementById('productReviews');if(pr&&typeof renderCustomerReviews==='function')renderCustomerReviews('productReviews',3);
 }
+/* 2026-10-24: Announcement bar (owner hukum) — header se upar; deals (SAVE10 10% OFF + Bundle 10% OFF) + coupon code copy chip. Sirf asli offers, koi fake deal nahi. */
+function renderAnnouncementBar(){
+ if(document.querySelector('.ar-announce'))return;
+ var bar=document.createElement('div');
+ bar.className='ar-announce';
+ bar.innerHTML='<span class="ar-announce-text">\uD83C\uDF89 <strong>SAVE10</strong> — 10% OFF on your order &nbsp;•&nbsp; Build Your Own Bundle — any 2+ tools, 10% OFF</span><button type="button" class="ar-announce-code" title="Copy coupon code">SAVE10 \uD83D\uDCCB</button><button type="button" class="ar-announce-close" aria-label="Close announcement">\u00D7</button>';
+ document.body.insertBefore(bar,document.body.firstChild);
+ var code=bar.querySelector('.ar-announce-code');
+ if(code)code.addEventListener('click',function(){
+  var done=function(){code.textContent='Copied \u2713';setTimeout(function(){code.textContent='SAVE10 \uD83D\uDCCB';},1500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('SAVE10').then(done,function(){});}
+  else{var ta=document.createElement('textarea');ta.value='SAVE10';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta);}
+ });
+ var close=bar.querySelector('.ar-announce-close');
+ if(close)close.addEventListener('click',function(){bar.remove();});
+}
 document.addEventListener('DOMContentLoaded',()=>{
  const run=(label,fn)=>{
   try{fn()}catch(error){console.error('[AR SERVICES] '+label+' failed:',error)}
  };
+ run('Announcement bar',renderAnnouncementBar);
  run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
  run('Product page',renderProductPage);
  run('Home products',()=>{if(document.getElementById('homeProducts'))renderProductGrid('homeProducts',6,productCardSR)});

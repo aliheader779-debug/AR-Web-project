@@ -323,6 +323,7 @@
     var units = items.reduce(function (sm, x) { return sm + clampQty(x.qty); }, 0);
     els.badge.textContent = units;
     els.badge.hidden = units === 0;
+    if (els.fab) els.fab.style.display = items.length ? '' : 'none'; /* 2026-10-24 (owner): cart button sirf tab dikhe jab cart mein kuch ho — khaali cart par unnecessary na rahe. */
     if (!items.length) {
       els.itemsBox.innerHTML = '<p class="ar-cart-empty">Your cart is empty.<br>Add a plan and checkout in one tap.</p>';
     } else {
@@ -452,12 +453,11 @@
         '\nDiscount: −Rs ' + best.amount +
         '\nTotal: Rs ' + finalTotal();
     }
-    var msg = 'Assalam o Alaikum! Main website se order karna chahta hoon:\n' +
+    var msg = 'New Order — AR SERVICES\n\nItems:\n' +
       lines.join('\n') +
       totalsText +
-      '\nName: ' + name +
-      '\nNumber: ' + phoneRaw +
-      (city ? '\nCity: ' + city : '');
+      '\n\nCustomer Details:\nName: ' + name +
+      '\nWhatsApp: ' + phoneRaw; /* 2026-10-24 (owner): WhatsApp par professional English template — randomly bana hua message nahi. */
     /* The site-wide wa.me window.open wrapper fires the Lead event once. */
     window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
     ARCart.clear();

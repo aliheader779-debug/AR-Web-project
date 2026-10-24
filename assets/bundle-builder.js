@@ -170,12 +170,12 @@
       var lines = chosen.map(function (t) {
         return '• ' + t.name + ' — ' + t.orderLabel + ' — ' + fmt(t.price);
       });
-      var msg = 'Hello AR SERVICES, I would like to order this bundle:\n' +
+      var msg = 'New Bundle Order — AR SERVICES\n\nItems:\n' +
         lines.join('\n') +
         '\nRegular total: ' + fmt(r.total) +
         '\nBundle discount (10%): -' + fmt(r.discount) +
         '\nBundle price: ' + fmt(r.price) +
-        '\nPlease share the payment details.';
+        '\n\nPlease confirm the order and share the payment details.'; /* 2026-10-24 (owner): professional English template. */
       btn.setAttribute('href', 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg));
       btn.classList.remove('disabled');
       btn.removeAttribute('aria-disabled');
