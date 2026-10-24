@@ -217,7 +217,7 @@
             '<div class="ar-co-coupon">' +
               '<label class="ar-co-label" for="arCoCouponInput">Coupon Code (agar hai to)</label>' +
               '<div class="ar-co-coupon-row">' +
-                '<input id="arCoCouponInput" class="ar-co-input" type="text" placeholder="COUPON CODE (AGAR HAI TO)" autocomplete="off" spellcheck="false">' +
+                '<input id="arCoCouponInput" class="ar-co-input" type="text" autocomplete="off" spellcheck="false">' +
                 '<button type="button" id="arCoCouponApply" class="ar-btn-gradient ar-co-coupon-apply">Apply</button>' +
               '</div>' +
               '<p id="arCoCouponMsg" class="ar-co-coupon-msg" hidden></p>' +
