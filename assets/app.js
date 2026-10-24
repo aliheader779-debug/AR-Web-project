@@ -107,15 +107,16 @@ function productBySlug(slug){return PRODUCTS.find(p=>p.slug===slug)}
 function money(p){return p.price}
 function productCard(p){
  return `<div class="col-12 col-md-6 col-lg-4 product-item" data-category="${p.category}" data-name="${p.name.toLowerCase()}">
-   <div class="glass-card product-card d-flex flex-column">
-    <div class="product-icon-wrap"><div class="product-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
-    <div class="small-label">${p.category}</div>
-    <h3 class="fw-bold mt-2">${p.name}</h3>
-    <p class="text-silver">${p.description}</p>
-    <div class="price text-gradient mt-auto">${money(p)}</div>
-    <p class="text-silver mb-3">${p.plans.length} plan${p.plans.length>1?'s':''} • ${p.stock}</p>
-    <a class="btn btn-gradient w-100" href="product-${p.slug}.html">View Details</a>
-   </div>
+   <article class="dg-card">
+    <div class="dg-card-img-wrap"><img src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">${p.stock?`<span class="dg-stock-pill dg-stock-in">${escapeHtml(p.stock)}</span>`:''}</div>
+    <div class="dg-card-body">
+     <div class="dg-card-meta"><span class="dg-cat-label">${escapeHtml(p.category.toUpperCase())}</span></div>
+     <h3 class="dg-card-title">${escapeHtml(p.name)}</h3>
+     <hr class="dg-card-divider">
+     <div class="dg-price-row"><span class="dg-price">${money(p)}</span></div>
+     <div class="dg-card-actions"><a class="dg-btn dg-btn-black" href="product-${p.slug}.html">View Details</a></div>
+    </div>
+   </article>
  </div>`
 }
 function renderProductGrid(targetId,limit=99){
@@ -176,11 +177,13 @@ function renderProductPage(){
   <div class="container">
    <div class="product-breadcrumb mb-4"><a href="index.html">Home</a><span>/</span><a href="tools.html">Tools</a><span>/</span><span>${escapeHtml(p.name)}</span></div>
    <div class="row g-4 g-lg-5 align-items-start">
-    <div class="col-lg-5"><div class="glass-card product-main-visual text-center">
-      <div class="product-icon-wrap"><div class="product-icon product-detail-icon" style="${logoStyle(p)}"><img src="${p.logo}" alt="${p.name} logo" loading="lazy"><i class="fa-solid ${p.icon}" aria-hidden="true"></i></div></div>
-      <div class="small-label mt-3">${p.category}</div><h1 class="h2 fw-bold mt-2">${escapeHtml(p.name)}</h1><p class="text-silver mb-0">${escapeHtml(p.description)}</p>
+    <div class="col-lg-5"><div class="dg-product-visual">
+      <span class="dg-cat-label">${escapeHtml(p.category.toUpperCase())}</span>
+      <h1 class="h2 fw-bold">${escapeHtml(p.name)}</h1>
+      <img class="dg-product-img" src="assets/images/${p.slug}.png" alt="${escapeHtml(p.name)}" loading="lazy">
+      <p class="mb-0">${escapeHtml(p.description)}</p>
     </div></div>
-    <div class="col-lg-7"><div class="product-purchase-card">
+    <div class="col-lg-7"><div class="dg-purchase-panel">
       <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
       <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
       <div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>
@@ -196,13 +199,15 @@ function renderProductPage(){
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}
       ${productInfoRows(p)}
       <div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>
-      <button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
-      <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
-    </div><div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
+      <button id="productOrderBtn" type="button" class="dg-btn dg-btn-black w-100 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>
+      <p class="dg-secure-note mb-0 mt-3">Order continues on WhatsApp &mdash; no login needed.</p>
+      <div class="product-trust-strip mt-3"><span>&#10003; Clear Pricing</span><span>&#10003; WhatsApp Support</span><span>&#10003; Simple Ordering</span></div>
+    </div></div>
    </div>
   </div>
  </section>
- <section class="product-about-section"><div class="container">
+
+<section class="product-about-section"><div class="container">
   <div class="glass-card product-content-card product-about-master-card">
     <div class="product-section-kicker">About the Tool</div>
     <h2 class="h3 fw-bold mb-3">About ${escapeHtml(p.name)}</h2>
