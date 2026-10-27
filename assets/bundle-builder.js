@@ -10,7 +10,10 @@
    checkout modal — so the customer's name/number come through the form.
    The old direct wa.me message is gone.
    Cards are rendered from the PRODUCTS data in app.js — each tool's own
-   logo, default (first) plan and current price — so prices never drift.
+   logo, bundle default plan and current price — so prices never drift.
+   Bundle defaults (owner, 2026-10-27): Canva shows the 3 Months plan
+   (Rs 250) and CapCut shows 2 Devices (Rs 699). Product pages keep
+   their own defaults.
 
    Show-more: only the first 6 tools (ORDER below) are visible at first;
    the rest sit in a collapsible area behind the "Show all 11 tools"
@@ -68,16 +71,30 @@
   }
 
   /* ---------------- Build Your Own Bundle ---------------- */
+  /* Bundle defaults (owner, 2026-10-27): Canva shows the 3 Months plan
+     (Rs 250) and CapCut shows 2 Devices (Rs 699) in the bundle ONLY.
+     Product pages keep their own defaults (Canva 1 Month, CapCut device
+     selector). CapCut's 2-device price lives on the product-page device
+     selector (app.js), not in PRODUCTS, so it is set here. */
+  function bundlePlan(p) {
+    if (!p.plans || !p.plans.length) return null;
+    if (p.slug === 'canva' && p.plans[1]) return p.plans[1]; /* 3 Months */
+    return p.plans[0];
+  }
+  function bundlePrice(p, plan) {
+    if (p.slug === 'capcut') return 699; /* 2 Devices (Rs 699) */
+    return parsePrice(plan ? plan.price : p.price);
+  }
   function planLabel(p) {
-    var plan = (p.plans && p.plans[0]) ? p.plans[0] : null;
+    var plan = bundlePlan(p);
     var name = plan ? plan.name : '';
-    if (p.slug === 'capcut') return name + ' · 1 Device'; /* default = 1 Device plan */
+    if (p.slug === 'capcut') return name + ' · 2 Devices';
     return name;
   }
   function orderLabel(p) {
-    var plan = (p.plans && p.plans[0]) ? p.plans[0] : null;
+    var plan = bundlePlan(p);
     var name = plan ? plan.name : '';
-    if (p.slug === 'capcut') return name + ' (1 Device)';
+    if (p.slug === 'capcut') return name + ' (2 Devices)';
     return name;
   }
   function cardHtml(t, extra) {
@@ -112,7 +129,7 @@
     PRODUCTS.forEach(function (p) { if (ORDER.indexOf(p.slug) === -1) ordered.push(p); });
 
     var tools = ordered.map(function (p) {
-      var plan = (p.plans && p.plans[0]) ? p.plans[0] : null;
+      var plan = bundlePlan(p);
       return {
         slug: p.slug,
         name: p.name,
@@ -121,8 +138,8 @@
         planLabel: planLabel(p),
         orderLabel: orderLabel(p),
         planName: plan ? plan.name : '',
-        devices: p.slug === 'capcut' ? 1 : null, /* default = 1 Device (cart id 'capcut-1-month-1device') */
-        price: parsePrice(plan ? plan.price : p.price)
+        devices: p.slug === 'capcut' ? 2 : null, /* bundle default = 2 Devices (cart id 'capcut-1-month-2device') */
+        price: bundlePrice(p, plan)
       };
     });
 
@@ -207,7 +224,7 @@
       if (!currentBundle || !currentBundle.unlocked || !currentChosen.length) return;
       if (typeof ARCart === 'undefined' || !ARCart.add || !ARCart.openCheckout) return;
       currentChosen.forEach(function (t) {
-        ARCart.add({ id: bundleItemId(t), name: t.name + ' — ' + t.planName + (t.devices ? ' (' + t.devices + ' Device)' : ''), price: t.price, unit: t.price, qty: 1 });
+        ARCart.add({ id: bundleItemId(t), name: t.name + ' — ' + t.planName + (t.devices ? ' (' + t.devices + (t.devices > 1 ? ' Devices)' : ' Device)') : ''), price: t.price, unit: t.price, qty: 1 });
       });
       if (ARCart.setBundleDiscount) ARCart.setBundleDiscount(true);
       ARCart.openCheckout();
