@@ -99,19 +99,6 @@ const PRODUCT_ACCESS_LINE={
  duolingo:'Own account activation • Redeem link • No card required',
  'youtube-premium':'Own account activation • Trial-eligible account required • Supported devices'
 };
-const PRODUCT_WARRANTY_LINE={
- capcut:'25-day replacement warranty — shorter than the 1-month plan',
- gemini:'No warranty after activation',
- canva:'1 Month plan: 30-day full replacement warranty; 3 Months plan: 3-month full replacement warranty',
- surfshark:'30-day full replacement warranty',
- netflix:'25 days — shorter than the 1-month plan',
- office365:'30-day full warranty — shorter than the 12-month plan',
- 'adobe-express':'Warranty terms confirmed on WhatsApp before payment',
- ilovepdf:'Warranty terms confirmed on WhatsApp before payment',
- quillbot:'25-day subscription warranty — shorter than the plan term',
- duolingo:'No warranty after activation',
- 'youtube-premium':'1-month warranty — shorter than the 3-month plan'
-};
 function productInfoRows(p,noPayment){
  const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
  const row=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
@@ -260,7 +247,7 @@ function renderProductPage(){
     <div class="col-lg-7"><div class="${simpleCard?'product-purchase-card simple':'product-purchase-card'}">
       <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
       ${simpleCard?`<a class="product-stars" href="#productReviews" aria-label="Customer reviews"><span class="product-stars-num">4.5</span> ★★★★★</a><details class="product-payments"><summary><span>💳 Payment Methods</span></summary><div class="product-payments-body"><div class="pay-method"><div><strong>JazzCash / EasyPaisa</strong><span>Ali Haider — 03179172511</span></div><button type="button" class="pay-copy-btn" data-copy="03179172511">Copy</button></div><p class="pay-note">Payment ke baad screenshot WhatsApp par bhejen.</p></div></details>`:''}
-      <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>${PRODUCT_ACCESS_LINE[p.slug]?`<div class="product-device-access"><span class="device-access-label">Access</span><strong>${escapeHtml(PRODUCT_ACCESS_LINE[p.slug])}</strong></div>`:''}<div class="product-device-access"><span class="device-access-label">Warranty</span><strong>${escapeHtml(PRODUCT_WARRANTY_LINE[p.slug]||'Warranty terms confirmed on WhatsApp before payment')}</strong></div><p class="product-details-note text-silver small mt-2 mb-0">To order, share your full name and WhatsApp number in the checkout form. For invite or own-account products, your account email will also be needed on WhatsApp.</p>
+      <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>${PRODUCT_ACCESS_LINE[p.slug]?`<div class="product-device-access"><span class="device-access-label">Access</span><strong>${escapeHtml(PRODUCT_ACCESS_LINE[p.slug])}</strong></div>`:''}<p class="product-details-note text-silver small mt-2 mb-0">For warranty and full details, see the product details below.</p><p class="product-details-note text-silver small mt-2 mb-0">To order, share your full name and WhatsApp number in the checkout form. For invite or own-account products, your account email will also be needed on WhatsApp.</p>
       ${simpleCard?'':`<div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>`}
       ${p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
