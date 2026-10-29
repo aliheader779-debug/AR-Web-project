@@ -88,6 +88,30 @@ const PRODUCT_INFO={
  duolingo:{delivery:'Redeem link sent on WhatsApp after payment confirmation (2-hour hold time)',warranty:'No warranty after activation'},
  'youtube-premium':{delivery:'Activation on your own account after payment confirmation on WhatsApp (4-hour link hold time)',warranty:'1-month AR SERVICES warranty'}
 };
+const PRODUCT_ACCESS_LINE={
+ gemini:'Invite plan — not the full 5-member family plan',
+ canva:'Canva Education team invitation — not a standalone Canva Pro account',
+ surfshark:'Full login, 1 device only',
+ netflix:'1 screen only — not full account ownership',
+ office365:'Organization account • Windows, macOS, Android & iOS • Limited features',
+ ilovepdf:'Premium access',
+ quillbot:'Coupon code • Redeem on your own account • New account required',
+ duolingo:'Own account activation • Redeem link • No card required',
+ 'youtube-premium':'Own account activation • Trial-eligible account required • Supported devices'
+};
+const PRODUCT_WARRANTY_LINE={
+ capcut:'Warranty terms confirmed on WhatsApp before payment [OWNER DECISION NEEDED: exact warranty length]',
+ gemini:'Warranty terms confirmed on WhatsApp before payment [OWNER DECISION NEEDED: exact warranty length]',
+ canva:'Warranty terms confirmed on WhatsApp before payment [OWNER DECISION NEEDED: exact warranty length]',
+ surfshark:'25-day replacement warranty — shorter than the plan term',
+ netflix:'25 days — shorter than the 1-month plan',
+ office365:'20-day full warranty — shorter than the 12-month plan',
+ 'adobe-express':'Warranty terms confirmed on WhatsApp before payment',
+ ilovepdf:'Warranty terms confirmed on WhatsApp before payment',
+ quillbot:'20-day subscription warranty — shorter than the plan term',
+ duolingo:'No warranty after activation',
+ 'youtube-premium':'1-month warranty — shorter than the 3-month plan'
+};
 function productInfoRows(p,noPayment){
  const info=PRODUCT_INFO[p.slug]||{delivery:'Delivered on WhatsApp after payment confirmation',warranty:'Warranty terms confirmed on WhatsApp before payment'};
  const row=(label,value)=>`<div class="product-device-access"><span class="device-access-label">${label}</span><strong>${escapeHtml(value)}</strong></div>`;
@@ -236,7 +260,7 @@ function renderProductPage(){
     <div class="col-lg-7"><div class="${simpleCard?'product-purchase-card simple':'product-purchase-card'}">
       <div class="small-label">Choose Your Plan</div><h2 class="h3 fw-bold mt-2 mb-3">${escapeHtml(p.name)}</h2>
       ${simpleCard?`<a class="product-stars" href="#productReviews" aria-label="Customer reviews"><span class="product-stars-num">4.5</span> ★★★★★</a><details class="product-payments"><summary><span>💳 Payment Methods</span></summary><div class="product-payments-body"><div class="pay-method"><div><strong>JazzCash / EasyPaisa</strong><span>Ali Haider — 03179172511</span></div><button type="button" class="pay-copy-btn" data-copy="03179172511">Copy</button></div><p class="pay-note">Payment ke baad screenshot WhatsApp par bhejen.</p></div></details>`:''}
-      <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>
+      <div class="product-plan-selector">${p.plans.map((pl,i)=>pl.outOfStock?`<button type="button" class="product-plan-option" data-plan-index="${i}" disabled style="opacity:.55;cursor:not-allowed"><strong>${escapeHtml(pl.name)}</strong><span style="color:#ff6b6b;font-weight:700">Out of Stock</span></button>`:`<button type="button" class="product-plan-option ${i===0?'active':''}" data-plan-index="${i}"><strong>${escapeHtml(pl.name)}</strong><span>${escapeHtml(pl.price)}</span></button>`).join('')}</div>${PRODUCT_ACCESS_LINE[p.slug]?`<div class="product-device-access"><span class="device-access-label">Access</span><strong>${escapeHtml(PRODUCT_ACCESS_LINE[p.slug])}</strong></div>`:''}<div class="product-device-access"><span class="device-access-label">Warranty</span><strong>${escapeHtml(PRODUCT_WARRANTY_LINE[p.slug]||'Warranty terms confirmed on WhatsApp before payment')}</strong></div><p class="product-details-note text-silver small mt-2 mb-0">To order, share your full name and WhatsApp number in the checkout form. For invite or own-account products, your account email will also be needed on WhatsApp.</p>
       ${simpleCard?'':`<div class="product-selected-detail mt-3"><span>${escapeHtml(featuredPlan.details||'Plan selected')}</span></div>`}
       ${p.slug==='capcut'?`
       <div id="capcutDeviceOptions" class="product-device-options" style="display:none">
@@ -250,7 +274,7 @@ function renderProductPage(){
       <div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`)}
       ${simpleCard?'':productInfoRows(p)}
       ${simpleCard?`<div class="product-total-box mt-4"><span>TOTAL PRICE</span><div class="product-total-price-wrap"><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div></div>`:`<div class="product-total-box mt-4"><span>Total Amount</span><strong id="productTotalPrice">${escapeHtml(featuredPlan.price)}</strong></div>`}
-      ${simpleCard?`<div class="product-buy-row"><button id="productOrderBtn" type="button" class="btn product-buy-now">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>`:`<button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>`}
+      <p class="product-order-disclosure text-silver small mt-3 mb-3">Order on WhatsApp. Pay by JazzCash / EasyPaisa, send payment screenshot on WhatsApp. Delivery 10-15 minutes after payment verification, up to 1 hour if busy. No card or on-site payment.</p>${simpleCard?`<div class="product-buy-row"><button id="productOrderBtn" type="button" class="btn product-buy-now">Buy Now <i class="fa-solid fa-arrow-right ms-2"></i></button></div>`:`<button id="productOrderBtn" type="button" class="btn btn-gradient w-100 py-3 mt-3">Order Now via WhatsApp <i class="fa-brands fa-whatsapp ms-2"></i></button>`}
       <p class="product-order-note text-silver mb-0 mt-3"><i class="fa-solid fa-headset me-2"></i>Need help? Contact us on WhatsApp before ordering.</p>
     </div>${simpleCard?`<details class="product-details"><summary>Details</summary><div class="product-details-body">${p.slug==='capcut'?'':`<div class="product-device-access"><span class="device-access-label">${escapeHtml(p.accessLabel||'Access Method')}</span><strong>${escapeHtml(p.accessDetails||'See plan details')}</strong></div>`}${productInfoRows(p,true)}</div></details>`:``}<div class="product-trust-strip mt-3"><span>✓ Clear Pricing</span><span>✓ WhatsApp Support</span><span>✓ Simple Ordering</span></div></div>
    </div>
@@ -391,10 +415,7 @@ function renderProductPage(){
 function renderAnnouncementBar(){
  if(document.querySelector('.ar-announce'))return;
  var MESSAGES=[
-  '\uD83C\uDF89 <strong>SAVE10</strong> — 10% OFF on your order &nbsp;•&nbsp; Build Your Own Bundle — any 2+ tools, 10% OFF',
-  '\uD83D\uDCB0 2 accounts = 5% OFF &nbsp;•&nbsp; 3 accounts = 10% OFF &nbsp;•&nbsp; 4+ accounts = 15% OFF',
-  '\u26A1 Fast delivery in 10–15 minutes after payment &nbsp;•&nbsp; WhatsApp support, Mon–Sat 9am–9pm',
-  '\uD83D\uDD25 CapCut Pro from Rs 399 &nbsp;•&nbsp; Gemini from Rs 250 &nbsp;•&nbsp; Canva Edu from Rs 149'
+  '<strong>SAVE10</strong> — 10% OFF on your order. SAVE10 does not combine with bundle or multi-account discounts.'
  ];
  var bar=document.createElement('div');
  bar.className='ar-announce';

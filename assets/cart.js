@@ -199,14 +199,15 @@
         '<div class="ar-cart-foot">' +
           '<div class="ar-cart-total ar-cart-disc-row" id="arCartDiscRow" hidden><span id="arCartDiscLabel">Discount</span><strong id="arCartDisc">−Rs 0</strong></div>' +
           '<div class="ar-cart-total"><span>Total</span><strong id="arCartTotal">Rs 0</strong></div>' +
-          '<button type="button" id="arCartCheckoutBtn" class="ar-btn-gradient ar-w100">Checkout</button>' +
+          '<button type="button" id="arCartCheckoutBtn" class="ar-btn-gradient ar-w100">WhatsApp Order</button>' +
           '<button type="button" class="ar-cart-continue" data-ar-close>Continue shopping</button>' +
         '</div>' +
       '</aside>' +
       '<div id="arCheckoutModal" class="ar-checkout-modal" aria-hidden="true">' +
         '<div class="ar-checkout-box">' +
-          '<div class="ar-cart-head"><strong>Checkout</strong>' +
-            '<button type="button" class="ar-cart-close" data-ar-close-checkout aria-label="Close checkout">&times;</button></div>' +
+          '<div class="ar-cart-head"><strong>WhatsApp Order</strong>' +
+            '<button type="button" class="ar-cart-close" data-ar-close-checkout aria-label="Close WhatsApp order">&times;</button></div>' +
+          '<p class="ar-co-disclosure">Order on WhatsApp. Pay by JazzCash / EasyPaisa, send payment screenshot on WhatsApp. Delivery 10-15 minutes after payment verification, up to 1 hour if busy. No card or on-site payment.</p>' +
           '<div id="arCheckoutSummary" class="ar-checkout-summary"></div>' +
           '<form id="arCheckoutForm" novalidate>' +
             '<label class="ar-co-label" for="arCoName">Full Name *</label>' +
