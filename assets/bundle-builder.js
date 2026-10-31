@@ -102,7 +102,7 @@
       ' aria-pressed="false"' + (extra ? ' tabindex="-1"' : '') + '>' +
       '<span class="byob-check"><i class="fa-solid fa-check"></i></span>' +
       '<span class="byob-logo"><i class="fa-solid ' + escapeHtml(t.icon) + '" aria-hidden="true"></i>' +
-      (t.logo ? '<img src="' + escapeHtml(t.logo) + '" alt="' + escapeHtml(t.name) + ' logo" loading="lazy" onerror="this.remove()">' : '') +
+      (t.bundleLogo||t.logo ? '<img src="' + escapeHtml(t.bundleLogo||t.logo) + '" alt="' + escapeHtml(t.name) + ' logo" loading="lazy" onerror="this.remove()">' : '') +
       '</span>' +
       '<span class="byob-name">' + escapeHtml(t.name) + '</span>' +
       '<span class="byob-plan">' + escapeHtml(t.planLabel) + '</span>' +
@@ -133,7 +133,7 @@
       return {
         slug: p.slug,
         name: p.name,
-        logo: p.logo || '',
+        logo: p.bundleLogo || p.logo || '',
         icon: p.icon || 'fa-box',
         planLabel: planLabel(p),
         orderLabel: orderLabel(p),
