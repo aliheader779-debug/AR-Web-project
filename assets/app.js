@@ -1,3 +1,4 @@
+/* Pages deploy retry (2026-11-06): re-trigger GitHub Pages build — run #406 failed on GitHub side (duplicate github-pages artifact). No functional change. */
 
 const PRODUCTS = [
  {slug:'capcut',deviceAccess:'2 devices access',logo:'https://drive.google.com/thumbnail?id=12rd2-F3smW44wjp3FUL0ggqP9esaF7FV&sz=w1000',name:'CapCut Pro',category:'Video & Editing',icon:'fa-video',price:'Rs. 399',description:'A powerful video editing tool for creating professional-looking videos quickly and easily.',plans:[
