@@ -401,22 +401,23 @@ a.category-card {
 .ar-popup-valid{color:#6b7280;font-size:.85rem;margin-top:4px}
 .ar-popup-shop{display:block;background:#111827!important;color:#fff!important;border-radius:999px;padding:13px 10px;font-weight:700;text-decoration:none;margin-top:18px}
 
-/* 11.11 SALE STRIP (owner hukum, 2026-11-07) — full-width edge-to-edge, height kam, card nahi */
-.ar-sale-strip{background:linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);color:#fff;width:100%}
-.ar-sale-strip-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:22px;padding:12px 20px}
-.ar-sale-strip-img{height:72px;width:auto;display:block;flex:none}
-.ar-sale-strip-text{flex:1;min-width:0}
-.ar-sale-strip-text h2{margin:0;font-size:26px;font-weight:800;line-height:1.15;color:#fff}
-.ar-sale-strip-text h2 span{font-weight:600;font-size:16px;margin-left:8px;opacity:.95}
-.ar-sale-strip-valid{margin:2px 0 0;font-size:13px;color:rgba(255,255,255,.85)}
-.ar-sale-strip-code{display:flex;align-items:center;gap:8px;flex:none}
-.ar-sale-strip-code code{font-family:inherit;font-size:16px;font-weight:800;letter-spacing:1px;border:2px dashed rgba(255,255,255,.9);border-radius:8px;padding:6px 12px;color:#fff}
-.ar-sale-strip-copy{border:0;background:#fff;color:#111827;font-weight:700;font-size:14px;border-radius:8px;padding:8px 14px;cursor:pointer}
-.ar-sale-strip-cta{flex:none;background:#111827;color:#fff;font-weight:700;font-size:15px;border-radius:999px;padding:11px 22px;text-decoration:none}
-@media (max-width:820px){
-.ar-sale-strip-inner{flex-wrap:wrap;gap:10px;padding:14px 16px;justify-content:center;text-align:center}
-.ar-sale-strip-img{height:56px}
-.ar-sale-strip-text{flex:1 1 100%;text-align:center}
-.ar-sale-strip-text h2{font-size:22px}
-.ar-sale-strip-text h2 span{display:block;margin:2px 0 0;font-size:15px}
+/* 11.11 SALE BANNER (owner hukum, 2026-11-07) — card, Hero ke neeche / Popular Tools se pehle */
+.ar-sale-banner{padding:28px 0 8px}
+.ar-sale-banner-inner{display:flex;align-items:center;gap:28px;background:#fff;border:1px solid #e8eaf6;border-radius:20px;box-shadow:0 10px 30px rgba(31,45,120,.10);padding:22px 28px;overflow:hidden}
+.ar-sale-banner-img{width:46%;max-width:520px;height:auto;border-radius:12px;display:block}
+.ar-sale-banner-text{flex:1;text-align:left}
+.ar-sale-banner-text h2{font-size:44px;font-weight:800;margin:0 0 2px;color:#111827}
+.ar-sale-banner-1111{background:linear-gradient(90deg,#7c3aed,#2563eb,#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ar-sale-banner-offer{font-size:19px;color:#4b5563;margin:0 0 14px}
+.ar-sale-banner-code{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.ar-sale-banner-code code{font-family:inherit;font-size:19px;font-weight:800;letter-spacing:1px;border:2px dashed #2f3a8c;border-radius:10px;padding:8px 16px;color:#111827}
+.ar-sale-banner-copy{border:0;background:#2f3a8c;color:#fff;font-weight:700;font-size:15px;border-radius:10px;padding:10px 18px;cursor:pointer}
+.ar-sale-banner-valid{font-size:14px;color:#6b7280;margin:0 0 16px}
+.ar-sale-banner-cta{display:inline-block;background:#111827;color:#fff;font-weight:700;font-size:16px;border-radius:999px;padding:12px 26px;text-decoration:none}
+@media (max-width:768px){
+.ar-sale-banner-inner{flex-direction:column;gap:16px;padding:18px;text-align:center}
+.ar-sale-banner-img{width:100%;max-width:100%}
+.ar-sale-banner-text{text-align:center}
+.ar-sale-banner-text h2{font-size:34px}
+.ar-sale-banner-code{justify-content:center}
 }

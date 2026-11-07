@@ -634,12 +634,12 @@ function initReviewCarousel(container){
  requestAnimationFrame(now=>{last=now;tick(now)});
 }
 
-/* 11.11 SALE STRIP (owner hukum, 2026-11-07) — 12 Nov ke baad khud gayab + Copy Code */
+/* 11.11 SALE BANNER (owner hukum, 2026-11-07) — 12 Nov ke baad khud gayab + Copy Code */
 (function(){
-  var strip=document.getElementById('arSaleStrip');
-  if(!strip) return;
-  if(new Date()>new Date(2026,10,12,23,59,59)){strip.style.display='none';return;}
-  var btn=strip.querySelector('.ar-sale-strip-copy');
+  var banner=document.getElementById('arSaleBanner');
+  if(!banner) return;
+  if(new Date()>new Date(2026,10,12,23,59,59)){banner.style.display='none';return;}
+  var btn=banner.querySelector('.ar-sale-banner-copy');
   if(btn){btn.addEventListener('click',function(){
     var code=btn.getAttribute('data-code')||'SALE11';
     function done(){btn.textContent='Copied ✓';setTimeout(function(){btn.textContent='Copy Code';},2000);}
