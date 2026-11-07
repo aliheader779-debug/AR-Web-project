@@ -401,11 +401,11 @@ function renderProductPage(){
 /* 2026-10-24: Announcement bar (owner hukum) — header se upar; 4 asli announcements, hero slideshow ki tarah har 3 second baad auto-change (hover par rukti hai). SAVE10 copy chip HATA diya gaya (owner, 2026-10-24 23:36 — coupon zyada tar hide rakhna hai, taake margin na ghate). Sirf text + band karne ka button. Sirf asli offers/facts, koi fake deal nahi. */
 function renderAnnouncementBar(){
  if(document.querySelector('.ar-announce'))return;
+ /* 2026-11-07: 11.11 sale ke dauran SAVE10 + prices wale messages OFF (owner hukum) — 12 Nov ke baad wapas lagane hain. */
  var MESSAGES=[
-  '<strong>SAVE10</strong> — 10% OFF on your order. SAVE10 does not combine with bundle or multi-account discounts.',
+  '<strong>🎉 11.11 SALE</strong> — Flat 11% OFF on All Tools! Code: <strong>SALE11</strong> • Valid till 12 Nov 2026',
   '💰 2 accounts = 5% OFF • 3 accounts = 10% OFF • 4+ accounts = 15% OFF',
-  '⚡ Fast delivery in 10–15 minutes after payment • WhatsApp support, Mon–Sat 9am–9pm',
-  '🔥 CapCut Pro from Rs 399 • Gemini from Rs 250 • Canva Edu from Rs 149'
+  '⚡ Fast delivery in 10–15 minutes after payment • WhatsApp support, Mon–Sat 9am–9pm'
  ];
  var bar=document.createElement('div');
  bar.className='ar-announce';
