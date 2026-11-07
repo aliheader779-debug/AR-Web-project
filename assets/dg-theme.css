@@ -401,9 +401,9 @@ a.category-card {
 .ar-popup-valid{color:#6b7280;font-size:.85rem;margin-top:4px}
 .ar-popup-shop{display:block;background:#111827!important;color:#fff!important;border-radius:999px;padding:13px 10px;font-weight:700;text-decoration:none;margin-top:18px}
 
-/* 11.11 SALE BANNER v3 (owner hukum, 2026-11-07) — VERTICAL card, PNG upar top, text neeche centered; desktop par 720px tak mehdood */
+/* 11.11 SALE BANNER v4 (owner hukum, 2026-11-07) — desktop par full-width strip, PNG upar top (upar jagah), text neeche centered; mobile waisi hi */
 .ar-sale-banner{padding:28px 0 8px}
-.ar-sale-banner-inner{max-width:720px;margin:0 auto;background:#fff;border:1px solid #e8eaf6;border-radius:20px;box-shadow:0 10px 30px rgba(31,45,120,.10);overflow:hidden;text-align:center}
+.ar-sale-banner-inner{background:#fff;border:1px solid #e8eaf6;border-radius:20px;box-shadow:0 10px 30px rgba(31,45,120,.10);overflow:hidden;text-align:center}
 .ar-sale-banner-img{width:100%;height:auto;display:block}
 .ar-sale-banner-text{padding:20px 24px 24px;text-align:center}
 .ar-sale-banner-text h2{font-size:44px;font-weight:800;margin:0 0 2px;color:#111827}
@@ -414,6 +414,10 @@ a.category-card {
 .ar-sale-banner-copy{border:0;background:#2f3a8c;color:#fff;font-weight:700;font-size:15px;border-radius:10px;padding:10px 18px;cursor:pointer}
 .ar-sale-banner-valid{font-size:14px;color:#6b7280;margin:0 0 16px}
 .ar-sale-banner-cta{display:inline-block;background:#111827;color:#fff;font-weight:700;font-size:16px;border-radius:999px;padding:12px 26px;text-decoration:none}
+@media (min-width:769px){
+.ar-sale-banner-inner{padding-top:20px}
+.ar-sale-banner-img{max-width:800px;margin:0 auto;border-radius:12px}
+}
 @media (max-width:768px){
 .ar-sale-banner-text{padding:16px 16px 20px}
 .ar-sale-banner-text h2{font-size:34px}
