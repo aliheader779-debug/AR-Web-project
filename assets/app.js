@@ -402,7 +402,10 @@ function renderProductPage(){
 function renderAnnouncementBar(){
  if(document.querySelector('.ar-announce'))return;
  var MESSAGES=[
-  '<strong>SAVE10</strong> — 10% OFF on your order. SAVE10 does not combine with bundle or multi-account discounts.'
+  '<strong>SAVE10</strong> — 10% OFF on your order. SAVE10 does not combine with bundle or multi-account discounts.',
+  '💰 2 accounts = 5% OFF • 3 accounts = 10% OFF • 4+ accounts = 15% OFF',
+  '⚡ Fast delivery in 10–15 minutes after payment • WhatsApp support, Mon–Sat 9am–9pm',
+  '🔥 CapCut Pro from Rs 399 • Gemini from Rs 250 • Canva Edu from Rs 149'
  ];
  var bar=document.createElement('div');
  bar.className='ar-announce';
@@ -423,6 +426,46 @@ function renderAnnouncementBar(){
  start();
  bar.addEventListener('mouseenter',stop);
  bar.addEventListener('mouseleave',start);
+}
+
+/* 2026-11-07: 11.11 popup (owner hukum) — site visit par khulta hai, session mein ek baar. Code 1111 = 11% OFF, valid 11-13 Nov 2026. Image: assets/images/11-11-popup.jpg */
+function render1111Popup(){
+ if(document.querySelector('.ar-popup-overlay'))return;
+ var seen=false;
+ try{seen=sessionStorage.getItem('ar_1111_popup')==='1';}catch(e){}
+ if(seen)return;
+ var overlay=document.createElement('div');
+ overlay.className='ar-popup-overlay';
+ overlay.setAttribute('role','dialog');
+ overlay.setAttribute('aria-label','11.11 Sale offer');
+ overlay.innerHTML=
+  '<div class="ar-popup">'+
+  '<button type="button" class="ar-popup-close" aria-label="Band karein">&times;</button>'+
+  '<img class="ar-popup-img" src="assets/images/11-11-popup.jpg" alt="11.11 Sale — 11% OFF" loading="lazy">'+
+  '<h2>11.11 SALE</h2>'+
+  '<div class="ar-popup-sub">Har tool par 11% OFF</div>'+
+  '<div class="ar-popup-valid">Valid: 11 \u2013 13 Nov 2026</div>'+
+  '<div class="ar-popup-code"><span>1111</span><button type="button" data-copy="1111">Copy</button></div>'+
+  '<div class="ar-popup-btns">'+
+  '<a class="ar-popup-shop" href="tools.html">Shop Now</a>'+
+  '<a class="ar-popup-wa" href="https://wa.me/923179172511" target="_blank" rel="noopener">Order on WhatsApp</a>'+
+  '</div>'+
+  '<div class="ar-popup-fine">Coupon code checkout par lagayen. CapCut 1-device par code nahi chalta.</div>'+
+  '</div>';
+ document.body.appendChild(overlay);
+ function close(){overlay.classList.remove('show');}
+ overlay.querySelector('.ar-popup-close').addEventListener('click',close);
+ overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
+ overlay.querySelector('.ar-popup-shop').addEventListener('click',close);
+ var copyBtn=overlay.querySelector('[data-copy]');
+ copyBtn.addEventListener('click',function(){
+  var done=function(){copyBtn.textContent='Copied';setTimeout(function(){copyBtn.textContent='Copy';},1500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('1111').then(done,function(){});}else{done();}
+ });
+ setTimeout(function(){
+  overlay.classList.add('show');
+  try{sessionStorage.setItem('ar_1111_popup','1');}catch(e){}
+ },1000);
 }
 
 function initHeroLive(){
@@ -469,6 +512,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   try{fn()}catch(error){console.error('[AR SERVICES] '+label+' failed:',error)}
  };
  run('Announcement bar',renderAnnouncementBar);
+ run('11.11 popup',render1111Popup);
  run('Hero live effects',initHeroLive);
  run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
  run('Product page',renderProductPage);
