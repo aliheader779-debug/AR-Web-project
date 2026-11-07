@@ -110,9 +110,9 @@
     } catch (e) { /* private mode */ }
   }
   /* COUPON-LOGIC-START */
-  var COUPONS = { SAVE10: 10, '1111': 11 };
-  /* 11.11 offer (2026-11-07, owner hukum): code 1111 = 11% OFF, valid 11-13 Nov 2026. Expiry customer ki local date se check hoti hai; 13 Nov ke baad code khud invalid ho jata hai. CapCut 1-device exclusion aur no-stacking rules SAVE10 wale hi lagte hain. */
-  var COUPON_EXPIRY = { '1111': '2026-11-13' };
+  var COUPONS = { SAVE10: 10, SALE11: 11 };
+  /* 11.11 offer (2026-11-07, owner hukum; code/expiry fix 2026-11-07): code SALE11 = 11% OFF, valid 11-12 Nov 2026. Expiry customer ki local date se check hoti hai; 12 Nov ke baad code khud invalid ho jata hai. CapCut 1-device exclusion aur no-stacking rules SAVE10 wale hi lagte hain. */
+  var COUPON_EXPIRY = { SALE11: '2026-11-12' };
   function todayISO() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   var COUPON_EXCLUDED_IDS = ['capcut-1-month-1device'];
   function normalizeCouponCode(code) { return String(code == null ? '' : code).replace(/\s+/g, '').toUpperCase(); }

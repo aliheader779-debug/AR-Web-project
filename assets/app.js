@@ -428,7 +428,7 @@ function renderAnnouncementBar(){
  bar.addEventListener('mouseleave',start);
 }
 
-/* 2026-11-07: 11.11 popup (owner hukum) — site visit par khulta hai, session mein ek baar. Code 1111 = 11% OFF, valid 11-13 Nov 2026. Image: assets/images/11-11-popup.jpg */
+/* 2026-11-07: 11.11 popup (owner hukum; code/expiry fix 2026-11-07) — site visit par khulta hai, session mein ek baar. Code SALE11 = 11% OFF, valid 11-12 Nov 2026. Image: assets/images/11-11-popup.jpg */
 function render1111Popup(){
  if(document.querySelector('.ar-popup-overlay'))return;
  var seen=false;
@@ -444,8 +444,8 @@ function render1111Popup(){
   '<img class="ar-popup-img" src="assets/images/11-11-popup.jpg" alt="11.11 Sale — 11% OFF" loading="lazy">'+
   '<h2>11.11 SALE</h2>'+
   '<div class="ar-popup-sub">Har tool par 11% OFF</div>'+
-  '<div class="ar-popup-valid">Valid: 11 \u2013 13 Nov 2026</div>'+
-  '<div class="ar-popup-code"><span>1111</span><button type="button" data-copy="1111">Copy</button></div>'+
+  '<div class="ar-popup-valid">Valid: 11 \u2013 12 Nov 2026</div>'+
+  '<div class="ar-popup-code"><span>SALE11</span><button type="button" data-copy="SALE11">Copy</button></div>'+
   '<div class="ar-popup-btns">'+
   '<a class="ar-popup-shop" href="tools.html">Shop Now</a>'+
   '<a class="ar-popup-wa" href="https://wa.me/923179172511" target="_blank" rel="noopener">Order on WhatsApp</a>'+
@@ -460,7 +460,7 @@ function render1111Popup(){
  var copyBtn=overlay.querySelector('[data-copy]');
  copyBtn.addEventListener('click',function(){
   var done=function(){copyBtn.textContent='Copied';setTimeout(function(){copyBtn.textContent='Copy';},1500);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('1111').then(done,function(){});}else{done();}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('SALE11').then(done,function(){});}else{done();}
  });
  setTimeout(function(){
   overlay.classList.add('show');
