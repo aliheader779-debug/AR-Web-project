@@ -428,7 +428,7 @@ function renderAnnouncementBar(){
  bar.addEventListener('mouseleave',start);
 }
 
-/* 2026-11-07: 11.11 popup (owner hukum; code/expiry fix 2026-11-07) — site visit par khulta hai, session mein ek baar. Code SALE11 = 11% OFF, valid 11-12 Nov 2026. Image: assets/images/11-11-popup.jpg */
+/* 2026-11-07: 11.11 popup (owner hukum) — SR Digital World jaisa structure, AR color scheme. Site visit par khulta hai, session mein ek baar. Code SALE11 = 11% OFF, valid 11-12 Nov 2026. Image: assets/images/11-11-popup.jpg */
 function render1111Popup(){
  if(document.querySelector('.ar-popup-overlay'))return;
  var seen=false;
@@ -440,17 +440,17 @@ function render1111Popup(){
  overlay.setAttribute('aria-label','11.11 Sale offer');
  overlay.innerHTML=
   '<div class="ar-popup">'+
-  '<button type="button" class="ar-popup-close" aria-label="Band karein">&times;</button>'+
-  '<img class="ar-popup-img" src="assets/images/11-11-popup.jpg" alt="11.11 Sale — 11% OFF" loading="lazy">'+
-  '<h2>11.11 SALE</h2>'+
-  '<div class="ar-popup-sub">Har tool par 11% OFF</div>'+
-  '<div class="ar-popup-valid">Valid: 11 \u2013 12 Nov 2026</div>'+
-  '<div class="ar-popup-code"><span>SALE11</span><button type="button" data-copy="SALE11">Copy</button></div>'+
-  '<div class="ar-popup-btns">'+
-  '<a class="ar-popup-shop" href="tools.html">Shop Now</a>'+
-  '<a class="ar-popup-wa" href="https://wa.me/923179172511" target="_blank" rel="noopener">Order on WhatsApp</a>'+
+  '<div class="ar-popup-strip"></div>'+
+  '<button type="button" class="ar-popup-close" aria-label="Close">&times;</button>'+
+  '<img class="ar-popup-img" src="assets/images/11-11-popup.jpg" alt="11.11 \u2014 The World\'s Biggest Sale Day" loading="lazy">'+
+  '<div class="ar-popup-body">'+
+  '<h2>Pakistan\'s Biggest Sale \u2013 11.11 Offer</h2>'+
+  '<div class="ar-popup-sub">Get Flat 11% OFF on All Tools!</div>'+
+  '<div class="ar-popup-code"><span>SALE11</span><button type="button" data-copy="SALE11">Copy Code</button></div>'+
+  '<div class="ar-popup-store">AR SERVICES Tools</div>'+
+  '<div class="ar-popup-valid">Valid till 12 November 2026</div>'+
+  '<a class="ar-popup-shop" href="tools.html">Shop Now \u2192</a>'+
   '</div>'+
-  '<div class="ar-popup-fine">Coupon code checkout par lagayen. CapCut 1-device par code nahi chalta.</div>'+
   '</div>';
  document.body.appendChild(overlay);
  function close(){overlay.classList.remove('show');}
@@ -459,7 +459,7 @@ function render1111Popup(){
  overlay.querySelector('.ar-popup-shop').addEventListener('click',close);
  var copyBtn=overlay.querySelector('[data-copy]');
  copyBtn.addEventListener('click',function(){
-  var done=function(){copyBtn.textContent='Copied';setTimeout(function(){copyBtn.textContent='Copy';},1500);};
+  var done=function(){copyBtn.textContent='Copied';setTimeout(function(){copyBtn.textContent='Copy Code';},1500);};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('SALE11').then(done,function(){});}else{done();}
  });
  setTimeout(function(){
