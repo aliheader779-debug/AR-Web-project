@@ -401,11 +401,12 @@ function renderProductPage(){
 /* 2026-10-24: Announcement bar (owner hukum) — header se upar; 4 asli announcements, hero slideshow ki tarah har 3 second baad auto-change (hover par rukti hai). SAVE10 copy chip HATA diya gaya (owner, 2026-10-24 23:36 — coupon zyada tar hide rakhna hai, taake margin na ghate). Sirf text + band karne ka button. Sirf asli offers/facts, koi fake deal nahi. */
 function renderAnnouncementBar(){
  if(document.querySelector('.ar-announce'))return;
- /* 2026-11-07: 11.11 sale ke dauran SAVE10 + prices wale messages OFF (owner hukum) — 12 Nov ke baad wapas lagane hain. */
+ /* 2026-11-13: 11.11 khatam — SAVE10 + prices wale messages wapas (owner hukum, pending item 20). */
  var MESSAGES=[
-  '<strong>🎉 11.11 SALE</strong> — Flat 11% OFF on All Tools! Code: <strong>SALE11</strong> • Valid till 12 Nov 2026',
+  '🎉 <strong>SAVE10</strong> — 10% OFF + Build Your Own Bundle 10% OFF',
   '💰 2 accounts = 5% OFF • 3 accounts = 10% OFF • 4+ accounts = 15% OFF',
-  '⚡ Fast delivery in 10–15 minutes after payment • WhatsApp support, Mon–Sat 9am–9pm'
+  '⚡ Fast delivery in 10–15 minutes after payment • WhatsApp support, Mon–Sat 9am–9pm',
+  '🔥 CapCut Pro from Rs 399 • Gemini from Rs 250 • Canva Edu from Rs 149'
  ];
  var bar=document.createElement('div');
  bar.className='ar-announce';
@@ -428,45 +429,6 @@ function renderAnnouncementBar(){
  bar.addEventListener('mouseleave',start);
 }
 
-/* 2026-11-07: 11.11 popup (owner hukum) — SR Digital World jaisa structure, AR color scheme. Site visit par khulta hai, session mein ek baar. Code SALE11 = 11% OFF, valid 11-12 Nov 2026. Image: assets/images/11-11-popup.jpg */
-function render1111Popup(){
- if(document.querySelector('.ar-popup-overlay'))return;
- var seen=false;
- try{seen=sessionStorage.getItem('ar_1111_popup')==='1';}catch(e){}
- if(seen)return;
- var overlay=document.createElement('div');
- overlay.className='ar-popup-overlay';
- overlay.setAttribute('role','dialog');
- overlay.setAttribute('aria-label','11.11 Sale offer');
- overlay.innerHTML=
-  '<div class="ar-popup">'+
-  '<div class="ar-popup-strip"></div>'+
-  '<button type="button" class="ar-popup-close" aria-label="Close">&times;</button>'+
-  '<img class="ar-popup-img" src="assets/images/11-11-popup.jpg" alt="11.11 \u2014 The World\'s Biggest Sale Day" loading="lazy">'+
-  '<div class="ar-popup-body">'+
-  '<h2>Pakistan\'s Biggest Sale \u2013 11.11 Offer</h2>'+
-  '<div class="ar-popup-sub">Get Flat 11% OFF on All Tools!</div>'+
-  '<div class="ar-popup-code"><span>SALE11</span><button type="button" data-copy="SALE11">Copy Code</button></div>'+
-  '<div class="ar-popup-store">AR SERVICES Tools</div>'+
-  '<div class="ar-popup-valid">Valid till 12 November 2026</div>'+
-  '<a class="ar-popup-shop" href="tools.html">Shop Now \u2192</a>'+
-  '</div>'+
-  '</div>';
- document.body.appendChild(overlay);
- function close(){overlay.classList.remove('show');}
- overlay.querySelector('.ar-popup-close').addEventListener('click',close);
- overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
- overlay.querySelector('.ar-popup-shop').addEventListener('click',close);
- var copyBtn=overlay.querySelector('[data-copy]');
- copyBtn.addEventListener('click',function(){
-  var done=function(){copyBtn.textContent='Copied';setTimeout(function(){copyBtn.textContent='Copy Code';},1500);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('SALE11').then(done,function(){});}else{done();}
- });
- setTimeout(function(){
-  overlay.classList.add('show');
-  try{sessionStorage.setItem('ar_1111_popup','1');}catch(e){}
- },1000);
-}
 
 function initHeroLive(){
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
@@ -512,7 +474,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   try{fn()}catch(error){console.error('[AR SERVICES] '+label+' failed:',error)}
  };
  run('Announcement bar',renderAnnouncementBar);
- run('11.11 popup',render1111Popup);
  run('Hero live effects',initHeroLive);
  run('AOS initialization',()=>{if(window.AOS)AOS.init({duration:600,once:true,offset:50,easing:'ease-in-out'})});
  run('Product page',renderProductPage);
